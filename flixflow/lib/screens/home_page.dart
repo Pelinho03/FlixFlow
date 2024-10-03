@@ -138,19 +138,19 @@ class _HomePageState extends State<HomePage> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Top filmes',
-                            style: AppTextStyles.bigText.copyWith(
-                                fontSize: 20, color: AppColors.primeiroPlano),
+                            style: AppTextStyles.bigText
+                                .copyWith(color: AppColors.primeiroPlano),
                           ),
                         )),
                     Container(
-                      height: 200, // Define a altura da lista de filmes
+                      height: 300, // Define a altura da lista de filmes
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: movies.length,
                         itemBuilder: (context, index) {
                           final movie = movies[index];
                           return Container(
-                            width: 148,
+                            // width: 148,
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,6 +162,8 @@ class _HomePageState extends State<HomePage> {
                                         ? Image.network(
                                             'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
                                             fit: BoxFit.cover,
+                                            width: 148,
+                                            height: 184,
                                           )
                                         : Icon(Icons.movie, size: 80),
                                   ),
@@ -170,14 +172,15 @@ class _HomePageState extends State<HomePage> {
                                 Text(
                                   movie['title'] ?? 'Título não disponível',
                                   style: AppTextStyles.mediumText
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                  maxLines: 1,
+                                      .copyWith(color: AppColors.primeiroPlano),
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
-                                  'Ano: ${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
+                                  // movie['realease_date']?.subrtring(0, 4) ?? 'N/A',
+                                  '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
                                   style: AppTextStyles.smallText
-                                      .copyWith(color: AppColors.cinza),
+                                      .copyWith(color: AppColors.roxo),
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.favorite_border),

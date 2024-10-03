@@ -5,7 +5,7 @@ class AppTextStyles {
   static const TextStyle bigText = TextStyle(
     fontFamily: 'Ubuntu',
     fontSize: 24,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w500,
   );
   static const TextStyle mediumText = TextStyle(
     fontFamily: 'Ubuntu',
