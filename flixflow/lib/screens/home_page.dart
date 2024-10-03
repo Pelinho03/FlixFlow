@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                                   movie['title'] ?? 'Título não disponível',
                                   style: AppTextStyles.mediumText
                                       .copyWith(fontWeight: FontWeight.bold),
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
@@ -143,15 +143,16 @@ class _HomePageState extends State<HomePage> {
                           ),
                         )),
                     Container(
-                      height: 300, // Define a altura da lista de filmes
+                      height: 300,
+                      // Define a altura da lista de filmes
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: movies.length,
                         itemBuilder: (context, index) {
                           final movie = movies[index];
                           return Container(
-                            // width: 148,
-                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            width: 140,
+                            margin: EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -173,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                                   movie['title'] ?? 'Título não disponível',
                                   style: AppTextStyles.mediumText
                                       .copyWith(color: AppColors.primeiroPlano),
-                                  maxLines: 2,
+                                  maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
