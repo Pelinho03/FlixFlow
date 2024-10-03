@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/movie_service.dart';
+import '../styles/app._text.dart';
+import '../styles/app_colors.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Método para construir a lista de filmes
+  // Método para construir a lista de filmes populares
   Widget _buildMovieList() {
     return SingleChildScrollView(
       // Permite rolar a página para baixo
@@ -52,15 +54,15 @@ class _HomePageState extends State<HomePage> {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Mais Populares',
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFFF8F8F2)), // Título da seção
-                      ),
-                    ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Mais Populares',
+                            style: AppTextStyles.bigText
+                                .copyWith(color: AppColors.primeiroPlano),
+                          ),
+                        )),
                     Container(
                       height: 200, // Define a altura da lista de filmes
                       child: ListView.builder(
@@ -88,16 +90,15 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 4),
                                 Text(
                                   movie['title'] ?? 'Título não disponível',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14),
+                                  style: AppTextStyles.mediumText
+                                      .copyWith(fontWeight: FontWeight.bold),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
                                   'Ano: ${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 12),
+                                  style: AppTextStyles.smallText
+                                      .copyWith(color: AppColors.cinza),
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.favorite_border),
@@ -132,15 +133,15 @@ class _HomePageState extends State<HomePage> {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Filmes Top',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white), // Título da seção
-                      ),
-                    ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Top filmes',
+                            style: AppTextStyles.bigText.copyWith(
+                                fontSize: 20, color: AppColors.primeiroPlano),
+                          ),
+                        )),
                     Container(
                       height: 200, // Define a altura da lista de filmes
                       child: ListView.builder(
@@ -168,16 +169,15 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 4),
                                 Text(
                                   movie['title'] ?? 'Título não disponível',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14),
+                                  style: AppTextStyles.mediumText
+                                      .copyWith(fontWeight: FontWeight.bold),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
                                   'Ano: ${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 12),
+                                  style: AppTextStyles.smallText
+                                      .copyWith(color: AppColors.cinza),
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.favorite_border),
