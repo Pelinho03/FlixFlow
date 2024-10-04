@@ -1,7 +1,8 @@
+import '../styles/app_text.dart';
+import '../styles/app_colors.dart';
 import 'package:flutter/material.dart';
 import '../services/movie_service.dart';
-import '../styles/app._text.dart';
-import '../styles/app_colors.dart';
+import '../widgets/movie_list_widget.dart'; // Importa o widget
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,229 +24,114 @@ class _HomePageState extends State<HomePage> {
   Widget _getSelectedPage() {
     switch (_selectedIndex) {
       case 0:
-        return _buildMovieList();
+        return MovieListWidget(
+          popularMovies: _popularMovies,
+          topMovies: _topMovies,
+        ); // Chama o widget que criaste
       case 1:
         return Center(child: Text('Favoritos'));
       case 2:
         return Center(child: Text('Sair'));
       default:
-        return _buildMovieList();
+        return MovieListWidget(
+          popularMovies: _popularMovies,
+          topMovies: _topMovies,
+        ); // Chama o widget que criaste
     }
-  }
-
-  // Método para construir a lista de filmes populares
-  Widget _buildMovieList() {
-    return SingleChildScrollView(
-      // Permite rolar a página para baixo
-      child: Column(
-        children: [
-          // Seção de filmes populares
-          FutureBuilder<List<dynamic>>(
-            future: _popularMovies,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Text(
-                        'Erro ao carregar filmes populares: ${snapshot.error}'));
-              } else {
-                final movies = snapshot.data!;
-                return Column(
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Mais Populares',
-                            style: AppTextStyles.bigText
-                                .copyWith(color: AppColors.primeiroPlano),
-                          ),
-                        )),
-                    Container(
-                      height: 200, // Define a altura da lista de filmes
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: movies.length,
-                        itemBuilder: (context, index) {
-                          final movie = movies[index];
-                          return Container(
-                            width: 148,
-                            margin: EdgeInsets.symmetric(horizontal: 5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: movie['poster_path'] != null
-                                        ? Image.network(
-                                            'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Icon(Icons.movie, size: 80),
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  movie['title'] ?? 'Título não disponível',
-                                  style: AppTextStyles.mediumText
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  'Ano: ${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
-                                  style: AppTextStyles.smallText
-                                      .copyWith(color: AppColors.cinza),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.favorite_border),
-                                  onPressed: () {
-                                    // Implementa a funcionalidade para adicionar aos favoritos
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              }
-            },
-          ),
-
-          // Seção de filmes top
-          FutureBuilder<List<dynamic>>(
-            future: _topMovies,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(
-                    child:
-                        Text('Erro ao carregar filmes top: ${snapshot.error}'));
-              } else {
-                final movies = snapshot.data!;
-                return Column(
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Top filmes',
-                            style: AppTextStyles.bigText
-                                .copyWith(color: AppColors.primeiroPlano),
-                          ),
-                        )),
-                    Container(
-                      height: 300,
-                      // Define a altura da lista de filmes
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: movies.length,
-                        itemBuilder: (context, index) {
-                          final movie = movies[index];
-                          return Container(
-                            width: 140,
-                            margin: EdgeInsets.symmetric(horizontal: 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: movie['poster_path'] != null
-                                        ? Image.network(
-                                            'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                                            fit: BoxFit.cover,
-                                            width: 148,
-                                            height: 184,
-                                          )
-                                        : Icon(Icons.movie, size: 80),
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  movie['title'] ?? 'Título não disponível',
-                                  style: AppTextStyles.mediumText
-                                      .copyWith(color: AppColors.primeiroPlano),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  // movie['realease_date']?.subrtring(0, 4) ?? 'N/A',
-                                  '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
-                                  style: AppTextStyles.smallText
-                                      .copyWith(color: AppColors.roxo),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.favorite_border),
-                                  onPressed: () {
-                                    // Implementa a funcionalidade para adicionar aos favoritos
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              }
-            },
-          ),
-        ],
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('FlixFlow'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Aqui podes implementar a funcionalidade de pesquisa
-            },
+      body: Column(
+        children: [
+          // Banner com a barra de pesquisa
+          Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 50, vertical: 40), // Espaçamento interno
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/imgs/banner_modify.png'),
+                fit: BoxFit.cover, // Para cobrir todo o espaço do Container
+              ),
+            ),
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/imgs/login_logo.png',
+                  height: 35,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(
+                    height:
+                        8), // Espaçamento entre o título e a barra de pesquisa
+                TextField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: AppColors
+                        .primeiroPlano, // Cor de fundo da barra de pesquisa
+                    hintText: 'Procurar filme',
+                    // hintStyle: TextStyle(color: AppColors.cinza),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                      borderSide: BorderSide.none, // Sem bordas
+                    ),
+                    prefixIcon: Icon(Icons.search, color: AppColors.cinza),
+                  ),
+                  style:
+                      AppTextStyles.mediumText, // Aplique o estilo corretamente
+                ),
+              ],
+            ),
+          ),
+
+          // Resto do conteúdo da página
+          Expanded(
+            child: _getSelectedPage(),
           ),
         ],
       ),
-      body: _getSelectedPage(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.movie),
-            label: 'Filmes',
+      bottomNavigationBar: Container(
+        height: 86,
+        decoration: const BoxDecoration(
+          color: AppColors.caixas, // A cor de fundo da BottomNavigationBar
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favoritos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.exit_to_app),
-            label: 'Sair',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xFFBD93F9),
-        unselectedItemColor: const Color(0xFFF8F8F2),
-        backgroundColor: Color(0xFF0E0D11),
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.movie),
+              label: 'Filmes',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Favoritos',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.exit_to_app),
+              label: 'Sair',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: AppColors.roxo,
+          unselectedItemColor: AppColors.primeiroPlano,
+          backgroundColor: Colors
+              .transparent, // Define como transparente para a cor vir do Container
+          selectedLabelStyle: AppTextStyles.navBarTextBold,
+          unselectedLabelStyle: AppTextStyles.navBarText,
+          iconSize: 28.0,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
       ),
-      backgroundColor: Color(0xFF0E0D11),
+      backgroundColor: AppColors.fundo,
     );
   }
 }

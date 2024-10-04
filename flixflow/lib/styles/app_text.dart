@@ -22,4 +22,14 @@ class AppTextStyles {
     fontSize: 11,
     fontWeight: FontWeight.w200,
   );
+  static const TextStyle navBarTextBold = TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 13,
+    fontWeight: FontWeight.w700,
+  );
+  static const TextStyle navBarText = TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+  );
 }
