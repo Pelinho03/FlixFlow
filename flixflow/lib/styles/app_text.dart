@@ -32,4 +32,21 @@ class AppTextStyles {
     fontSize: 13,
     fontWeight: FontWeight.w400,
   );
+  static const TextStyle bigTextLoginRegist = TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 41,
+    fontWeight: FontWeight.w500,
+    fontStyle: FontStyle.italic,
+  );
+  static const TextStyle ligthTextLoginRegist = TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 17,
+    fontWeight: FontWeight.w200,
+    fontStyle: FontStyle.italic,
+  );
+  static const TextStyle mediumTextLoginRegist = TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 30,
+    fontWeight: FontWeight.w500,
+  );
 }

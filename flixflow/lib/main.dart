@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
-import 'screens/home_page.dart'; // Atualiza o caminho para a HomePage
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'screens/login_page.dart';
+// import 'screens/register_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options:
+        DefaultFirebaseOptions.currentPlatform, // Configurado pelo flutterfire
+  );
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FlixFlow',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomePage(), // Define a HomePage como a página inicial
+      theme: ThemeData.dark(),
+      home: LoginPage(),
+      // home: RegisterPage(),
     );
   }
 }

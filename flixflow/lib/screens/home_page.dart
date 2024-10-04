@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             // Resto do conteúdo da página
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height, // Altura adaptável
               child: _getSelectedPage(),
             ),
