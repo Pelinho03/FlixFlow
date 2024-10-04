@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "554364039576",
+    "project_id": "flixflow-2aec5",
+    "storage_bucket": "flixflow-2aec5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554364039576:android:2a9400b9276a89297ffbed",
+        "android_client_info": {
+          "package_name": "com.example.flixflow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkQRZsCfu4UduOWNzZRRLG6ekf1zyV5a0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
