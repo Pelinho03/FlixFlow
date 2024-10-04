@@ -21,6 +21,7 @@ class MovieService {
     }
   }
 
+  //TOP FILMES
   Future<List<dynamic>> getTopMovies() async {
     final response =
         await http.get(Uri.parse('$_baseUrl/movie/top_rated?api_key=$_apiKey'));
@@ -29,6 +30,25 @@ class MovieService {
       return data['results'];
     } else {
       throw Exception('Falha ao carregar Top filmes');
+    }
+  }
+
+  //PESQUISA
+  Future<List<dynamic>> searchMovies(String query) async {
+    final response = await http.get(
+      Uri.parse(
+          '$_baseUrl/search/movie?api_key=$_apiKey&query=$query&language=pt-PT'),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      if (data['results'] is List) {
+        return data['results'];
+      } else {
+        return []; // Retorna uma lista vazia se não houver resultados
+      }
+    } else {
+      throw Exception('Falha ao carregar filmes: ${response.statusCode}');
     }
   }
 }
