@@ -42,7 +42,7 @@ class MovieListWidget extends StatelessWidget {
               final movie = movies[index];
               return Container(
                 width: 130,
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                margin: const EdgeInsets.symmetric(horizontal: 6),
                 child: Stack(
                   alignment: const Alignment(1.0, 0.60),
                   children: [

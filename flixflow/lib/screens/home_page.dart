@@ -121,10 +121,14 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            // Resto do conteúdo da página
-            SizedBox(
-              height: MediaQuery.of(context).size.height, // Altura adaptável
-              child: _getSelectedPage(),
+            // Conteúdo abaixo do banner
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 26.0), // Aplica o padding lateral de 26 unidades
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height, // Altura adaptável
+                child: _getSelectedPage(),
+              ),
             ),
           ],
         ),
