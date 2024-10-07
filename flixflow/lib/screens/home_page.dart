@@ -115,7 +115,8 @@ class _HomePageState extends State<HomePage> {
                       prefixIcon:
                           const Icon(Icons.search, color: AppColors.cinza),
                     ),
-                    style: AppTextStyles.mediumText,
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.cinza),
                   ),
                 ],
               ),

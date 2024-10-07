@@ -51,4 +51,18 @@ class MovieService {
       throw Exception('Falha ao carregar filmes: ${response.statusCode}');
     }
   }
+
+  //IMAGENS PARA OS DETALHES
+  Future<List<dynamic>> fetchMovieImages(int movieId) async {
+    final response = await http.get(
+      Uri.parse('$_baseUrl/movie/$movieId/images?api_key=$_apiKey'),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['backdrops']; // Pega nas imagens de fundo
+    } else {
+      throw Exception('Falha ao carregar as imagens do filme');
+    }
+  }
 }
