@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-// import 'screens/login_page.dart';
+import 'screens/login_page.dart';
 // import 'screens/register_page.dart';
-import 'screens/home_page.dart';
+// import 'screens/home_page.dart';
 // import 'screens/movie_details_page.dart';
 
 void main() async {
@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
       title: 'FlixFlow',
       theme: ThemeData.dark(),
       // home: MovieDetailPage(movie: '')
-      home: HomePage(),
-      // home: LoginPage(),
+      // home: HomePage(),
+      home: LoginPage(),
       // home: RegisterPage(),
     );
   }
