@@ -65,4 +65,28 @@ class MovieService {
       throw Exception('Falha ao carregar as imagens do filme');
     }
   }
+
+  //GENEROS DE FILMES
+  Future<List<String>> getMovieGenres(int movieId) async {
+    // Faz primeiro a requisição ao endpoint do filme para obter os géneros
+    final movieResponse = await http.get(
+      Uri.parse('$_baseUrl/genre/movie/$movieId?api_key=$_apiKey'),
+    );
+
+    if (movieResponse.statusCode == 200) {
+      final movieData = json.decode(movieResponse.body);
+
+      // A lista de géneros do filme vem como IDs (ex: [{"id": 28, "name": "Action"}])
+      final List<dynamic> movieGenres = movieData['genres'];
+
+      // Retorna a lista de nomes de géneros
+      if (movieId == id) {
+        return movieGenres
+            .map<String>((genre) => genre['name'] as String)
+            .toList();
+      }
+    } else {
+      throw Exception('Falha ao carregar os gêneros do filme');
+    }
+  }
 }

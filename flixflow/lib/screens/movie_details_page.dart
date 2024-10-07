@@ -14,6 +14,8 @@ class MovieDetailPage extends StatefulWidget {
 
 class _MovieDetailPageState extends State<MovieDetailPage> {
   late Future<List<dynamic>> _movieImages;
+  late Future<List<String>>
+      _movieGenres; // Adiciona uma variável para os géneros
   final MovieService _movieService =
       MovieService(); // Cria uma instância de MovieService
 
@@ -21,8 +23,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   void initState() {
     super.initState();
     // Certifica-te que movie['id'] está a retornar um valor válido
-    _movieImages = _movieService.fetchMovieImages(
-        widget.movie['id']); // Chama o método através da instância
+    _movieImages = _movieService.fetchMovieImages(widget.movie['id']);
+    _movieGenres = _movieService
+        .getMovieGenres(widget.movie['id']); // Chama o método para géneros
   }
 
   @override
@@ -38,6 +41,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Imagens do Filme
               FutureBuilder<List<dynamic>>(
                 future: _movieImages,
                 builder: (context, snapshot) {
@@ -78,21 +82,50 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 },
               ),
               const SizedBox(height: 11.0),
+
+              // Título do Filme
               Text(
                 widget.movie['title'] ?? 'Título não disponível',
-                style: AppTextStyles.mediumText.copyWith(
-                  color: AppColors.primeiroPlano,
+                style: AppTextStyles.bigText.copyWith(
+                  color: AppColors.roxo,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+
+              // Ano de Lançamento
               Text(
                 '${widget.movie['release_date']?.substring(0, 4) ?? 'N/A'}',
-                style: AppTextStyles.smallText.copyWith(
-                  color: AppColors.roxo,
+                style: AppTextStyles.mediumText.copyWith(
+                  color: AppColors.primeiroPlano,
                 ),
               ),
-              const SizedBox(height: 190.0),
+
+              // Géneros do Filme
+              FutureBuilder<List<String>>(
+                future: _movieGenres, // Chama a função que retorna os géneros
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Text('Erro ao carregar os géneros.');
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    final genres = snapshot.data!;
+                    return Text(
+                      'Géneros: ${genres.join(', ')}', // Concatena os géneros numa string
+                      style: AppTextStyles.mediumText.copyWith(
+                        color: AppColors.primeiroPlano,
+                      ),
+                    );
+                  } else {
+                    return const Text('Géneros não disponíveis.');
+                  }
+                },
+              ),
+
+              const SizedBox(height: 20.0),
+
+              // Descrição do Filme
               Text(
                 widget.movie['overview'] ?? 'Sem descrição disponível.',
                 style: const TextStyle(fontSize: 16.0),
