@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      // home: MovieDetailPage(movie: '')
+      // home: MovieDetailPage(movie: 917496)
       home: HomePage(),
       // home: LoginPage(),
       // home: RegisterPage(),

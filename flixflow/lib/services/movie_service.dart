@@ -23,8 +23,8 @@ class MovieService {
 
   //TOP FILMES
   Future<List<dynamic>> getTopMovies() async {
-    final response =
-        await http.get(Uri.parse('$_baseUrl/movie/top_rated?api_key=$_apiKey'));
+    final response = await http.get(
+        Uri.parse('$_baseUrl/movie/top_rated?api_key=$_apiKey&language=pt-PT'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return data['results'];
@@ -60,31 +60,23 @@ class MovieService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return data['backdrops']; // Pega nas imagens de fundo
+      return data['backdrops'];
     } else {
       throw Exception('Falha ao carregar as imagens do filme');
     }
   }
 
   //GENEROS DE FILMES
-  Future<List<String>> getMovieGenres(int movieId) async {
-    // Faz primeiro a requisição ao endpoint do filme para obter os géneros
-    final movieResponse = await http.get(
-      Uri.parse('$_baseUrl/genre/movie/$movieId?api_key=$_apiKey'),
-    );
+  Future<Map<int, String>> fetchGenres() async {
+    final url = '$_baseUrl/genre/movie/list?api_key=$_apiKey&language=pt-PT';
+    final response = await http.get(Uri.parse(url));
 
-    if (movieResponse.statusCode == 200) {
-      final movieData = json.decode(movieResponse.body);
-
-      // A lista de géneros do filme vem como IDs (ex: [{"id": 28, "name": "Action"}])
-      final List<dynamic> movieGenres = movieData['genres'];
-
-      // Retorna a lista de nomes de géneros
-      return movieGenres
-          .map<String>((genre) => genre['name'] as String)
-          .toList();
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List genres = data['genres'];
+      return {for (var genre in genres) genre['id']: genre['name']};
     } else {
-      throw Exception('Falha ao carregar os gêneros do filme');
+      throw Exception('Falha ao carregar os generos');
     }
   }
 }
