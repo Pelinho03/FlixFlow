@@ -101,6 +101,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 ),
               ),
 
+              // Género do filme
+              Text(
+                movie['genre_ids']
+                style: AppTextStyles.mediumText.copyWith(color: AppColors.primeiroPlano).
+              ),
+
               // Géneros do Filme
               // FutureBuilder<List<String>>(
               //   future: _movieGenres, // Chama a função que retorna os géneros
