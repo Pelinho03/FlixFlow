@@ -80,11 +80,9 @@ class MovieService {
       final List<dynamic> movieGenres = movieData['genres'];
 
       // Retorna a lista de nomes de géneros
-      if (movieId == id) {
-        return movieGenres
-            .map<String>((genre) => genre['name'] as String)
-            .toList();
-      }
+      return movieGenres
+          .map<String>((genre) => genre['name'] as String)
+          .toList();
     } else {
       throw Exception('Falha ao carregar os gêneros do filme');
     }

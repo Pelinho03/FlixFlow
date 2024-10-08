@@ -67,8 +67,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                               child: Image.network(
                                 'https://image.tmdb.org/t/p/w500${image['file_path']}',
                                 fit: BoxFit.cover,
-                                width: 185,
-                                height: 278,
+                                width: 458,
+                                // height: 10,
                               ),
                             ),
                           );
@@ -102,26 +102,26 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
 
               // Géneros do Filme
-              FutureBuilder<List<String>>(
-                future: _movieGenres, // Chama a função que retorna os géneros
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return const Text('Erro ao carregar os géneros.');
-                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                    final genres = snapshot.data!;
-                    return Text(
-                      'Géneros: ${genres.join(', ')}', // Concatena os géneros numa string
-                      style: AppTextStyles.mediumText.copyWith(
-                        color: AppColors.primeiroPlano,
-                      ),
-                    );
-                  } else {
-                    return const Text('Géneros não disponíveis.');
-                  }
-                },
-              ),
+              // FutureBuilder<List<String>>(
+              //   future: _movieGenres, // Chama a função que retorna os géneros
+              //   builder: (context, snapshot) {
+              //     if (snapshot.connectionState == ConnectionState.waiting) {
+              //       return const Center(child: CircularProgressIndicator());
+              //     } else if (snapshot.hasError) {
+              //       return const Text('Erro ao carregar os géneros.');
+              //     } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              //       final genres = snapshot.data!;
+              //       return Text(
+              //         'Géneros: ${genres.join(', ')}', // Concatena os géneros numa string
+              //         style: AppTextStyles.mediumText.copyWith(
+              //           color: AppColors.primeiroPlano,
+              //         ),
+              //       );
+              //     } else {
+              //       return const Text('Géneros não disponíveis.');
+              //     }
+              //   },
+              // ),
 
               const SizedBox(height: 20.0),
 
