@@ -12,6 +12,11 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w400,
   );
+  static const TextStyle mediumBoldText = TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+  );
   static const TextStyle regularText = TextStyle(
     fontFamily: 'Ubuntu',
     fontSize: 11,

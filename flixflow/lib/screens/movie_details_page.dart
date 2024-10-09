@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/movie_service.dart';
@@ -125,6 +126,24 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 overflow: TextOverflow.ellipsis,
               ),
 
+              const SizedBox(
+                height: 5,
+              ),
+
+              // Sistema de classificação por estrelas
+              Row(
+                children: List.generate(5, (index) {
+                  return const Icon(
+                    Icons.star,
+                    color: AppColors.laranja, // Define a cor das estrelas
+                    size: 16.0, // Tamanho das estrelas
+                  );
+                }),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+
               // Géneros do Filme
               FutureBuilder<List<String>>(
                 future: _movieGenres, // Chama a função que retorna os géneros
@@ -163,7 +182,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   ),
                   // Ano de Lançamento
                   Text(
-                    '${widget.movie['release_date']?.substring(0, 4) ?? 'N/A'}',
+                    widget.movie['original_language'].toUpperCase() ??
+                        'Título não disponível',
                     style: AppTextStyles.mediumText.copyWith(
                       color: AppColors.primeiroPlano,
                     ),
@@ -188,7 +208,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     width: 8,
                   ),
                   Text(
-                    '${widget.movie['release_date']?.substring(0, 4) ?? 'N/A'}',
+                    '${widget.movie['origin_country']?.substring(0, 4) ?? 'N/A'}',
                     style: AppTextStyles.mediumText.copyWith(
                       color: AppColors.primeiroPlano,
                     ),
@@ -201,7 +221,68 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               // Descrição do Filme
               Text(
                 widget.movie['overview'] ?? 'Sem descrição disponível.',
-                style: const TextStyle(fontSize: 16.0),
+                style: AppTextStyles.regularText
+                    .copyWith(color: AppColors.primeiroPlano),
+              ),
+
+              const Divider(
+                height: 40,
+                color: AppColors.roxo,
+                thickness: 0.1,
+              ),
+
+              RichText(
+                text: TextSpan(
+                  style: AppTextStyles.mediumText.copyWith(
+                    color: AppColors.primeiroPlano,
+                    height: 1.5, // Aumenta o espaçamento entre as linhas
+                  ),
+                  children: <TextSpan>[
+                    // Diretor
+                    const TextSpan(
+                      text: 'Diretor: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text:
+                          '${widget.movie['director'] ?? 'Diretor não disponível'}\n',
+                    ),
+
+                    // Idioma
+                    const TextSpan(
+                      text: 'Idioma: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text:
+                          '${widget.movie['original_language']?.toUpperCase() ?? 'Idioma não disponível'}\n',
+                    ),
+
+                    // Companhia(s) produtora(s)
+                    const TextSpan(
+                      text: 'Companhia(s) produtora(s): ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text:
+                          '${widget.movie['producer'] ?? 'Produtor não disponível'}\n',
+                    ),
+
+                    // Música
+                    const TextSpan(
+                      text: 'Música: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text:
+                          '${widget.movie['music'] ?? 'Música não disponível'}\n',
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(
+                height: 20,
               ),
             ],
           ),
