@@ -57,13 +57,17 @@ class _ComentariosState extends State<Comentarios> {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: Icon(Icons.edit),
+                icon: Icon(
+                  Icons.edit,
+                  size: 24,
+                  color: AppColors.roxo,
+                ),
                 onPressed: () {
                   _editComment(index);
                 },
               ),
               IconButton(
-                icon: Icon(Icons.delete),
+                icon: Icon(Icons.delete, size: 24, color: AppColors.roxo),
                 onPressed: () {
                   _deleteComment(index);
                 },
@@ -83,9 +87,11 @@ class _ComentariosState extends State<Comentarios> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
-            'Editar Comentário',
-            style: AppTextStyles.bigText.copyWith(color: AppColors.roxo),
+          title: Center(
+            child: Text(
+              'Editar Comentário',
+              style: AppTextStyles.bigText.copyWith(color: AppColors.roxo),
+            ),
           ),
           content: TextField(
             controller: commentController,
@@ -94,28 +100,37 @@ class _ComentariosState extends State<Comentarios> {
                 .copyWith(color: AppColors.primeiroPlano),
           ),
           actions: [
-            TextButton(
-              child: Text(
-                'Cancelar',
-                style: AppTextStyles.mediumText.copyWith(color: AppColors.roxo),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text(
-                'Salvar',
-                style: AppTextStyles.mediumText.copyWith(color: AppColors.roxo),
-              ),
-              onPressed: () {
-                setState(() {
-                  filedata[index]['message'] =
-                      commentController.text; // Atualiza o comentário
-                });
-                Navigator.of(context).pop();
-                commentController.clear();
-              },
+            Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.center, // Centraliza os botões
+              children: [
+                TextButton(
+                  child: Text(
+                    'Cancelar',
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.roxo),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                SizedBox(width: 20), // Espaço entre os botões
+                TextButton(
+                  child: Text(
+                    'Salvar',
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.roxo),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      filedata[index]['message'] =
+                          commentController.text; // Atualiza o comentário
+                    });
+                    Navigator.of(context).pop();
+                    commentController.clear();
+                  },
+                ),
+              ],
             ),
           ],
         );
@@ -129,23 +144,48 @@ class _ComentariosState extends State<Comentarios> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Remover Comentário'),
-          content: Text('Tem a certeza que quer remover este comentário?'),
-          actions: [
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+          title: Center(
+            child: Text(
+              'Remover Comentário',
+              style: AppTextStyles.bigText.copyWith(color: AppColors.vermelho),
             ),
-            TextButton(
-              child: Text('Remover'),
-              onPressed: () {
-                setState(() {
-                  filedata.removeAt(index); // Remove o comentário
-                });
-                Navigator.of(context).pop();
-              },
+          ),
+          content: Text(
+            'Queres mesmo remover este comentário?',
+            style: AppTextStyles.mediumText
+                .copyWith(color: AppColors.primeiroPlano),
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  child: Text(
+                    'Cancelar',
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.roxo),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                TextButton(
+                  child: Text(
+                    'Remover',
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.roxo),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      filedata.removeAt(index); // Remove o comentário
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
           ],
         );
@@ -180,7 +220,7 @@ class _ComentariosState extends State<Comentarios> {
       commentController: commentController,
       backgroundColor: AppColors.roxo,
       textColor: AppColors.primeiroPlano,
-      sendWidget: Icon(Icons.send, size: 30, color: Colors.white),
+      sendWidget: Icon(Icons.send, size: 24, color: AppColors.primeiroPlano),
     );
   }
 }
