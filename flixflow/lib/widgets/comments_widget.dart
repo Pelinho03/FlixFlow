@@ -1,5 +1,6 @@
 import 'package:comment_box/comment/comment.dart';
 import 'package:flixflow/styles/app_colors.dart';
+import 'package:flixflow/styles/app_text.dart';
 import 'package:flutter/material.dart';
 
 class Comentarios extends StatefulWidget {
@@ -40,12 +41,21 @@ class _ComentariosState extends State<Comentarios> {
       itemBuilder: (context, index) {
         return ListTile(
           leading: CircleAvatar(
-            backgroundImage:
-                NetworkImage(data[index]['pic'] ?? 'https://picsum.photos/50'),
+            backgroundImage: NetworkImage(data[index]['pic'] ?? ''),
           ),
-          title: Text(data[index]['name'] ?? 'Nome desconhecido'),
-          subtitle: Text(data[index]['message'] ?? ''),
-          trailing: Text(data[index]['date'] ?? ''),
+          title: Text(
+            data[index]['name'] ?? 'Nome desconhecido',
+            style: AppTextStyles.mediumBoldText.copyWith(color: AppColors.roxo),
+          ),
+          subtitle: Text(
+            data[index]['message'] ?? '',
+            style: AppTextStyles.regularText
+                .copyWith(color: AppColors.primeiroPlano),
+          ),
+          trailing: Text(
+            data[index]['date'] ?? '',
+            style: AppTextStyles.smallText.copyWith(color: AppColors.roxo),
+          ),
         );
       },
     );
