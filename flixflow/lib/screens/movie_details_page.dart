@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../services/movie_service.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
+import '../widgets/comments_widget.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;
@@ -284,6 +285,41 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               const SizedBox(
                 height: 20,
               ),
+
+              //teste 1
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: AppColors.caixas,
+                    // boxShadow: [
+                    //   BoxShadow(color: Colors.green, spreadRadius: 3),
+                    // ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment
+                        .start, // Alinha o texto à esquerda (opcional)
+                    children: [
+                      Text(
+                        'Comentários',
+                        style: AppTextStyles.bigText
+                            .copyWith(color: AppColors.roxo),
+                      ),
+                      const SizedBox(
+                          height: 10), // Espaço entre o título e os comentários
+                      Expanded(
+                        // Isso permite que os comentários usem o espaço restante
+                        child: Comentarios(),
+                      ),
+                    ],
+                  ),
+                  height: 400, // Se preferires manter uma altura fixa
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              )
             ],
           ),
         ),
