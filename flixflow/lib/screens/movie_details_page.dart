@@ -314,7 +314,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       ),
                     ],
                   ),
-                  height: 400, // Se preferires manter uma altura fixa
+                  height: 400,
                 ),
               ),
               const SizedBox(
