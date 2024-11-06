@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/movie_service.dart';

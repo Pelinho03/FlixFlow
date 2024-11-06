@@ -151,10 +151,9 @@ class RegisterPage extends StatelessWidget {
                         _register(context); // Chama a função de registo
                       },
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                             AppColors.roxo), // Cor de fundo
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                                 6), // Ajuste o valor conforme necessário

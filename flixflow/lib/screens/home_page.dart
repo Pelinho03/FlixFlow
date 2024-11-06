@@ -64,7 +64,13 @@ class _HomePageState extends State<HomePage> {
         );
 
       case 1:
-        return const Center(child: Text('Favoritos'));
+        return const Center(
+          child: Text(
+            'Página em Manutenção',
+            style: TextStyle(fontSize: 24),
+          ),
+        );
+
       case 2:
         return const Center(child: Text('Sair'));
       default:
