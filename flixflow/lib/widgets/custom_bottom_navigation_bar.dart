@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../styles/app_text.dart'; // Importar os estilos de texto
-import '../styles/app_colors.dart'; // Importar as cores
+import '../styles/app_text.dart';
+import '../styles/app_colors.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
-  final Function(int) onItemTapped; // Callback para mudar de página
+  final Function(int) onItemTapped;
 
   const CustomBottomNavigationBar({
     super.key,
@@ -17,7 +17,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Container(
       height: 86,
       decoration: const BoxDecoration(
-        color: AppColors.caixas, // A cor de fundo da BottomNavigationBar
+        color: AppColors.caixas,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(12),
           topRight: Radius.circular(12),
@@ -42,11 +42,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
         currentIndex: selectedIndex,
         selectedItemColor: AppColors.roxo,
         unselectedItemColor: AppColors.primeiroPlano,
-        backgroundColor: Colors.transparent, // Define como transparente
+        backgroundColor: Colors.transparent,
         selectedLabelStyle: AppTextStyles.navBarTextBold,
         unselectedLabelStyle: AppTextStyles.navBarText,
         iconSize: 28.0,
-        onTap: onItemTapped, // Chama a função de callback
+        onTap: onItemTapped, // Aqui vamos chamar diretamente a função passada
       ),
     );
   }

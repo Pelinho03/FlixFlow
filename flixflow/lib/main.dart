@@ -4,6 +4,7 @@ import 'firebase_options.dart';
 
 // Import das páginas necessárias
 import 'screens/home_page.dart';
+import 'screens/favorites_page.dart';
 import 'screens/login_page.dart';
 import 'screens/register_page.dart';
 import 'screens/movie_details_page.dart';
@@ -23,15 +24,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute: '/', // Define a página inicial
+      initialRoute: '/home', // Define a página inicial
       routes: {
-        '/': (context) => HomePage(), // Rota para a Home Page
-        // '/favorites': (context) => FavoritesPage(),
+        '/home': (context) => HomePage(), // Rota para a Home Page
+        '/favorites': (context) => FavoritePage(),
         '/login': (context) => LoginPage(), // Rota para a Login Page
         '/register': (context) => RegisterPage(), // Rota para a Register Page
         '/movieDetails': (context) => MovieDetailPage(
-              movie: null,
-            ), // Rota para a página de detalhes do filme
+            movie: null), // Rota para a página de detalhes do filme
       },
     );
   }

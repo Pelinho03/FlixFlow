@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/movie_service.dart';
-import '../widgets/custom_bottom_navigation_bar.dart'; // Importa o widget
 import '../widgets/movie_list_widget.dart';
+import '../widgets/custom_bottom_navigation_bar.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
 
@@ -15,8 +15,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Future<List<dynamic>> _popularMovies;
   late Future<List<dynamic>> _topMovies;
-  Future<List<dynamic>>? _searchMovies; // Lista para resultados de pesquisa
-  String _searchQuery = ''; // Armazena o termo de pesquisa
+  Future<List<dynamic>>? _searchMovies;
+  String _searchQuery = '';
   int _selectedIndex = 0;
 
   @override
@@ -37,57 +37,24 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget _getSelectedPage() {
-    switch (_selectedIndex) {
-      case 0:
-        return FutureBuilder<List<dynamic>>(
-          future: _searchMovies ?? Future.wait([_popularMovies, _topMovies]),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return const Center(child: Text('Erro na pesquisa.'));
-            } else if (_searchMovies != null && snapshot.data!.isEmpty) {
-              return const Center(child: Text('Nenhum filme encontrado.'));
-            }
-
-            final List<dynamic> popularMovies =
-                _searchMovies != null ? snapshot.data : snapshot.data![0];
-            final List<dynamic> topMovies =
-                _searchMovies != null ? snapshot.data : snapshot.data![1];
-
-            return MovieListWidget(
-              popularMovies: popularMovies,
-              topMovies: topMovies,
-            );
-          },
-        );
-
-      case 1:
-        return const Center(
-          child: Text(
-            'Página em Manutenção',
-            style: TextStyle(fontSize: 24),
-          ),
-        );
-
-      case 2:
-        return const Center(child: Text('Sair'));
-      default:
-        return const Center(child: Text('Página não encontrada.'));
-    }
-  }
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    if (index == 0) {
+      Navigator.pushNamed(context, '/home');
+    } else if (index == 1) {
+      Navigator.pushNamed(context, '/favorites');
+    } else if (index == 2) {
+      Navigator.pushNamed(context, '/login');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        // SingleChildScrollView para permitir a mover com o scroll
         child: Column(
           children: [
             // Banner com a barra de pesquisa
@@ -108,8 +75,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 8),
                   TextField(
-                    onChanged:
-                        _onSearchChanged, // Atualiza a pesquisa em tempo real
+                    onChanged: _onSearchChanged,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: AppColors.primeiroPlano,
@@ -118,24 +84,47 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(50),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon:
-                          const Icon(Icons.search, color: AppColors.cinza),
+                      prefixIcon: Icon(Icons.search, color: AppColors.cinza),
                     ),
-                    style: AppTextStyles.mediumText
-                        .copyWith(color: AppColors.cinza),
+                    style: AppTextStyles.mediumText.copyWith(
+                      color: AppColors.cinza,
+                    ),
                   ),
                 ],
               ),
             ),
-            // Conteúdo abaixo do banner
+
+            // Resto do conteúdo da página
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 26.0), // Aplica o padding lateral de 26 unidades
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height, // Altura adaptável
-                child: _getSelectedPage(),
+              padding: const EdgeInsets.symmetric(horizontal: 26.0),
+              child: FutureBuilder<List<dynamic>>(
+                future:
+                    _searchMovies ?? Future.wait([_popularMovies, _topMovies]),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text('Erro na pesquisa.'));
+                  } else if (_searchMovies != null && snapshot.data!.isEmpty) {
+                    return const Center(
+                        child: Text('Nenhum filme encontrado.'));
+                  }
+
+                  final List<dynamic> popularMovies = _searchMovies != null
+                      ? snapshot.data!
+                      : snapshot.data![0];
+                  final List<dynamic> topMovies = _searchMovies != null
+                      ? snapshot.data!
+                      : snapshot.data![1];
+
+                  return MovieListWidget(
+                    popularMovies: popularMovies,
+                    topMovies: topMovies,
+                  );
+                },
               ),
             ),
+            SizedBox(height: 29)
           ],
         ),
       ),
