@@ -22,14 +22,19 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    //aqui chamo a função para ir buscar os filmes populares e em seguida os TOP
+    //seriços criados em movie_service
     _popularMovies = MovieService().getPopularMovies();
     _topMovies = MovieService().getTopMovies();
   }
 
+  //método para procurar filmes na barra de pesquisa
+  //contem validação caso nao encontre o que pesquisei
   void _onSearchChanged(String query) {
     setState(() {
       _searchQuery = query;
       if (_searchQuery.isNotEmpty) {
+        //atraves da query de pesquisa e com ajuda do metodo criado para pesquisa no movie_service vai pesquisar o filme da query
         _searchMovies = MovieService().searchMovies(_searchQuery);
       } else {
         _searchMovies = null;
@@ -37,6 +42,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //define a localizaçao das páginas
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -53,12 +59,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // SingleChildScrollView para permitir a mover com o scroll
       body: SingleChildScrollView(
-        // SingleChildScrollView para permitir a mover com o scroll
+        //column para que eu consiga dar scroll e o banner acompanhar até ficar escondido
         child: Column(
           children: [
             // Banner com a barra de pesquisa
             Container(
+              //padding para definir a posicao do banner
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
               decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -73,8 +81,9 @@ class _HomePageState extends State<HomePage> {
                     height: 35,
                     fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   TextField(
+                    //carrega o metodo da pesquisa
                     onChanged: _onSearchChanged,
                     decoration: InputDecoration(
                       filled: true,
@@ -94,7 +103,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // Resto do conteúdo da página
+            // Resto da página
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 26.0),
               child: FutureBuilder<List<dynamic>>(

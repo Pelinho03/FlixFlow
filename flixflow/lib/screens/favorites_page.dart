@@ -11,22 +11,25 @@ class FavoritePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Favoritos'),
       ),
+
+      //texto provisorio centrado com estilo pre-definido
       body: Center(
         child: Text(
           'Página em manutenção',
           style: AppTextStyles.mediumText,
         ),
       ),
+
+      //carrego a barra personalizada criado anteriormente que esta no widget
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: 1, // Para manter o item Favoritos selecionado
         onItemTapped: (index) {
-          // Aqui você pode adicionar a lógica de navegação
           switch (index) {
             case 0:
               Navigator.pushNamed(context, '/home');
               break;
             case 1:
-              // Já estamos na página de favoritos, então não faz nada
+              // ja estamos na página de favoritos, por issso não faz nada
               break;
             case 2:
               Navigator.pushNamed(context, '/login');

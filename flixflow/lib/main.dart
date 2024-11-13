@@ -20,6 +20,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   @override
+  //definicao das rotas para as restantes paginas
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FlixFlow',
@@ -33,6 +34,8 @@ class MyApp extends StatelessWidget {
         '/movieDetails': (context) => MovieDetailPage(
             movie: null), // Rota para a página de detalhes do filme
       },
+      //remove a linha de debug
+      debugShowCheckedModeBanner: false,
     );
   }
 }
