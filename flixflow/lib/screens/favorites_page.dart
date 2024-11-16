@@ -9,11 +9,11 @@ class FavoritePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favoritos'),
+        title: const Text('Favoritos'),
       ),
 
-      //texto provisorio centrado com estilo pre-definido
-      body: Center(
+      //texto provisorio centrado com estilo pre-definido por mimm
+      body: const Center(
         child: Text(
           'Página em manutenção',
           style: AppTextStyles.mediumText,

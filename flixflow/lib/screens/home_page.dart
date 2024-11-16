@@ -61,12 +61,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       // SingleChildScrollView para permitir a mover com o scroll
       body: SingleChildScrollView(
-        //column para que eu consiga dar scroll e o banner acompanhar até ficar escondido
+        //adicionei column para que eu consiga dar scroll e o banner acompanhar até ficar escondido
         child: Column(
           children: [
             // Banner com a barra de pesquisa
             Container(
-              //padding para definir a posicao do banner
+              // para definir a posicao do banner
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
               decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/imgs/login_logo.png',
+                    'assets/imgs/login_logo.png', //logotipo FlixFlow acima da barra de pesquisa
                     height: 35,
                     fit: BoxFit.contain,
                   ),
@@ -109,6 +109,7 @@ class _HomePageState extends State<HomePage> {
               child: FutureBuilder<List<dynamic>>(
                 future:
                     _searchMovies ?? Future.wait([_popularMovies, _topMovies]),
+                //validações
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());

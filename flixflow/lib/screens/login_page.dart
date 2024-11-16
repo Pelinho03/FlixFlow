@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Adicionar Firebase
+import 'package:firebase_auth/firebase_auth.dart'; // Adiciona a firebase
 import 'register_page.dart';
-import 'home_page.dart'; // Importar a página de Home
+import 'home_page.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
 
@@ -44,9 +44,8 @@ class LoginPage extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'assets/imgs/login_bg2.png'), // Caminho da sua imagem
-                fit: BoxFit.cover, // Ajusta a imagem para cobrir toda a área
+                image: AssetImage('assets/imgs/login_bg2.png'),
+                fit: BoxFit.cover, // para cobrir toda a área
               ),
             ),
           ),
@@ -57,6 +56,7 @@ class LoginPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  //logoyipo flixflow
                   Container(
                     margin: const EdgeInsets.only(bottom: 50),
                     child: Image.asset(
@@ -66,6 +66,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  //titulo simples com os meus estilos
                   Text(
                     'Login',
                     style: AppTextStyles.bigTextLoginRegist.copyWith(
@@ -73,14 +74,15 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: TextFormField(
                       textAlign: TextAlign.center, // Alinhamento do texto
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'Digita o teu Email',
-                        alignLabelWithHint: true,
+                        alignLabelWithHint:
+                            true, // para alinhar o texto com o campo
                         labelStyle: AppTextStyles.ligthTextLoginRegist
                             .copyWith(color: AppColors.primeiroPlano),
                         filled: true,
@@ -93,7 +95,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: TextFormField(
                       textAlign: TextAlign.center,
@@ -124,8 +126,8 @@ class LoginPage extends StatelessWidget {
                             AppColors.roxo), // Cor de fundo
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                6), // Ajuste o valor conforme necessário
+                            borderRadius:
+                                BorderRadius.circular(6), // Raio da borda
                           ),
                         ),
                       ),
@@ -142,6 +144,7 @@ class LoginPage extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       Navigator.push(
+                        // Navega para o registo
                         context,
                         MaterialPageRoute(
                           builder: (context) => RegisterPage(),
