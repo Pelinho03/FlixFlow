@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//diferenets estilos para a font de texto
+
 class AppTextStyles {
   AppTextStyles._();
   static const TextStyle bigText = TextStyle(

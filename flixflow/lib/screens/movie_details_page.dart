@@ -15,7 +15,7 @@ class MovieDetailPage extends StatefulWidget {
 }
 
 class _MovieDetailPageState extends State<MovieDetailPage> {
-  late Future<List<dynamic>> _movieImages;
+  late Future<List<dynamic>> _movieImages; // variavel para imagens do filme
   late Future<List<String>> _movieGenres; // Variável para os géneros
   final MovieService _movieService =
       MovieService(); // Instância do MovieService
@@ -23,13 +23,13 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   @override
   void initState() {
     super.initState();
-    // Certifica-te que movie['id'] está a retornar um valor válido
     _movieImages = _movieService.fetchMovieImages(widget.movie['id']);
     _movieGenres = _getMovieGenres(widget.movie['genre_ids']);
   }
 
   // Função para mapear os IDs dos géneros para os respetivos nomes
   Future<List<String>> _getMovieGenres(List<dynamic> genreIds) async {
+    //validaçao
     try {
       final genresMap =
           await _movieService.fetchGenres(); // Obtem o mapa de géneros
@@ -42,6 +42,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // apresenta o titulo, caso contrario o padraõ
       appBar: AppBar(
         title: Text(widget.movie['title'] ?? 'Detalhes do Filme'),
       ),
@@ -71,7 +72,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         itemCount:
                             images.length + 1, // Adicionamos +1 para o cartaz
                         itemBuilder: (context, index) {
-                          // O primeiro item será o cartaz do filme
+                          // O primeiro será o cartaz do filme
                           if (index == 0) {
                             return Padding(
                               padding: const EdgeInsets.all(4.0),
@@ -90,9 +91,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             );
                           }
 
-                          // Itens subsequentes serão as imagens do filme
-                          final image = images[
-                              index - 1]; // Ajustamos o índice para imagens
+                          // o resto sao imagens do filme
+                          final image = images[index - 1];
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ClipRRect(
@@ -116,7 +116,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
               const SizedBox(height: 11.0),
 
-              // Título do Filme
+              // Título do Filme ou padrão
               Text(
                 widget.movie['title'] ?? 'Título não disponível',
                 style: AppTextStyles.bigText.copyWith(
@@ -132,6 +132,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
               // Sistema de classificação por estrelas
               Row(
+                // está estático ainda, mas vou tnetra fazer dinâmico
                 children: List.generate(5, (index) {
                   return const Icon(
                     Icons.star,
@@ -180,7 +181,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   const SizedBox(
                     width: 8,
                   ),
-                  // Ano de Lançamento
+                  // idioma do Filme
                   Text(
                     widget.movie['original_language'].toUpperCase() ??
                         'Título não disponível',
@@ -207,6 +208,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   const SizedBox(
                     width: 8,
                   ),
+                  // origem do filme
                   Text(
                     '${widget.movie['origin_country']?.substring(0, 4) ?? 'N/A'}',
                     style: AppTextStyles.mediumText.copyWith(
@@ -231,6 +233,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 thickness: 0.1,
               ),
 
+              // elementos que ainda so funciona o idioma, mas vou efetuar mias chamadas na api para os restantes elementos
               RichText(
                 text: TextSpan(
                   style: AppTextStyles.mediumText.copyWith(
@@ -258,7 +261,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           '${widget.movie['original_language']?.toUpperCase() ?? 'Idioma não disponível'}\n',
                     ),
 
-                    // Companhia(s) produtora(s)
+                    // Companhia / produtora
                     const TextSpan(
                       text: 'Companhia(s) produtora(s): ',
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -296,6 +299,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     //   BoxShadow(color: Colors.green, spreadRadius: 3),
                     // ],
                   ),
+                  height: 400,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment
                         .start, // Alinha o texto à esquerda (opcional)
@@ -313,7 +317,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       ),
                     ],
                   ),
-                  height: 400,
                 ),
               ),
               const SizedBox(

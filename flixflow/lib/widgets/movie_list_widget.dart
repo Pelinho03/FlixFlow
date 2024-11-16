@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../styles/app_text.dart'; // Suponho que tenhas um ficheiro para os estilos de texto
-import '../styles/app_colors.dart'; // Suponho que tenhas um ficheiro para as cores
-import '../screens/movie_details_page.dart'; // Certifica-te de que o ficheiro de detalhes está no sítio certo
+import '../styles/app_text.dart';
+import '../styles/app_colors.dart';
+import '../screens/movie_details_page.dart';
 
 class MovieListWidget extends StatelessWidget {
-  final List<dynamic> popularMovies; // Agora uma lista em vez de Future
-  final List<dynamic> topMovies; // Agora uma lista em vez de Future
+  final List<dynamic> popularMovies;
+  final List<dynamic> topMovies;
 
   const MovieListWidget({
     super.key,
@@ -24,7 +24,8 @@ class MovieListWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Align(
-            alignment: Alignment.centerLeft,
+            alignment:
+                Alignment.centerLeft, // centerLeft para alinhar a esquerda
             child: Text(
               title,
               style: AppTextStyles.bigText.copyWith(
@@ -34,20 +35,24 @@ class MovieListWidget extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 227,
+          height: 227, // altura da lista
           child: ListView.builder(
-            scrollDirection: Axis.horizontal,
+            scrollDirection: Axis.horizontal, // horizontal para a lista
             itemCount: movies.length,
             itemBuilder: (context, index) {
               final movie = movies[index];
+
+              // container para cada filme
               return Container(
-                width: 130,
+                width: 130, // largura de cada filme
                 margin: const EdgeInsets.symmetric(horizontal: 6),
                 child: Stack(
-                  alignment: const Alignment(1.0, 0.60),
+                  alignment: const Alignment(
+                      1.0, 0.60), // alinha o botão no canto inferior direito
                   children: [
                     GestureDetector(
                       onTap: () {
+                        // abrir o filme
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -57,6 +62,7 @@ class MovieListWidget extends StatelessWidget {
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        // capas
                         children: [
                           Expanded(
                             child: ClipRRect(
@@ -71,6 +77,8 @@ class MovieListWidget extends StatelessWidget {
                                   : const Icon(Icons.movie, size: 80),
                             ),
                           ),
+
+                          // titulo e data de lançamento ou padroes
                           const SizedBox(height: 11.0),
                           Text(
                             movie['title'] ?? 'Título não disponível',
@@ -89,6 +97,8 @@ class MovieListWidget extends StatelessWidget {
                         ],
                       ),
                     ),
+
+                    // icon de favoritos
                     Container(
                       decoration: BoxDecoration(
                         color: AppColors.primeiroPlano,

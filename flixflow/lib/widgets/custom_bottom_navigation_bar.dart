@@ -19,6 +19,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       decoration: const BoxDecoration(
         color: AppColors.caixas,
         borderRadius: BorderRadius.only(
+          // cantos superiores da barra
           topLeft: Radius.circular(12),
           topRight: Radius.circular(12),
         ),

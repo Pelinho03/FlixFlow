@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute: '/home', // Define a página inicial
+      initialRoute: '/', // Define a página inicial
       routes: {
-        '/home': (context) => HomePage(), // Rota para a Home Page
+        '/': (context) => HomePage(), // Rota para a Home Page
         '/favorites': (context) => FavoritePage(),
         '/login': (context) => LoginPage(), // Rota para a Login Page
         '/register': (context) => RegisterPage(), // Rota para a Register Page

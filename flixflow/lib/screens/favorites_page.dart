@@ -26,7 +26,7 @@ class FavoritePage extends StatelessWidget {
         onItemTapped: (index) {
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamed(context, '/');
               break;
             case 1:
               // ja estamos na página de favoritos, por issso não faz nada

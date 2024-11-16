@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+//lista de cores da paleta
 class AppColors {
   AppColors._();
   static const Color fundo = Color(0xFF0E0D11);

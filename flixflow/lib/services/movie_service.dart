@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+//criação das chamadas para a API
+
 class MovieService {
   final String _apiKey = '121f94d9eb19d3c9b11709ea229d3a63';
   final String _baseUrl = 'https://api.themoviedb.org/3';

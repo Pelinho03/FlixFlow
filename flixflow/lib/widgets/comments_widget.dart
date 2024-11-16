@@ -12,7 +12,7 @@ class _ComentariosState extends State<Comentarios> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
 
-  // Exemplo de dados de comentários
+  // comentarios pre-definidos
   List<Map<String, String>> filedata = [
     {
       'name': 'Utilizador A',
@@ -40,14 +40,17 @@ class _ComentariosState extends State<Comentarios> {
       itemCount: data.length,
       itemBuilder: (context, index) {
         return ListTile(
+          // Imagem do utilizador
           leading: CircleAvatar(
             backgroundImage: NetworkImage(
                 data[index]['pic'] ?? '../assets/imgs/user_icon.png'),
           ),
+          // Nome do utilizador ou o padrao
           title: Text(
             data[index]['name'] ?? 'Nome desconhecido',
             style: AppTextStyles.mediumBoldText.copyWith(color: AppColors.roxo),
           ),
+          // Comentário ou o padrao
           subtitle: Text(
             data[index]['message'] ?? 'Sem mensagem',
             style: AppTextStyles.mediumText
@@ -57,7 +60,7 @@ class _ComentariosState extends State<Comentarios> {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.edit,
                   size: 24,
                   color: AppColors.roxo,
