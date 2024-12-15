@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 // Import das páginas necessárias
@@ -15,17 +16,25 @@ void main() async {
     options:
         DefaultFirebaseOptions.currentPlatform, // Configurado pelo FlutterFire
   );
-  runApp(MyApp());
+
+  // Verifica o estado do login antes de iniciar a app
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
+  final bool isLoggedIn;
+
+  const MyApp({required this.isLoggedIn});
+
   @override
-  //definicao das rotas para as restantes paginas
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute: '/', // Define a página inicial
+      initialRoute: isLoggedIn ? '/' : '/login', // Decide a rota inicial
       routes: {
         '/': (context) => HomePage(), // Rota para a Home Page
         '/favorites': (context) => FavoritePage(),
@@ -34,8 +43,7 @@ class MyApp extends StatelessWidget {
         '/movieDetails': (context) => MovieDetailPage(
             movie: null), // Rota para a página de detalhes do filme
       },
-      //remove a linha de debug
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false, // Remove a linha de debug
     );
   }
 }

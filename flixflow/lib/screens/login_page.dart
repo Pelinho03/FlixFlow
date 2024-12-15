@@ -4,6 +4,7 @@ import 'register_page.dart';
 import 'home_page.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance; // Instância do FirebaseAuth
@@ -19,9 +20,15 @@ class LoginPage extends StatelessWidget {
         password: _passwordController.text.trim(),
       );
       print("Login bem-sucedido: ${userCredential.user!.email}");
+
+      // Guarda o estado de login no SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Bem-vindo, ${userCredential.user!.email}!')),
       );
+
       // Redirecionar para a home_page após login
       Navigator.pushReplacement(
         context,

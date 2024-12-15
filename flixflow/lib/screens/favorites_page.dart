@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../styles/app_text.dart';
 import '../widgets/custom_bottom_navigation_bar.dart'; // Importa a barra personalizada
+import '../services/auth_service.dart'; // Importa o AuthService
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
@@ -22,17 +23,20 @@ class FavoritePage extends StatelessWidget {
 
       //carrego a barra personalizada criado anteriormente que esta no widget
       bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: 1, // Para manter o item Favoritos selecionado
-        onItemTapped: (index) {
+        selectedIndex: 1, // Ícone Favoritos selecionado
+        onItemTapped: (index) async {
           switch (index) {
             case 0:
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/'); // Vai para a HomePage
               break;
             case 1:
-              // ja estamos na página de favoritos, por issso não faz nada
+              // Já estamos na página de Favoritos, não faz nada
               break;
             case 2:
-              Navigator.pushNamed(context, '/login');
+              final shouldLogout = await AuthService.confirmLogout(context);
+              if (shouldLogout) {
+                await AuthService.logout(context); // Chama o serviço de logout
+              }
               break;
           }
         },
