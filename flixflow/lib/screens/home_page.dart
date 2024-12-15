@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/movie_service.dart';
 import '../widgets/movie_list_widget.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
+import '../services/navigation_service.dart'; // Importe o NavigationService
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
 
@@ -22,19 +23,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    //aqui chamo a função para ir buscar os filmes populares e em seguida os TOP
-    //seriços criados em movie_service
+    // Chama os métodos para obter os filmes populares e top
     _popularMovies = MovieService().getPopularMovies();
     _topMovies = MovieService().getTopMovies();
   }
 
-  //método para procurar filmes na barra de pesquisa
-  //contem validação caso nao encontre o que pesquisei
+  // Método de pesquisa
   void _onSearchChanged(String query) {
     setState(() {
       _searchQuery = query;
       if (_searchQuery.isNotEmpty) {
-        //atraves da query de pesquisa e com ajuda do metodo criado para pesquisa no movie_service vai pesquisar o filme da query
         _searchMovies = MovieService().searchMovies(_searchQuery);
       } else {
         _searchMovies = null;
@@ -42,31 +40,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  //define a localizaçao das páginas
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    if (index == 0) {
-      Navigator.pushNamed(context, '/');
-    } else if (index == 1) {
-      Navigator.pushNamed(context, '/favorites');
-    } else if (index == 2) {
-      Navigator.pushNamed(context, '/login');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // SingleChildScrollView para permitir a mover com o scroll
       body: SingleChildScrollView(
-        //adicionei column para que eu consiga dar scroll e o banner acompanhar até ficar escondido
         child: Column(
           children: [
             // Banner com a barra de pesquisa
             Container(
-              // para definir a posicao do banner
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
               decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -77,13 +58,12 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/imgs/login_logo.png', //logotipo FlixFlow acima da barra de pesquisa
+                    'assets/imgs/login_logo.png',
                     height: 35,
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 12),
                   TextField(
-                    //carrega o metodo da pesquisa
                     onChanged: _onSearchChanged,
                     decoration: InputDecoration(
                       filled: true,
@@ -102,14 +82,11 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-
-            // Resto da página
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 26.0),
               child: FutureBuilder<List<dynamic>>(
                 future:
                     _searchMovies ?? Future.wait([_popularMovies, _topMovies]),
-                //validações
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -140,7 +117,13 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+        onItemTapped: (index) async {
+          setState(() {
+            _selectedIndex = index; // Atualiza o índice selecionado
+          });
+          await NavigationService.handleNavigation(context,
+              index); // Chama a função centralizada de navegação e logout
+        },
       ),
       backgroundColor: AppColors.fundo,
     );

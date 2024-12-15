@@ -19,9 +19,10 @@ void main() async {
 
   // Verifica o estado do login antes de iniciar a app
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  final bool isLoggedIn =
+      prefs.getBool('isLoggedIn') ?? false; // Verifica se o usuário está logado
 
-  runApp(MyApp(isLoggedIn: isLoggedIn));
+  runApp(MyApp(isLoggedIn: isLoggedIn)); // Passa o estado de login para o MyApp
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +35,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute: isLoggedIn ? '/' : '/login', // Decide a rota inicial
+      initialRoute: isLoggedIn
+          ? '/'
+          : '/login', // Rota inicial baseada no estado de login
       routes: {
         '/': (context) => HomePage(), // Rota para a Home Page
         '/favorites': (context) => FavoritePage(),
