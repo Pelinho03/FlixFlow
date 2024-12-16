@@ -108,7 +108,7 @@ class MovieListWidget extends StatelessWidget {
                 width: 130, // largura de cada filme
                 margin: const EdgeInsets.symmetric(horizontal: 6),
                 child: Stack(
-                  alignment: const Alignment(1.0, 0.60), // posição do ícone
+                  alignment: const Alignment(1.0, 0.60), // posição do ícon
                   children: [
                     GestureDetector(
                       onTap: () {
