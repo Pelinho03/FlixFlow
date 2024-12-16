@@ -89,9 +89,9 @@ class _FavoritePageState extends State<FavoritePage> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, // Duas colunas
               crossAxisSpacing: 12, // Espaço entre as colunas
-              mainAxisSpacing: 12, // Espaço entre as linhas
+              mainAxisSpacing: 1, // Espaço entre as linhas
               childAspectRatio:
-                  0.75, // Ajuste de proporção para que a imagem seja mais alta do que larga
+                  0.70, // Ajuste de proporção para que a imagem seja mais alta do que larga
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
@@ -113,7 +113,7 @@ class _FavoritePageState extends State<FavoritePage> {
   // Método para construir cada item de filme
   Widget _buildFavoriteTile(dynamic movie) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+      margin: const EdgeInsets.symmetric(vertical: 70.0, horizontal: 12.0),
       child: Stack(
         alignment: Alignment.bottomRight, // Posicionamento do ícone
         children: [
@@ -129,21 +129,20 @@ class _FavoritePageState extends State<FavoritePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Imagem do filme
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: movie['poster_path'] != null
-                      ? Image.network(
-                          'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                          fit: BoxFit.cover,
-                          width: double.infinity, // Largura total
-                          height:
-                              200, // Aumentando a altura da imagem para mais proeminente
-                        )
-                      : const Icon(Icons.movie, size: 80),
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: movie['poster_path'] != null
+                        ? Image.network(
+                            'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                            fit: BoxFit.cover,
+                            width: 148,
+                            height: 184,
+                          )
+                        : const Icon(Icons.movie, size: 80),
+                  ),
                 ),
-                const SizedBox(height: 8.0),
-                // Título e Ano de Lançamento
+                const SizedBox(height: 11.0),
                 Text(
                   movie['title'] ?? 'Título não disponível',
                   style: AppTextStyles.mediumText.copyWith(
