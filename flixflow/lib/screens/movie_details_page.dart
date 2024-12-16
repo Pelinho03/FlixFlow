@@ -8,7 +8,7 @@ import '../widgets/comments_widget.dart';
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;
 
-  const MovieDetailPage({Key? key, required this.movie}) : super(key: key);
+  const MovieDetailPage({super.key, required this.movie});
 
   @override
   _MovieDetailPageState createState() => _MovieDetailPageState();
@@ -156,7 +156,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                     final genres = snapshot.data!;
                     return Text(
-                      '${genres.join(', ')}', // Concatena os géneros numa string
+                      genres.join(', '), // Concatena os géneros numa string
                       style: AppTextStyles.regularText.copyWith(
                         color: AppColors.cinza2,
                       ),

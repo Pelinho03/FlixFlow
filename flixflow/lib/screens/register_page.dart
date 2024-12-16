@@ -12,6 +12,8 @@ class RegisterPage extends StatelessWidget {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  RegisterPage({super.key});
+
   // Função de registo
   void _register(BuildContext context) async {
     if (_passwordController.text.trim() ==
@@ -24,7 +26,7 @@ class RegisterPage extends StatelessWidget {
         );
         print("Registo bem-sucedido: ${userCredential.user!.email}");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
               content: Text('Registo bem-sucedido, por favor faça login.')),
         );
         // Redireciona para a página de login após o registo
@@ -40,7 +42,7 @@ class RegisterPage extends StatelessWidget {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('As passwords não coincidem.')),
+        const SnackBar(content: Text('As passwords não coincidem.')),
       );
     }
   }
@@ -83,7 +85,7 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: TextFormField(
                       textAlign: TextAlign.center,
@@ -102,7 +104,7 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: TextFormField(
                       textAlign: TextAlign.center,
@@ -123,7 +125,7 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: TextFormField(
                       textAlign: TextAlign.center,
@@ -144,7 +146,7 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {

@@ -1,84 +1,95 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-//criação das chamadas para a API
-
 class MovieService {
-  final String _apiKey = '121f94d9eb19d3c9b11709ea229d3a63';
+  final String _apiKey = '121f94d9eb19d3c9b11709ea229d3a63'; // Tua chave API
   final String _baseUrl = 'https://api.themoviedb.org/3';
 
   // OS MAIS POPULARES
   Future<List<dynamic>> getPopularMovies() async {
-    final response = await http.get(
-        Uri.parse('$_baseUrl/movie/popular?api_key=$_apiKey&language=pt-PT'));
+    final url =
+        Uri.parse('$_baseUrl/movie/popular?api_key=$_apiKey&language=pt-PT');
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      // SE FOR OK, DESCODIFICA O CORPO JSON
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return data['results'];
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['results'] ?? [];
     } else {
-      // SE NÃO FOR OK, EMITE UM ERRO
       throw Exception(
           'Erro ao carregar filmes populares: ${response.statusCode}');
     }
   }
 
-  //TOP FILMES
+  // TOP FILMES
   Future<List<dynamic>> getTopMovies() async {
-    final response = await http.get(
-        Uri.parse('$_baseUrl/movie/top_rated?api_key=$_apiKey&language=pt-PT'));
+    final url =
+        Uri.parse('$_baseUrl/movie/top_rated?api_key=$_apiKey&language=pt-PT');
+    final response = await http.get(url);
+
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data['results'];
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['results'] ?? [];
     } else {
-      throw Exception('Falha ao carregar Top filmes');
+      throw Exception('Erro ao carregar Top filmes: ${response.statusCode}');
     }
   }
 
-  //PESQUISA
+  // PESQUISA DE FILMES
   Future<List<dynamic>> searchMovies(String query) async {
-    final response = await http.get(
-      Uri.parse(
-          '$_baseUrl/search/movie?api_key=$_apiKey&query=$query&language=pt-PT'),
-    );
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+    final url = Uri.parse(
+        '$_baseUrl/search/movie?api_key=$_apiKey&query=$query&language=pt-PT');
+    final response = await http.get(url);
 
-      if (data['results'] is List) {
-        return data['results'];
-      } else {
-        return []; // Retorna uma lista vazia se não houver resultados
-      }
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['results'] ?? [];
     } else {
-      throw Exception('Falha ao carregar filmes: ${response.statusCode}');
+      throw Exception('Erro ao pesquisar filmes: ${response.statusCode}');
     }
   }
 
-  //IMAGENS PARA OS DETALHES
+  // DETALHES DO FILME PELO ID
+  Future<dynamic> getMovieById(int id) async {
+    final url =
+        Uri.parse('$_baseUrl/movie/$id?api_key=$_apiKey&language=pt-PT');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // Detalhes do filme
+    } else {
+      throw Exception(
+          'Erro ao buscar detalhes do filme: ${response.statusCode}');
+    }
+  }
+
+  // IMAGENS PARA OS DETALHES DO FILME
   Future<List<dynamic>> fetchMovieImages(int movieId) async {
-    final response = await http.get(
-      Uri.parse('$_baseUrl/movie/$movieId/images?api_key=$_apiKey'),
-    );
+    final url = Uri.parse('$_baseUrl/movie/$movieId/images?api_key=$_apiKey');
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data['backdrops'];
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['backdrops'] ?? [];
     } else {
-      throw Exception('Falha ao carregar as imagens do filme');
+      throw Exception(
+          'Erro ao carregar as imagens do filme: ${response.statusCode}');
     }
   }
 
-  //GENEROS DE FILMES
+  // GÉNEROS DE FILMES
   Future<Map<int, String>> fetchGenres() async {
-    final url = '$_baseUrl/genre/movie/list?api_key=$_apiKey&language=pt-PT';
-    final response = await http.get(Uri.parse(url));
+    final url =
+        Uri.parse('$_baseUrl/genre/movie/list?api_key=$_apiKey&language=pt-PT');
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List genres = data['genres'];
-      return {for (var genre in genres) genre['id']: genre['name']};
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final genres = data['genres'] as List<dynamic>;
+      return {
+        for (var genre in genres) genre['id'] as int: genre['name'] as String
+      };
     } else {
-      throw Exception('Falha ao carregar os generos');
+      throw Exception('Erro ao carregar os géneros: ${response.statusCode}');
     }
   }
 }

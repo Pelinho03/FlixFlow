@@ -4,6 +4,8 @@ import 'package:flixflow/styles/app_text.dart';
 import 'package:flutter/material.dart';
 
 class Comentarios extends StatefulWidget {
+  const Comentarios({super.key});
+
   @override
   _ComentariosState createState() => _ComentariosState();
 }
@@ -70,7 +72,7 @@ class _ComentariosState extends State<Comentarios> {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.delete, size: 24, color: AppColors.roxo),
+                icon: const Icon(Icons.delete, size: 24, color: AppColors.roxo),
                 onPressed: () {
                   _deleteComment(index);
                 },
@@ -98,7 +100,7 @@ class _ComentariosState extends State<Comentarios> {
           ),
           content: TextField(
             controller: commentController,
-            decoration: InputDecoration(hintText: 'Novo comentário...'),
+            decoration: const InputDecoration(hintText: 'Novo comentário...'),
             style: AppTextStyles.mediumText
                 .copyWith(color: AppColors.primeiroPlano),
           ),
@@ -117,7 +119,7 @@ class _ComentariosState extends State<Comentarios> {
                     Navigator.of(context).pop();
                   },
                 ),
-                SizedBox(width: 20), // Espaço entre os botões
+                const SizedBox(width: 20), // Espaço entre os botões
                 TextButton(
                   child: Text(
                     'Salvar',
@@ -172,7 +174,7 @@ class _ComentariosState extends State<Comentarios> {
                     Navigator.of(context).pop();
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 TextButton(
@@ -200,8 +202,8 @@ class _ComentariosState extends State<Comentarios> {
   Widget build(BuildContext context) {
     return CommentBox(
       userImage: CommentBox.commentImageParser(
-          imageURLorPath: "../assets/imgs/user_icon.png"),
-      child: commentChild(filedata), // Lista de comentários
+          imageURLorPath:
+              "../assets/imgs/user_icon.png"), // Lista de comentários
       labelText: 'Comentário...',
       errorText: 'O comentário não pode ser vazio!',
       sendButtonMethod: () {
@@ -223,7 +225,9 @@ class _ComentariosState extends State<Comentarios> {
       commentController: commentController,
       backgroundColor: AppColors.roxo,
       textColor: AppColors.primeiroPlano,
-      sendWidget: Icon(Icons.send, size: 24, color: AppColors.primeiroPlano),
+      sendWidget:
+          const Icon(Icons.send, size: 24, color: AppColors.primeiroPlano),
+      child: commentChild(filedata),
     );
   }
 }

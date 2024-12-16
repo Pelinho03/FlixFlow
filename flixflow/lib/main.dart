@@ -28,7 +28,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   final bool isLoggedIn;
 
-  const MyApp({required this.isLoggedIn});
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +39,11 @@ class MyApp extends StatelessWidget {
           ? '/'
           : '/login', // Rota inicial baseada no estado de login
       routes: {
-        '/': (context) => HomePage(), // Rota para a Home Page
-        '/favorites': (context) => FavoritePage(),
+        '/': (context) => const HomePage(), // Rota para a Home Page
+        '/favorites': (context) => const FavoritePage(),
         '/login': (context) => LoginPage(), // Rota para a Login Page
         '/register': (context) => RegisterPage(), // Rota para a Register Page
-        '/movieDetails': (context) => MovieDetailPage(
+        '/movieDetails': (context) => const MovieDetailPage(
             movie: null), // Rota para a página de detalhes do filme
       },
       debugShowCheckedModeBanner: false, // Remove a linha de debug
