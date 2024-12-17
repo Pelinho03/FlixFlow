@@ -4,12 +4,11 @@ import '../widgets/movie_list_widget.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/navigation_service.dart';
 import '../styles/app_colors.dart';
-// import '../styles/app_text.dart';
-// import 'movie_details_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/search_banner_widget.dart';
 import '../widgets/movie_tile_widget.dart';
+import '../widgets/genre_filter_widget.dart'; // Importa o novo widget
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,25 +21,45 @@ class _HomePageState extends State<HomePage> {
   late Future<List<dynamic>> _popularMovies;
   late Future<List<dynamic>> _topMovies;
   Future<List<dynamic>>? _searchMovies;
+  Future<Map<int, String>>? _genresFuture;
+  List<dynamic>? _filteredMovies; // Lista de filmes filtrados
   String _searchQuery = '';
   int _selectedIndex = 0;
+  int? _selectedGenreId;
 
   @override
   void initState() {
     super.initState();
-    // Inicializa as listas de filmes
     _popularMovies = MovieService().getPopularMovies();
     _topMovies = MovieService().getTopMovies();
+    _genresFuture = MovieService().fetchGenres();
   }
 
-  // Método para lidar com pesquisa
   void _onSearchChanged(String query) {
     setState(() {
       _searchQuery = query;
       _searchMovies = query.isNotEmpty
           ? MovieService().searchMovies(query)
-          : null; // Se a pesquisa estiver vazia, limpa os resultados
+          : null; // Se vazio, limpa os resultados
     });
+  }
+
+  // Método para filtrar filmes por género
+  void _filterMoviesByGenre(int genreId) async {
+    try {
+      final movies = await MovieService().getPopularMovies();
+      final filtered = movies.where((movie) {
+        final genreIds = movie['genre_ids'] as List<dynamic>;
+        return genreIds.contains(genreId);
+      }).toList();
+
+      setState(() {
+        _filteredMovies = filtered;
+        _selectedGenreId = genreId;
+      });
+    } catch (e) {
+      print('Erro ao filtrar filmes: $e');
+    }
   }
 
   @override
@@ -49,13 +68,19 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Usa o widget SearchBanner diretamente
             SearchBanner(onSearchChanged: _onSearchChanged),
+            GenreFilterWidget(
+              genresFuture: _genresFuture,
+              selectedGenreId: _selectedGenreId,
+              onGenreSelected: _filterMoviesByGenre, // Passa a função de filtro
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 26.0),
               child: _searchQuery.isNotEmpty
-                  ? _buildSearchResults() // Resultados da pesquisa
-                  : _buildDefaultLists(), // Listas padrão
+                  ? _buildSearchResults()
+                  : _filteredMovies != null
+                      ? _buildMovieList(_filteredMovies!)
+                      : _buildDefaultLists(),
             ),
             const SizedBox(height: 29),
           ],
@@ -74,7 +99,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Resultados da pesquisa
   Widget _buildSearchResults() {
     return FutureBuilder<List<dynamic>>(
       future: _searchMovies,
@@ -93,7 +117,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Listas padrão (filmes populares e top-rated)
   Widget _buildDefaultLists() {
     return FutureBuilder<List<List<dynamic>>>(
       future: Future.wait([_popularMovies, _topMovies]),
@@ -115,7 +138,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Exibição de lista de filmes
   Widget _buildMovieList(List<dynamic> movies) {
     return ListView.builder(
       shrinkWrap: true,
@@ -135,7 +157,6 @@ class _HomePageState extends State<HomePage> {
   Future<bool> isFavorite(dynamic movie) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-
       if (user == null) return false;
 
       final doc = await FirebaseFirestore.instance
@@ -147,7 +168,6 @@ class _HomePageState extends State<HomePage> {
 
       final data = doc.data() as Map<String, dynamic>;
       final favorites = List<int>.from(data['favorites'] ?? []);
-
       return favorites.contains(movie['id']);
     } catch (e) {
       return false;
@@ -159,7 +179,6 @@ class _HomePageState extends State<HomePage> {
     if (user == null) throw Exception('Utilizador não autenticado.');
 
     final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
-
     try {
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         final snapshot = await transaction.get(docRef);
