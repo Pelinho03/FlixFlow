@@ -84,6 +84,7 @@ class MovieService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
+      print('Gêneros recebidos: ${data['genres']}');
       final genres = data['genres'] as List<dynamic>;
       return {
         for (var genre in genres) genre['id'] as int: genre['name'] as String

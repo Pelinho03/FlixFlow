@@ -7,7 +7,7 @@ import '../styles/app_text.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/navigation_service.dart';
 import 'movie_details_page.dart';
-import '../widgets/movie_tile_widget.dart'; // Usando o MovieTile
+// import '../widgets/movie_tile_widget.dart'; // Usando o MovieTile
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -43,7 +43,8 @@ class _FavoritePageState extends State<FavoritePage> {
     }
 
     final data = doc.data() as Map<String, dynamic>;
-    final favoriteIds = List<int>.from(data['favorites'] ?? []);
+    final favoriteIds =
+        data['favorites'] != null ? List<int>.from(data['favorites']) : <int>[];
 
     if (favoriteIds.isEmpty) {
       return []; // Se não houver filmes favoritos
@@ -57,19 +58,40 @@ class _FavoritePageState extends State<FavoritePage> {
   Future<List<dynamic>> _fetchMoviesByIds(List<int> ids) async {
     final movies = <dynamic>[];
     for (final id in ids) {
-      final movie = await MovieService().getMovieById(id);
-      if (movie != null) {
-        movies.add(movie);
+      try {
+        final movie = await MovieService().getMovieById(id);
+        if (movie != null) {
+          movies.add(movie);
+        } else {
+          print('Filme com ID $id não encontrado.');
+        }
+      } catch (e) {
+        print('Erro ao buscar filme com ID $id: $e');
       }
     }
-    return movies;
+    return movies; // Retorna a lista, mesmo se estiver vazia
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meus Favoritos'),
+        title: const Text("Meus favoritos"),
+        titleTextStyle: AppTextStyles.mediumAppBar.copyWith(
+          color: AppColors.primeiroPlano,
+        ),
+        titleSpacing: 0.0,
+        centerTitle: true,
+        toolbarHeight: 60.2,
+        toolbarOpacity: 0.8,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(10),
+            bottomLeft: Radius.circular(10),
+          ),
+        ),
+        elevation: 0.0,
+        backgroundColor: AppColors.caixas,
       ),
       body: FutureBuilder<List<dynamic>>(
         future: _favoriteMovies,
@@ -78,21 +100,20 @@ class _FavoritePageState extends State<FavoritePage> {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return const Center(child: Text('Erro ao carregar favoritos.'));
-          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData ||
+              snapshot.data == null ||
+              snapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhum filme nos favoritos.'));
           }
 
           final favoriteMovies = snapshot.data!;
-
-          // Exibindo os filmes em duas colunas
           return GridView.builder(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 45), // Espaçamento lateral
+            padding: const EdgeInsets.symmetric(horizontal: 28.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // Duas colunas
-              crossAxisSpacing: 3, // Espaçamento horizontal entre colunas
-              mainAxisSpacing: 16, // Espaçamento vertical entre linhas
-              childAspectRatio: 0.9, // Controla a proporção largura/altura
+              crossAxisCount: 2,
+              crossAxisSpacing: 4,
+              mainAxisSpacing: 30,
+              childAspectRatio: 0.9,
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
@@ -117,6 +138,7 @@ class _FavoritePageState extends State<FavoritePage> {
       children: [
         GestureDetector(
           onTap: () {
+            print('Navegando para detalhes do filme: ${movie}');
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -133,7 +155,7 @@ class _FavoritePageState extends State<FavoritePage> {
                         'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
                         fit: BoxFit.cover,
                         width: 148,
-                        height: 180, // Altura ajustável
+                        height: 200, // Altura ajustável
                       )
                     : const Icon(Icons.movie, size: 80),
               ),

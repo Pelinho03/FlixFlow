@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../styles/app_text.dart';
 import '../styles/app_colors.dart';
 import '../screens/movie_details_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MovieTile extends StatelessWidget {
   final dynamic movie;
@@ -20,9 +20,9 @@ class MovieTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+      margin: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 6.0),
       child: Stack(
-        alignment: const Alignment(1.0, 0.60),
+        alignment: const Alignment(-0.48, 0.95), // posição do ícon
         children: [
           GestureDetector(
             onTap: () {
@@ -43,12 +43,12 @@ class MovieTile extends StatelessWidget {
                       ? Image.network(
                           'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
                           fit: BoxFit.cover,
-                          width: 100,
-                          height: 150,
+                          width: 148,
+                          height: 200,
                         )
                       : const Icon(Icons.movie, size: 80),
                 ),
-                const SizedBox(width: 12.0),
+                const SizedBox(width: 10.0),
                 // Títulos e detalhes
                 Expanded(
                   child: Column(
@@ -62,19 +62,19 @@ class MovieTile extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 8.0),
+                      const SizedBox(height: 4.0),
                       Text(
                         '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
                         style: AppTextStyles.smallText.copyWith(
                           color: AppColors.roxo,
                         ),
                       ),
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 8.0),
                       Text(
                         movie['overview'] ?? 'Sinopse não disponível',
                         style: AppTextStyles.smallText
-                            .copyWith(color: AppColors.cinza),
-                        maxLines: 2,
+                            .copyWith(color: AppColors.primeiroPlano),
+                        maxLines: 6,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -84,26 +84,29 @@ class MovieTile extends StatelessWidget {
             ),
           ),
           // Botão de favoritos
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.primeiroPlano,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: FutureBuilder<bool>(
-              future: isFavorite(movie),
-              builder: (context, snapshot) {
-                final isFav = snapshot.data ?? false;
-
-                return IconButton(
-                  icon: Icon(
-                    isFav ? Icons.favorite : Icons.favorite_border,
-                    color: isFav ? AppColors.roxo : AppColors.cinza,
-                  ),
-                  onPressed: () async {
-                    await toggleFavorite(movie);
-                  },
-                );
-              },
+          Positioned(
+            // bottom: 8,
+            // right: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.primeiroPlano,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: FutureBuilder<bool>(
+                future: isFavorite(movie),
+                builder: (context, snapshot) {
+                  final isFav = snapshot.data ?? false;
+                  return IconButton(
+                    icon: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border,
+                      color: isFav ? AppColors.roxo : AppColors.cinza,
+                    ),
+                    onPressed: () async {
+                      await toggleFavorite(movie);
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ],

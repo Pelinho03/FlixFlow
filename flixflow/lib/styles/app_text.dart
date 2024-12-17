@@ -14,6 +14,11 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w400,
   );
+  static const TextStyle mediumAppBar = TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 18,
+    fontWeight: FontWeight.w400,
+  );
   static const TextStyle mediumBoldText = TextStyle(
     fontFamily: 'Ubuntu',
     fontSize: 14,

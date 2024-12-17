@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import '../widgets/custom_bottom_navigation_bar.dart';
+import '../services/navigation_service.dart';
+import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/movie_service.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
@@ -45,6 +46,21 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
       // apresenta o titulo, caso contrario o padraõ
       appBar: AppBar(
         title: Text(widget.movie['title'] ?? 'Detalhes do Filme'),
+        titleTextStyle: AppTextStyles.mediumAppBar.copyWith(
+          color: AppColors.primeiroPlano,
+        ),
+        titleSpacing: 0.0,
+        centerTitle: true,
+        toolbarHeight: 60.2,
+        toolbarOpacity: 0.8,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(10),
+            bottomLeft: Radius.circular(10),
+          ),
+        ),
+        elevation: 0.0,
+        backgroundColor: AppColors.caixas,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 26.0),
@@ -311,7 +327,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       ),
                       const SizedBox(
                           height: 10), // Espaço entre o título e os comentários
-                      Expanded(
+                      const Expanded(
                         // Isso permite que os comentários usem o espaço restante
                         child: Comentarios(),
                       ),
@@ -325,6 +341,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: 0, // Índice do botão Favoritos
+        onItemTapped: (index) async {
+          await NavigationService.handleNavigation(context, index);
+        },
       ),
     );
   }
