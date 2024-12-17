@@ -97,7 +97,7 @@ class MovieListWidget extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 227, // altura da lista
+          height: 228, // altura da lista
           child: ListView.builder(
             scrollDirection: Axis.horizontal, // horizontal para a lista
             itemCount: movies.length,
@@ -131,7 +131,7 @@ class MovieListWidget extends StatelessWidget {
                                       'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
                                       fit: BoxFit.cover,
                                       width: 148,
-                                      height: 184,
+                                      height: 228,
                                     )
                                   : const Icon(Icons.movie, size: 80),
                             ),

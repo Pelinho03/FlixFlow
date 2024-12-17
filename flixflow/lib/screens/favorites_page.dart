@@ -108,12 +108,12 @@ class _FavoritePageState extends State<FavoritePage> {
 
           final favoriteMovies = snapshot.data!;
           return GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 28.0),
+            padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 4,
-              mainAxisSpacing: 30,
-              childAspectRatio: 0.9,
+              crossAxisSpacing: 0, // Aproxima colunas
+              mainAxisSpacing: 80, // Mantém as linhas espaçadas
+              childAspectRatio: 0.85, // Controla a proporção do item
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
@@ -155,7 +155,7 @@ class _FavoritePageState extends State<FavoritePage> {
                         'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
                         fit: BoxFit.cover,
                         width: 148,
-                        height: 200, // Altura ajustável
+                        height: 228, // Altura ajustável
                       )
                     : const Icon(Icons.movie, size: 80),
               ),

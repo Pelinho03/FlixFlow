@@ -63,7 +63,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         backgroundColor: AppColors.caixas,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 26.0),
+        padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 10),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +82,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
                     // Começa com o cartaz do filme
                     return SizedBox(
-                      height: 278,
+                      height: 278, // Altura da imagem
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount:
