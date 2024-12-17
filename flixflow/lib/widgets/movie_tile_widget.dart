@@ -2,27 +2,34 @@ import 'package:flutter/material.dart';
 import '../styles/app_text.dart';
 import '../styles/app_colors.dart';
 import '../screens/movie_details_page.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MovieTile extends StatelessWidget {
   final dynamic movie;
   final Future<bool> Function(dynamic movie) isFavorite;
   final Future<void> Function(dynamic movie) toggleFavorite;
+  final Map<int, String>? genres; // Novo parâmetro para os géneros
 
   const MovieTile({
     super.key,
     required this.movie,
     required this.isFavorite,
     required this.toggleFavorite,
+    this.genres, // Parâmetro opcional
   });
 
   @override
   Widget build(BuildContext context) {
+    // Obter os nomes dos géneros
+    final genreNames = genres != null
+        ? (movie['genre_ids'] as List<dynamic>)
+            .map((id) => genres![id] ?? 'Desconhecido')
+            .toList()
+        : [];
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 6.0),
       child: Stack(
-        alignment: const Alignment(-0.48, 0.95), // posição do ícon
+        alignment: const Alignment(-0.48, 0.95), // posição do ícone
         children: [
           GestureDetector(
             onTap: () {
@@ -72,11 +79,30 @@ class MovieTile extends StatelessWidget {
                       const SizedBox(height: 8.0),
                       Text(
                         movie['overview'] ?? 'Sinopse não disponível',
-                        style: AppTextStyles.smallText
-                            .copyWith(color: AppColors.primeiroPlano),
+                        style: AppTextStyles.smallText.copyWith(
+                          color: AppColors.primeiroPlano,
+                        ),
                         maxLines: 6,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 8.0),
+                      // Exibir géneros
+                      if (genreNames.isNotEmpty)
+                        Wrap(
+                          spacing: 2.0,
+                          runSpacing: 4.0,
+                          children: genreNames
+                              .map((genre) => Chip(
+                                    label: Text(
+                                      genre,
+                                      style: AppTextStyles.regularTextGens
+                                          .copyWith(
+                                              color: AppColors.primeiroPlano),
+                                    ),
+                                    backgroundColor: AppColors.cinza,
+                                  ))
+                              .toList(),
+                        ),
                     ],
                   ),
                 ),
@@ -85,8 +111,6 @@ class MovieTile extends StatelessWidget {
           ),
           // Botão de favoritos
           Positioned(
-            // bottom: 8,
-            // right: 1,
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.primeiroPlano,

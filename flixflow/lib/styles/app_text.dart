@@ -29,6 +29,11 @@ class AppTextStyles {
     fontSize: 11,
     fontWeight: FontWeight.w300,
   );
+  static const TextStyle regularTextGens = TextStyle(
+    fontFamily: 'Ubuntu',
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+  );
   static const TextStyle smallText = TextStyle(
     fontFamily: 'Ubuntu',
     fontSize: 11,

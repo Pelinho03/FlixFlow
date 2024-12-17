@@ -149,16 +149,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMovieList(List<dynamic> movies) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: movies.length,
-      itemBuilder: (context, index) {
-        final movie = movies[index];
-        return MovieTile(
-          movie: movie,
-          isFavorite: isFavorite,
-          toggleFavorite: toggleFavorite,
+    return FutureBuilder<Map<int, String>>(
+      future: _genresFuture, // Busca os géneros
+      builder: (context, snapshot) {
+        final genres = snapshot.data; // Mapa de géneros
+
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            final movie = movies[index];
+            return MovieTile(
+              movie: movie,
+              isFavorite: isFavorite,
+              toggleFavorite: toggleFavorite,
+              genres: genres, // Passa os géneros para o MovieTile
+            );
+          },
         );
       },
     );

@@ -35,8 +35,8 @@ dependencies:
     cloud_firestore: ^5.5.1
     comment_box: ^0.0.18
     #usar as duas seguintes para icon da app e screen splash
-    flutter_launcher_icons: ^0.14.1
-    flutter_native_splash: ^2.4.2
+    flutter_launcher_icons: ^0.14.2
+    flutter_native_splash: ^2.4.3
     shared_preferences:
         ^2.3.3
 
@@ -101,16 +101,27 @@ flutter:
         #
         # For details regarding fonts from package dependencies,
         # see https://flutter.dev/to/font-from-package
+
 flutter_launcher_icons:
-    image_path: assets/imgs/app_icon.png
-    android: true
+    android: "launcher_icon"
     ios: true
-    web: true
-    windows: true
-    macos: true
+    image_path: assets/imgs/app_icon.png
+    min_sdk_android: 21 # android min sdk min:16, default 21
+    web:
+        generate: true
+        image_path: assets/imgs/app_icon.png
+        background_color: "#hexcode"
+        theme_color: "#hexcode"
+    windows:
+        generate: true
+        image_path: assets/imgs/app_icon.png
+        icon_size: 48 # min:48, max:256, default: 48
+    macos:
+        generate: true
+        image_path: assets/imgs/app_icon.png
 
 flutter_native_splash:
-    color: "#ffffff" # Cor de fundo da splash screen
+    color: "#0E0D11" # Cor de fundo da splash screen
     image: assets/imgs/app_icon.png
     android: true
     ios: true
@@ -119,5 +130,4 @@ flutter_native_splash:
     # Configuração específica para Android 12
     android_12:
         image: assets/imgs/app_icon.png
-        # icon_background_color: "#060509"
-        icon_background_color: "#ffffff"
+        icon_background_color: "#0E0D11"
