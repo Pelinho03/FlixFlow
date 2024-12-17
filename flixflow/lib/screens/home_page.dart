@@ -44,9 +44,19 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // Método para filtrar filmes por género
+// Método para filtrar filmes por género
   void _filterMoviesByGenre(int genreId) async {
+    if (_selectedGenreId == genreId) {
+      // Se o mesmo género for clicado novamente, limpa o filtro
+      setState(() {
+        _filteredMovies = null; // Remove o filtro
+        _selectedGenreId = null;
+      });
+      return; // Sai da função
+    }
+
     try {
+      // Carrega a lista de filmes populares e filtra pelo género selecionado
       final movies = await MovieService().getPopularMovies();
       final filtered = movies.where((movie) {
         final genreIds = movie['genre_ids'] as List<dynamic>;
@@ -55,7 +65,7 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         _filteredMovies = filtered;
-        _selectedGenreId = genreId;
+        _selectedGenreId = genreId; // Atualiza o género selecionado
       });
     } catch (e) {
       print('Erro ao filtrar filmes: $e');
