@@ -112,8 +112,8 @@ class _FavoritePageState extends State<FavoritePage> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 0, // Aproxima colunas
-              mainAxisSpacing: 80, // Mantém as linhas espaçadas
-              childAspectRatio: 0.85, // Controla a proporção do item
+              mainAxisSpacing: 1, // Mantém as linhas espaçadas
+              childAspectRatio: 0.60, // Controla a proporção do item
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
