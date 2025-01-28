@@ -40,6 +40,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     }
   }
 
+  // Função para calcular o número de estrelas preenchidas com base na avaliação
+  int _getFilledStars(double rating) {
+    return (rating / 2)
+        .round(); // A pontuação vai de 0 a 10, dividimos por 2 para ter de 0 a 5 estrelas
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,15 +141,30 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
               const SizedBox(height: 5),
 
-              // Sistema de classificação por estrelas
-              Row(
-                children: List.generate(5, (index) {
-                  return const Icon(
-                    Icons.star,
-                    color: AppColors.laranja,
-                    size: 16.0,
-                  );
-                }),
+              // Sistema de classificação por estrelas (dinâmico)
+              FutureBuilder<dynamic>(
+                future: _movieDetails,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SizedBox.shrink(); // Enquanto carrega
+                  } else if (snapshot.hasError) {
+                    return const SizedBox.shrink(); // Se houver erro
+                  } else if (snapshot.hasData) {
+                    final rating = snapshot.data!['vote_average'] ?? 0.0;
+                    final filledStars = _getFilledStars(rating);
+                    return Row(
+                      children: List.generate(5, (index) {
+                        return Icon(
+                          index < filledStars ? Icons.star : Icons.star_border,
+                          color: AppColors.laranja,
+                          size: 16.0,
+                        );
+                      }),
+                    );
+                  } else {
+                    return const SizedBox.shrink(); // Se não tiver dados
+                  }
+                },
               ),
               const SizedBox(height: 5),
 
@@ -170,7 +191,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
               const SizedBox(height: 8),
 
-// Dentro do widget MovieDetailPageState
+              // Ano de Lançamento e Duração
               Row(
                 children: [
                   // Ano de Lançamento
