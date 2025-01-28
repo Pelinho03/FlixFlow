@@ -16,34 +16,33 @@ class MovieDetailPage extends StatefulWidget {
 }
 
 class _MovieDetailPageState extends State<MovieDetailPage> {
-  late Future<List<dynamic>> _movieImages; // variavel para imagens do filme
-  late Future<List<String>> _movieGenres; // Variável para os géneros
-  final MovieService _movieService =
-      MovieService(); // Instância do MovieService
+  late Future<List<dynamic>> _movieImages;
+  late Future<List<String>> _movieGenres;
+  late Future<Map<String, String>> _movieCredits;
+  late Future<dynamic> _movieDetails;
+  final MovieService _movieService = MovieService();
 
   @override
   void initState() {
     super.initState();
     _movieImages = _movieService.fetchMovieImages(widget.movie['id']);
     _movieGenres = _getMovieGenres(widget.movie['genre_ids']);
+    _movieCredits = _movieService.getMovieCredits(widget.movie['id']);
+    _movieDetails = _movieService.getMovieById(widget.movie['id']);
   }
 
-  // Função para mapear os IDs dos géneros para os respetivos nomes
   Future<List<String>> _getMovieGenres(List<dynamic> genreIds) async {
-    //validaçao
     try {
-      final genresMap =
-          await _movieService.fetchGenres(); // Obtem o mapa de géneros
+      final genresMap = await _movieService.fetchGenres();
       return genreIds.map((id) => genresMap[id] ?? 'Desconhecido').toList();
     } catch (error) {
-      return []; // Retorna uma lista vazia se houver um erro
+      return [];
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // apresenta o titulo, caso contrario o padraõ
       appBar: AppBar(
         title: Text(widget.movie['title'] ?? 'Detalhes do Filme'),
         titleTextStyle: AppTextStyles.mediumAppBar.copyWith(
@@ -79,16 +78,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         child: Text('Erro ao carregar imagens.'));
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                     final images = snapshot.data!;
-
-                    // Começa com o cartaz do filme
                     return SizedBox(
-                      height: 278, // Altura da imagem
+                      height: 278,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount:
-                            images.length + 1, // Adicionamos +1 para o cartaz
+                        itemCount: images.length + 1,
                         itemBuilder: (context, index) {
-                          // O primeiro será o cartaz do filme
                           if (index == 0) {
                             return Padding(
                               padding: const EdgeInsets.all(4.0),
@@ -98,16 +93,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                                     ? Image.network(
                                         'https://image.tmdb.org/t/p/w500${widget.movie['poster_path']}',
                                         fit: BoxFit.cover,
-                                        // width: 148, // Largura do cartaz
-                                        height:
-                                            278, // Altura para manter proporcional
+                                        height: 278,
                                       )
                                     : const Icon(Icons.movie, size: 80),
                               ),
                             );
                           }
-
-                          // o resto sao imagens do filme
                           final image = images[index - 1];
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
@@ -116,7 +107,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                               child: Image.network(
                                 'https://image.tmdb.org/t/p/w500${image['file_path']}',
                                 fit: BoxFit.cover,
-                                width: 458, // Largura das imagens adicionais
+                                width: 458,
                               ),
                             ),
                           );
@@ -132,7 +123,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
               const SizedBox(height: 11.0),
 
-              // Título do Filme ou padrão
+              // Título do Filme
               Text(
                 widget.movie['title'] ?? 'Título não disponível',
                 style: AppTextStyles.bigText.copyWith(
@@ -142,28 +133,23 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 overflow: TextOverflow.ellipsis,
               ),
 
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
 
               // Sistema de classificação por estrelas
               Row(
-                // está estático ainda, mas vou tnetra fazer dinâmico
                 children: List.generate(5, (index) {
                   return const Icon(
                     Icons.star,
-                    color: AppColors.laranja, // Define a cor das estrelas
-                    size: 16.0, // Tamanho das estrelas
+                    color: AppColors.laranja,
+                    size: 16.0,
                   );
                 }),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
 
               // Géneros do Filme
               FutureBuilder<List<String>>(
-                future: _movieGenres, // Chama a função que retorna os géneros
+                future: _movieGenres,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -172,7 +158,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                     final genres = snapshot.data!;
                     return Text(
-                      genres.join(', '), // Concatena os géneros numa string
+                      genres.join(', '),
                       style: AppTextStyles.regularText.copyWith(
                         color: AppColors.cinza2,
                       ),
@@ -182,9 +168,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   }
                 },
               ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
+
+// Dentro do widget MovieDetailPageState
               Row(
                 children: [
                   // Ano de Lançamento
@@ -194,42 +180,49 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       color: AppColors.primeiroPlano,
                     ),
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  // idioma do Filme
+                  const SizedBox(width: 8),
+                  // Idioma do Filme
                   Text(
-                    widget.movie['original_language'].toUpperCase() ??
-                        'Título não disponível',
+                    widget.movie['original_language'].toUpperCase() ?? 'N/A',
                     style: AppTextStyles.mediumText.copyWith(
                       color: AppColors.primeiroPlano,
                     ),
                   ),
-                  const SizedBox(
-                    width: 12,
-                  ),
+                  const SizedBox(width: 12),
                   Text(
                     '|',
                     style: AppTextStyles.mediumText
                         .copyWith(color: AppColors.roxo),
                   ),
-                  const SizedBox(
-                    width: 12,
-                  ),
+                  const SizedBox(width: 12),
                   const Icon(
                     Icons.access_time,
                     size: 16,
                     color: AppColors.roxo,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  // origem do filme
-                  Text(
-                    '${widget.movie['origin_country']?.substring(0, 4) ?? 'N/A'}',
-                    style: AppTextStyles.mediumText.copyWith(
-                      color: AppColors.primeiroPlano,
-                    ),
+                  const SizedBox(width: 8),
+                  // Duração do Filme
+                  FutureBuilder<dynamic>(
+                    future: _movieDetails,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox
+                            .shrink(); // Ocultar enquanto carrega
+                      } else if (snapshot.hasError) {
+                        return const Text('N/A'); // Se houver erro
+                      } else if (snapshot.hasData) {
+                        final runtime =
+                            snapshot.data!['runtime']; // Minutos do filme
+                        return Text(
+                          runtime != null ? '$runtime min' : 'N/A',
+                          style: AppTextStyles.mediumText.copyWith(
+                            color: AppColors.primeiroPlano,
+                          ),
+                        );
+                      } else {
+                        return const Text('N/A');
+                      }
+                    },
                   ),
                 ],
               ),
@@ -249,101 +242,127 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 thickness: 0.1,
               ),
 
-              // elementos que ainda so funciona o idioma, mas vou efetuar mias chamadas na api para os restantes elementos
-              RichText(
-                text: TextSpan(
-                  style: AppTextStyles.mediumText.copyWith(
-                    color: AppColors.primeiroPlano,
-                    height: 1.5, // Aumenta o espaçamento entre as linhas
-                  ),
-                  children: <TextSpan>[
-                    // Diretor
-                    const TextSpan(
-                      text: 'Diretor: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                      text:
-                          '${widget.movie['director'] ?? 'Diretor não disponível'}\n',
-                    ),
+              // Detalhes do Filme (Diretor, Produtoras, Música)
+              FutureBuilder<dynamic>(
+                future: _movieDetails,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Text('Erro ao carregar detalhes do filme.');
+                  } else if (snapshot.hasData) {
+                    final movieDetails = snapshot.data!;
+                    final productionCompanies =
+                        movieDetails['production_companies'] as List<dynamic>;
+                    final producerNames = productionCompanies
+                        .map((company) => company['name'])
+                        .join(', ');
 
-                    // Idioma
-                    const TextSpan(
-                      text: 'Idioma: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                      text:
-                          '${widget.movie['original_language']?.toUpperCase() ?? 'Idioma não disponível'}\n',
-                    ),
+                    return FutureBuilder<Map<String, String>>(
+                      future: _movieCredits,
+                      builder: (context, creditsSnapshot) {
+                        if (creditsSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (creditsSnapshot.hasError) {
+                          return const Text(
+                              'Erro ao carregar créditos do filme.');
+                        } else if (creditsSnapshot.hasData) {
+                          final credits = creditsSnapshot.data!;
+                          return RichText(
+                            text: TextSpan(
+                              style: AppTextStyles.mediumText.copyWith(
+                                color: AppColors.primeiroPlano,
+                                height: 1.5,
+                              ),
+                              children: <TextSpan>[
+                                // Diretor
+                                const TextSpan(
+                                  text: 'Diretor: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text:
+                                      '${credits['director'] ?? 'Diretor não disponível'}\n',
+                                ),
 
-                    // Companhia / produtora
-                    const TextSpan(
-                      text: 'Companhia(s) produtora(s): ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                      text:
-                          '${widget.movie['producer'] ?? 'Produtor não disponível'}\n',
-                    ),
+                                // Idioma
+                                const TextSpan(
+                                  text: 'Idioma: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text:
+                                      '${widget.movie['original_language']?.toUpperCase() ?? 'Idioma não disponível'}\n',
+                                ),
 
-                    // Música
-                    const TextSpan(
-                      text: 'Música: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(
-                      text:
-                          '${widget.movie['music'] ?? 'Música não disponível'}\n',
-                    ),
-                  ],
-                ),
+                                // Companhia / produtora
+                                const TextSpan(
+                                  text: 'Companhia(s) produtora(s): ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: '$producerNames\n',
+                                ),
+
+                                // Música
+                                const TextSpan(
+                                  text: 'Música: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text:
+                                      '${credits['composer'] ?? 'Música não disponível'}\n',
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return const Text('Créditos não disponíveis.');
+                        }
+                      },
+                    );
+                  } else {
+                    return const Text('Detalhes do filme não disponíveis.');
+                  }
+                },
               ),
 
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
 
-              //teste 1
+              // Comentários
               Center(
                 child: Container(
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: AppColors.caixas,
-                    // boxShadow: [
-                    //   BoxShadow(color: Colors.green, spreadRadius: 3),
-                    // ],
                   ),
                   height: 400,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment
-                        .start, // Alinha o texto à esquerda (opcional)
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Comentários',
                         style: AppTextStyles.bigText
                             .copyWith(color: AppColors.roxo),
                       ),
-                      const SizedBox(
-                          height: 10), // Espaço entre o título e os comentários
+                      const SizedBox(height: 10),
                       const Expanded(
-                        // Isso permite que os comentários usem o espaço restante
                         child: Comentarios(),
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              )
+              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: 0, // Índice do botão Favoritos
+        selectedIndex: 0,
         onItemTapped: (index) async {
           await NavigationService.handleNavigation(context, index);
         },

@@ -55,7 +55,12 @@ class MovieService {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body); // Detalhes do filme
+      final movieData = jsonDecode(response.body);
+      return {
+        ...movieData,
+        'production_companies': movieData['production_companies'] ??
+            [], // Evita erro se não houver produtoras
+      };
     } else {
       throw Exception(
           'Erro ao buscar detalhes do filme: ${response.statusCode}');
@@ -84,13 +89,47 @@ class MovieService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-      print('Gêneros recebidos: ${data['genres']}');
+      print('Géneros recebidos: ${data['genres']}');
       final genres = data['genres'] as List<dynamic>;
       return {
         for (var genre in genres) genre['id'] as int: genre['name'] as String
       };
     } else {
       throw Exception('Erro ao carregar os géneros: ${response.statusCode}');
+    }
+  }
+
+  // OBTÉM OS CRÉDITOS (diretor, compositor, etc.)
+  Future<Map<String, String>> getMovieCredits(int movieId) async {
+    final url = Uri.parse(
+        '$_baseUrl/movie/$movieId/credits?api_key=$_apiKey&language=pt-PT');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      // Lista de pessoas da equipa de produção
+      final crew = data['crew'] as List<dynamic>;
+
+      // Encontrar o diretor
+      final director = crew.firstWhere(
+        (person) => person['job'] == 'Director',
+        orElse: () => {'name': 'Não disponível'},
+      )['name'];
+
+      // Encontrar o compositor (trilha sonora)
+      final composer = crew.firstWhere(
+        (person) => person['job'] == 'Original Music Composer',
+        orElse: () => {'name': 'Não disponível'},
+      )['name'];
+
+      return {
+        'director': director,
+        'composer': composer,
+      };
+    } else {
+      throw Exception(
+          'Erro ao buscar créditos do filme: ${response.statusCode}');
     }
   }
 }
