@@ -5,6 +5,10 @@ import '../services/movie_service.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
 import '../widgets/comments_widget.dart';
+import '../widgets/movie_images_widget.dart';
+import '../widgets/movie_rating_widget.dart';
+import '../widgets/movie_genres_widget.dart';
+import '../widgets/movie_details_widget.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;
@@ -38,12 +42,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     } catch (error) {
       return [];
     }
-  }
-
-  // Função para calcular o número de estrelas preenchidas com base na avaliação
-  int _getFilledStars(double rating) {
-    return (rating / 2)
-        .round(); // A pontuação vai de 0 a 10, dividimos por 2 para ter de 0 a 5 estrelas
   }
 
   @override
@@ -83,42 +81,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     return const Center(
                         child: Text('Erro ao carregar imagens.'));
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                    final images = snapshot.data!;
-                    return SizedBox(
-                      height: 278,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: images.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: widget.movie['poster_path'] != null
-                                    ? Image.network(
-                                        'https://image.tmdb.org/t/p/w500${widget.movie['poster_path']}',
-                                        fit: BoxFit.cover,
-                                        height: 278,
-                                      )
-                                    : const Icon(Icons.movie, size: 80),
-                              ),
-                            );
-                          }
-                          final image = images[index - 1];
-                          return Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(7),
-                              child: Image.network(
-                                'https://image.tmdb.org/t/p/w500${image['file_path']}',
-                                fit: BoxFit.cover,
-                                width: 458,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                    return MovieImagesWidget(
+                      images: snapshot.data!,
+                      posterPath: widget.movie['poster_path'],
                     );
                   } else {
                     return const Center(
@@ -146,23 +111,14 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 future: _movieDetails,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const SizedBox.shrink(); // Enquanto carrega
+                    return const SizedBox.shrink();
                   } else if (snapshot.hasError) {
-                    return const SizedBox.shrink(); // Se houver erro
+                    return const SizedBox.shrink();
                   } else if (snapshot.hasData) {
                     final rating = snapshot.data!['vote_average'] ?? 0.0;
-                    final filledStars = _getFilledStars(rating);
-                    return Row(
-                      children: List.generate(5, (index) {
-                        return Icon(
-                          index < filledStars ? Icons.star : Icons.star_border,
-                          color: AppColors.laranja,
-                          size: 16.0,
-                        );
-                      }),
-                    );
+                    return MovieRatingWidget(rating: rating);
                   } else {
-                    return const SizedBox.shrink(); // Se não tiver dados
+                    return const SizedBox.shrink();
                   }
                 },
               ),
@@ -177,13 +133,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   } else if (snapshot.hasError) {
                     return const Text('Erro ao carregar os géneros.');
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                    final genres = snapshot.data!;
-                    return Text(
-                      genres.join(', '),
-                      style: AppTextStyles.regularText.copyWith(
-                        color: AppColors.cinza2,
-                      ),
-                    );
+                    return MovieGenresWidget(genres: snapshot.data!);
                   } else {
                     return const Text('Géneros não disponíveis.');
                   }
@@ -227,13 +177,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     future: _movieDetails,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox
-                            .shrink(); // Ocultar enquanto carrega
+                        return const SizedBox.shrink();
                       } else if (snapshot.hasError) {
-                        return const Text('N/A'); // Se houver erro
+                        return const Text('N/A');
                       } else if (snapshot.hasData) {
-                        final runtime =
-                            snapshot.data!['runtime']; // Minutos do filme
+                        final runtime = snapshot.data!['runtime'];
                         return Text(
                           runtime != null ? '$runtime min' : 'N/A',
                           style: AppTextStyles.mediumText.copyWith(
@@ -290,54 +238,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           return const Text(
                               'Erro ao carregar créditos do filme.');
                         } else if (creditsSnapshot.hasData) {
-                          final credits = creditsSnapshot.data!;
-                          return RichText(
-                            text: TextSpan(
-                              style: AppTextStyles.mediumText.copyWith(
-                                color: AppColors.primeiroPlano,
-                                height: 1.5,
-                              ),
-                              children: <TextSpan>[
-                                // Diretor
-                                const TextSpan(
-                                  text: 'Diretor: ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text:
-                                      '${credits['director'] ?? 'Diretor não disponível'}\n',
-                                ),
-
-                                // Idioma
-                                const TextSpan(
-                                  text: 'Idioma: ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text:
-                                      '${widget.movie['original_language']?.toUpperCase() ?? 'Idioma não disponível'}\n',
-                                ),
-
-                                // Companhia / produtora
-                                const TextSpan(
-                                  text: 'Companhia(s) produtora(s): ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text: '$producerNames\n',
-                                ),
-
-                                // Música
-                                const TextSpan(
-                                  text: 'Música: ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text:
-                                      '${credits['composer'] ?? 'Música não disponível'}\n',
-                                ),
-                              ],
-                            ),
+                          return MovieDetailsWidget(
+                            credits: creditsSnapshot.data!,
+                            originalLanguage: widget.movie['original_language'],
+                            producerNames: producerNames,
                           );
                         } else {
                           return const Text('Créditos não disponíveis.');
