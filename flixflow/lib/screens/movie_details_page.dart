@@ -9,6 +9,7 @@ import '../widgets/movie_images_widget.dart';
 import '../widgets/movie_rating_widget.dart';
 import '../widgets/movie_genres_widget.dart';
 import '../widgets/movie_details_widget.dart';
+import '../widgets/youtube_player_widget.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;
@@ -24,6 +25,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   late Future<List<String>> _movieGenres;
   late Future<Map<String, String>> _movieCredits;
   late Future<dynamic> _movieDetails;
+  late Future<String?> _movieTrailer;
   final MovieService _movieService = MovieService();
 
   @override
@@ -33,6 +35,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     _movieGenres = _getMovieGenres(widget.movie['genre_ids']);
     _movieCredits = _movieService.getMovieCredits(widget.movie['id']);
     _movieDetails = _movieService.getMovieById(widget.movie['id']);
+    _movieTrailer = _movieService.fetchMovieTrailer(widget.movie['id']);
   }
 
   Future<List<String>> _getMovieGenres(List<dynamic> genreIds) async {
@@ -255,6 +258,37 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
 
               const SizedBox(height: 20),
+
+              //Trailer
+              FutureBuilder<String?>(
+                future: _movieTrailer,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError || snapshot.data == null) {
+                    return const Center(child: Text('Trailer não disponível.'));
+                  } else {
+                    final videoId = snapshot.data!;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Trailer',
+                          style: AppTextStyles.bigText
+                              .copyWith(color: AppColors.roxo),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 250,
+                          width: double.infinity,
+                          child: YoutubePlayerWidget(videoId: videoId),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    );
+                  }
+                },
+              ),
+
+              const SizedBox(height: 50),
 
               // Comentários
               Center(

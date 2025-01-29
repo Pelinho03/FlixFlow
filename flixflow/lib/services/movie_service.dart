@@ -99,7 +99,7 @@ class MovieService {
     }
   }
 
-  // OBTÉM OS CRÉDITOS (diretor, compositor, etc.)
+  // DETALHES (diretor, compositor, música)
   Future<Map<String, String>> getMovieCredits(int movieId) async {
     final url = Uri.parse(
         '$_baseUrl/movie/$movieId/credits?api_key=$_apiKey&language=pt-PT');
@@ -131,5 +131,28 @@ class MovieService {
       throw Exception(
           'Erro ao buscar créditos do filme: ${response.statusCode}');
     }
+  }
+
+  //TRAILER
+  Future<String?> fetchMovieTrailer(int movieId) async {
+    final url =
+        'https://api.themoviedb.org/3/movie/$movieId/videos?api_key=$_apiKey&language=pt-PT';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      final results = jsonResponse['results'] as List<dynamic>;
+
+      if (results.isNotEmpty) {
+        final trailer = results.firstWhere(
+          (video) => video['type'] == 'Trailer' && video['site'] == 'YouTube',
+          orElse: () => null,
+        );
+
+        return trailer != null ? trailer['key'] : null;
+      }
+    }
+    return null;
   }
 }
