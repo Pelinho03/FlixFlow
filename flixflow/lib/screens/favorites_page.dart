@@ -286,28 +286,17 @@ class _FavoritePageState extends State<FavoritePage> {
 
         if (favorites.contains(movie['id'])) {
           favorites.remove(movie['id']);
+          setState(() {
+            _favoriteMovies = Future.value(
+                (_favoriteMovies as Future<List<dynamic>>).then((movies) {
+              return movies.where((m) => m['id'] != movie['id']).toList();
+            }));
+          });
         } else {
           favorites.add(movie['id']);
         }
 
         transaction.update(docRef, {'favorites': favorites});
-
-        // Atualiza a lista localmente após a mudança
-        setState(() {
-          if (favorites.contains(movie['id'])) {
-            // Se o filme for adicionado aos favoritos, adiciona-o à lista
-            _favoriteMovies = _favoriteMovies.then((movies) {
-              movies.add(movie); // Adiciona o filme aos favoritos localmente
-              return movies;
-            });
-          } else {
-            // Se o filme for removido dos favoritos, remove-o da lista
-            _favoriteMovies = _favoriteMovies.then((movies) {
-              movies.removeWhere((m) => m['id'] == movie['id']);
-              return movies;
-            });
-          }
-        });
       });
     } catch (e) {
       rethrow;

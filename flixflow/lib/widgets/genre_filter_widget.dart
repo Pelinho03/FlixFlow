@@ -53,7 +53,7 @@ class GenreFilterWidget extends StatelessWidget {
                   ),
                   child: Text(
                     genreName,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: AppColors.primeiroPlano),
                   ),
                 ),
               );
