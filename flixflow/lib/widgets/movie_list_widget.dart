@@ -215,7 +215,32 @@ class _MovieListWidgetState extends State<MovieListWidget> {
       child: Column(
         children: [
           _buildMovieList('Mais Populares', popularMovies, context),
-          const SizedBox(height: 40.0),
+          const SizedBox(height: 15.0),
+          const Divider(
+            height: 15,
+            color: AppColors.roxo,
+            thickness: 0.1,
+          ),
+          const SizedBox(height: 15.0),
+
+          // Aqui adicionamos o banner
+          Container(
+            height: 100, // Ajuste a altura do banner conforme necessário
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              image: const DecorationImage(
+                image: NetworkImage(
+                    'assets/imgs/banner_homepage.png'), // Coloque a URL da imagem do banner
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(height: 15.0),
+          const Divider(
+            height: 15,
+            color: AppColors.roxo,
+            thickness: 0.1,
+          ),
           _buildMovieList('Top Filmes', topMovies, context),
         ],
       ),
