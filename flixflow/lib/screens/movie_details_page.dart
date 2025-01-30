@@ -148,6 +148,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               const SizedBox(height: 8),
 
               // Ano de Lançamento e Duração
+              // Ano de Lançamento e País de Origem
               Row(
                 children: [
                   // Ano de Lançamento
@@ -158,12 +159,31 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Idioma do Filme
-                  Text(
-                    widget.movie['original_language'].toUpperCase() ?? 'N/A',
-                    style: AppTextStyles.mediumText.copyWith(
-                      color: AppColors.primeiroPlano,
-                    ),
+
+                  // País de Origem
+                  FutureBuilder<dynamic>(
+                    future: _movieDetails,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox.shrink();
+                      } else if (snapshot.hasError) {
+                        return const Text('N/A');
+                      } else if (snapshot.hasData) {
+                        final countries =
+                            snapshot.data!['production_countries'];
+                        final countryName = countries.isNotEmpty
+                            ? countries[0]['name'] ?? 'N/A'
+                            : 'N/A';
+                        return Text(
+                          countryName.toUpperCase(),
+                          style: AppTextStyles.mediumText.copyWith(
+                            color: AppColors.primeiroPlano,
+                          ),
+                        );
+                      } else {
+                        return const Text('N/A');
+                      }
+                    },
                   ),
                   const SizedBox(width: 12),
                   Text(
@@ -260,6 +280,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 },
               ),
 
+              const Divider(
+                height: 40,
+                color: AppColors.roxo,
+                thickness: 0.1,
+              ),
               const SizedBox(height: 20),
 
               // Elenco - Lista Horizontal
@@ -279,7 +304,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 },
               ),
 
-              const SizedBox(height: 11.0),
+              const SizedBox(height: 20),
 
               //Trailer
               FutureBuilder<String?>(
