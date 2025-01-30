@@ -10,6 +10,7 @@ import '../widgets/movie_rating_widget.dart';
 import '../widgets/movie_genres_widget.dart';
 import '../widgets/movie_details_widget.dart';
 import '../widgets/youtube_player_widget.dart';
+import '../widgets/movie_cast_widget.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;
@@ -26,6 +27,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   late Future<Map<String, String>> _movieCredits;
   late Future<dynamic> _movieDetails;
   late Future<String?> _movieTrailer;
+  late Future<List<dynamic>> _movieCast;
   final MovieService _movieService = MovieService();
 
   @override
@@ -36,6 +38,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     _movieCredits = _movieService.getMovieCredits(widget.movie['id']);
     _movieDetails = _movieService.getMovieById(widget.movie['id']);
     _movieTrailer = _movieService.fetchMovieTrailer(widget.movie['id']);
+    _movieCast = _movieService.getMovieCast(widget.movie['id']);
   }
 
   Future<List<String>> _getMovieGenres(List<dynamic> genreIds) async {
@@ -258,6 +261,25 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
 
               const SizedBox(height: 20),
+
+              // Elenco - Lista Horizontal
+              FutureBuilder<List<dynamic>>(
+                future: _movieCast,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                        child: Text('Erro ao carregar elenco.'));
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    return MovieCastWidget(cast: snapshot.data!);
+                  } else {
+                    return const Center(child: Text('Sem elenco disponível.'));
+                  }
+                },
+              ),
+
+              const SizedBox(height: 11.0),
 
               //Trailer
               FutureBuilder<String?>(

@@ -155,4 +155,18 @@ class MovieService {
     }
     return null;
   }
+
+  // MovieService
+  Future<List<dynamic>> getMovieCast(int movieId) async {
+    final url = Uri.parse(
+        '$_baseUrl/movie/$movieId/credits?api_key=$_apiKey&language=pt-PT');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['cast'] ?? [];
+    } else {
+      throw Exception('Erro ao carregar elenco: ${response.statusCode}');
+    }
+  }
 }

@@ -30,7 +30,7 @@ class _FavoritePageState extends State<FavoritePage> {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      return []; // Se o utilizador não está autenticado
+      return []; // Retorna lista vazia se não estiver autenticado
     }
 
     final doc = await FirebaseFirestore.instance
@@ -38,30 +38,44 @@ class _FavoritePageState extends State<FavoritePage> {
         .doc(user.uid)
         .get();
 
-    if (!doc.exists) {
-      return []; // Caso o utilizador não tenha favoritos
+    if (!doc.exists || doc.data() == null) {
+      return []; // Retorna lista vazia se o documento não existir
     }
 
     final data = doc.data() as Map<String, dynamic>;
     final favoriteIds =
-        data['favorites'] != null ? List<int>.from(data['favorites']) : <int>[];
+        (data['favorites'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+            [];
 
     if (favoriteIds.isEmpty) {
-      return []; // Se não houver filmes favoritos
+      return [];
     }
 
-    // Buscar os detalhes dos filmes favoritos (API)
-    return _fetchMoviesByIds(favoriteIds);
+    return await _fetchMoviesByIds(favoriteIds);
   }
 
-  // Buscar filmes por ID (pode ser otimizado dependendo da API)
+  // Buscar filmes por ID
   Future<List<dynamic>> _fetchMoviesByIds(List<int> ids) async {
     final movies = <dynamic>[];
+
     for (final id in ids) {
       try {
         final movie = await MovieService().getMovieById(id);
+
         if (movie != null) {
-          movies.add(movie);
+          movies.add({
+            ...movie,
+            'genres': (movie['genres'] as List<dynamic>?) ?? [],
+            'production_companies':
+                (movie['production_companies'] as List<dynamic>?) ?? [],
+            'spoken_languages':
+                (movie['spoken_languages'] as List<dynamic>?) ?? [],
+            'backdrop_path': movie['backdrop_path'] ?? '',
+            'poster_path': movie['poster_path'] ?? '',
+            'overview': movie['overview'] ?? 'Sem descrição disponível.',
+            'belongs_to_collection':
+                movie['belongs_to_collection'] ?? {}, // Evita erro
+          });
         } else {
           print('Filme com ID $id não encontrado.');
         }
@@ -69,7 +83,8 @@ class _FavoritePageState extends State<FavoritePage> {
         print('Erro ao buscar filme com ID $id: $e');
       }
     }
-    return movies; // Retorna a lista, mesmo se estiver vazia
+
+    return movies;
   }
 
   @override
@@ -99,25 +114,28 @@ class _FavoritePageState extends State<FavoritePage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar favoritos.'));
+            return Center(
+                child: Text('Erro ao carregar favoritos: ${snapshot.error}'));
           } else if (!snapshot.hasData ||
               snapshot.data == null ||
               snapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhum filme nos favoritos.'));
           }
 
-          final favoriteMovies = snapshot.data!;
+          final favoriteMovies = snapshot.data ?? [];
+
           return GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 0, // Aproxima colunas
-              mainAxisSpacing: 1, // Mantém as linhas espaçadas
-              childAspectRatio: 0.60, // Controla a proporção do item
+              crossAxisSpacing: 0,
+              mainAxisSpacing: 1,
+              childAspectRatio: 0.60,
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
-              final movie = favoriteMovies[index];
+              final movie =
+                  favoriteMovies[index] ?? {}; // Garante que não é nulo
               return _buildFavoriteTile(movie);
             },
           );
@@ -138,13 +156,22 @@ class _FavoritePageState extends State<FavoritePage> {
       children: [
         GestureDetector(
           onTap: () {
-            print('Navegando para detalhes do filme: ${movie}');
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MovieDetailPage(movie: movie),
-              ),
-            );
+            print('Filme selecionado para detalhes: $movie');
+
+            if (movie != null && movie['title'] != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MovieDetailPage(movie: movie),
+                ),
+              );
+            } else {
+              print('Erro: dados do filme estão incompletos!');
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Erro ao carregar detalhes do filme.')),
+              );
+            }
           },
           child: Stack(
             children: [
