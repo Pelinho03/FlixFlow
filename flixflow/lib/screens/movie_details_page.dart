@@ -281,11 +281,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
 
               const Divider(
-                height: 40,
+                height: 20,
                 color: AppColors.roxo,
                 thickness: 0.1,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               // Elenco - Lista Horizontal
               FutureBuilder<List<dynamic>>(
@@ -304,6 +304,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 },
               ),
 
+              const Divider(
+                height: 30,
+                color: AppColors.roxo,
+                thickness: 0.1,
+              ),
               const SizedBox(height: 20),
 
               //Trailer
