@@ -134,8 +134,7 @@ class _FavoritePageState extends State<FavoritePage> {
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
-              final movie =
-                  favoriteMovies[index] ?? {}; // Garante que não é nulo
+              final movie = favoriteMovies[index];
               return _buildFavoriteTile(movie);
             },
           );
@@ -292,6 +291,23 @@ class _FavoritePageState extends State<FavoritePage> {
         }
 
         transaction.update(docRef, {'favorites': favorites});
+
+        // Atualiza a lista localmente após a mudança
+        setState(() {
+          if (favorites.contains(movie['id'])) {
+            // Se o filme for adicionado aos favoritos, adiciona-o à lista
+            _favoriteMovies = _favoriteMovies.then((movies) {
+              movies.add(movie); // Adiciona o filme aos favoritos localmente
+              return movies;
+            });
+          } else {
+            // Se o filme for removido dos favoritos, remove-o da lista
+            _favoriteMovies = _favoriteMovies.then((movies) {
+              movies.removeWhere((m) => m['id'] == movie['id']);
+              return movies;
+            });
+          }
+        });
       });
     } catch (e) {
       rethrow;

@@ -5,7 +5,7 @@ import '../screens/movie_details_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MovieListWidget extends StatelessWidget {
+class MovieListWidget extends StatefulWidget {
   final List<dynamic> popularMovies;
   final List<dynamic> topMovies;
 
@@ -14,6 +14,21 @@ class MovieListWidget extends StatelessWidget {
     required this.popularMovies,
     required this.topMovies,
   });
+
+  @override
+  _MovieListWidgetState createState() => _MovieListWidgetState();
+}
+
+class _MovieListWidgetState extends State<MovieListWidget> {
+  late List<dynamic> popularMovies;
+  late List<dynamic> topMovies;
+
+  @override
+  void initState() {
+    super.initState();
+    popularMovies = widget.popularMovies;
+    topMovies = widget.topMovies;
+  }
 
   // Função para verificar se o filme é favorito
   Future<bool> isFavorite(dynamic movie) async {
@@ -34,7 +49,6 @@ class MovieListWidget extends StatelessWidget {
 
     final data = doc.data() as Map<String, dynamic>;
     final favorites = List<int>.from(data['favorites'] ?? []);
-
     return favorites.contains(movie['id']);
   }
 
@@ -69,6 +83,13 @@ class MovieListWidget extends StatelessWidget {
         }
 
         transaction.update(docRef, {'favorites': favorites});
+      });
+
+      // Após alterar, atualizar o estado da UI
+      setState(() {
+        // Força a atualização da lista de filmes populares e top filmes
+        popularMovies = List.from(popularMovies);
+        topMovies = List.from(topMovies);
       });
     } catch (e) {
       print('Erro ao alternar favoritos: $e');
