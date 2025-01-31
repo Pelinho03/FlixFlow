@@ -74,6 +74,7 @@ flutter:
         - assets/imgs/banner_modify.png
         - assets/imgs/login_logo.png
         - assets/imgs/login_bg2.png
+        - assets/imgs/app_icon_v2.png
         - assets/imgs/user_icon.png
         - assets/imgs/logo_dark_1_1024.png
         - assets/imgs/app_icon.png
@@ -109,20 +110,20 @@ flutter:
 flutter_launcher_icons:
     android: "launcher_icon"
     ios: true
-    image_path: assets/imgs/app_icon.png
+    image_path: assets/imgs/app_icon_v2.png
     min_sdk_android: 21 # android min sdk min:16, default 21
     web:
         generate: true
-        image_path: assets/imgs/app_icon.png
+        image_path: assets/imgs/app_icon_v2.png
         background_color: "#hexcode"
         theme_color: "#hexcode"
     windows:
         generate: true
-        image_path: assets/imgs/app_icon.png
+        image_path: assets/imgs/app_icon_v2.png
         icon_size: 48 # min:48, max:256, default: 48
     macos:
         generate: true
-        image_path: assets/imgs/app_icon.png
+        image_path: assets/imgs/app_icon_v2.png
 
 flutter_native_splash:
     color: "#0E0D11" # Cor de fundo da splash screen
