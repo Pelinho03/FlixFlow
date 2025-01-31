@@ -41,7 +41,7 @@ class _MovieTileState extends State<MovieTile> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 6.0),
       child: Stack(
-        alignment: const Alignment(-0.48, 0.95),
+        alignment: Alignment.center, // Alinhamento centralizado para a Stack
         children: [
           GestureDetector(
             onTap: () {
@@ -102,6 +102,8 @@ class _MovieTileState extends State<MovieTile> {
             ),
           ),
           Positioned(
+            bottom: 4, // Ajuste a distância do fundo
+            right: 4, // Ajuste a distância da direita
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.primeiroPlano,
