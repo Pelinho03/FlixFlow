@@ -123,10 +123,10 @@ class _FavoritePageState extends State<FavoritePage> {
           return GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 3, // Altera de 2 para 3
               crossAxisSpacing: 16, // Espaçamento horizontal entre os itens
               mainAxisSpacing: 16, // Espaçamento vertical entre os itens
-              childAspectRatio: 0.60, // Proporção entre largura e altura
+              childAspectRatio: 0.50, // Proporção entre largura e altura
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
