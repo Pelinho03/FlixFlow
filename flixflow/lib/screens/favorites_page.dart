@@ -7,7 +7,6 @@ import '../styles/app_text.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/navigation_service.dart';
 import 'movie_details_page.dart';
-// import '../widgets/movie_tile_widget.dart'; // Usando o MovieTile
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -25,12 +24,11 @@ class _FavoritePageState extends State<FavoritePage> {
     _favoriteMovies = _getFavoriteMovies();
   }
 
-  // Método para carregar os filmes favoritos
   Future<List<dynamic>> _getFavoriteMovies() async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      return []; // Retorna lista vazia se não estiver autenticado
+      return [];
     }
 
     final doc = await FirebaseFirestore.instance
@@ -39,7 +37,7 @@ class _FavoritePageState extends State<FavoritePage> {
         .get();
 
     if (!doc.exists || doc.data() == null) {
-      return []; // Retorna lista vazia se o documento não existir
+      return [];
     }
 
     final data = doc.data() as Map<String, dynamic>;
@@ -54,7 +52,6 @@ class _FavoritePageState extends State<FavoritePage> {
     return await _fetchMoviesByIds(favoriteIds);
   }
 
-  // Buscar filmes por ID
   Future<List<dynamic>> _fetchMoviesByIds(List<int> ids) async {
     final movies = <dynamic>[];
 
@@ -73,8 +70,7 @@ class _FavoritePageState extends State<FavoritePage> {
             'backdrop_path': movie['backdrop_path'] ?? '',
             'poster_path': movie['poster_path'] ?? '',
             'overview': movie['overview'] ?? 'Sem descrição disponível.',
-            'belongs_to_collection':
-                movie['belongs_to_collection'] ?? {}, // Evita erro
+            'belongs_to_collection': movie['belongs_to_collection'] ?? {},
           });
         } else {
           print('Filme com ID $id não encontrado.');
@@ -125,12 +121,12 @@ class _FavoritePageState extends State<FavoritePage> {
           final favoriteMovies = snapshot.data ?? [];
 
           return GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 0,
-              mainAxisSpacing: 1,
-              childAspectRatio: 0.60,
+              crossAxisSpacing: 16, // Espaçamento horizontal entre os itens
+              mainAxisSpacing: 16, // Espaçamento vertical entre os itens
+              childAspectRatio: 0.60, // Proporção entre largura e altura
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
@@ -141,7 +137,7 @@ class _FavoritePageState extends State<FavoritePage> {
         },
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: 1, // Índice do botão Favoritos
+        selectedIndex: 1,
         onItemTapped: (index) async {
           await NavigationService.handleNavigation(context, index);
         },
@@ -149,7 +145,6 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  // Método para construir cada item de filme
   Widget _buildFavoriteTile(dynamic movie) {
     return Column(
       children: [
@@ -172,49 +167,51 @@ class _FavoritePageState extends State<FavoritePage> {
               );
             }
           },
-          child: Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: movie['poster_path'] != null
-                    ? Image.network(
-                        'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                        fit: BoxFit.cover,
-                        width: 148,
-                        height: 228, // Altura ajustável
-                      )
-                    : const Icon(Icons.movie, size: 80),
-              ),
-              Positioned(
-                bottom: 4,
-                right: 4,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.primeiroPlano,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: FutureBuilder<bool>(
-                    future: isFavorite(movie),
-                    builder: (context, snapshot) {
-                      final isFav = snapshot.data ?? false;
-                      return IconButton(
-                        icon: Icon(
-                          isFav ? Icons.favorite : Icons.favorite_border,
-                          color: isFav ? AppColors.roxo : AppColors.cinza,
-                        ),
-                        onPressed: () async {
-                          await toggleFavorite(movie);
-                        },
-                      );
-                    },
+          child: Container(
+            margin: const EdgeInsets.all(8), // Margem ao redor de cada item
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: movie['poster_path'] != null
+                      ? Image.network(
+                          'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                          fit: BoxFit.cover,
+                          width: 148,
+                          height: 228,
+                        )
+                      : const Icon(Icons.movie, size: 80),
+                ),
+                Positioned(
+                  bottom: 4,
+                  right: 4,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primeiroPlano,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: FutureBuilder<bool>(
+                      future: isFavorite(movie),
+                      builder: (context, snapshot) {
+                        final isFav = snapshot.data ?? false;
+                        return IconButton(
+                          icon: Icon(
+                            isFav ? Icons.favorite : Icons.favorite_border,
+                            color: isFav ? AppColors.roxo : AppColors.cinza,
+                          ),
+                          onPressed: () async {
+                            await toggleFavorite(movie);
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 8),
-        // Título do filme
         SizedBox(
           width: 148,
           child: Text(
@@ -222,8 +219,8 @@ class _FavoritePageState extends State<FavoritePage> {
             style: AppTextStyles.mediumText.copyWith(
               color: AppColors.primeiroPlano,
             ),
-            maxLines: 1, // Limita a uma linha
-            overflow: TextOverflow.ellipsis, // Trunca o texto se necessário
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         SizedBox(
@@ -233,7 +230,7 @@ class _FavoritePageState extends State<FavoritePage> {
             style: AppTextStyles.smallText.copyWith(
               color: AppColors.roxo,
             ),
-            maxLines: 1, // Limita a uma linha
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -241,7 +238,6 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  // Verificar se o filme é favorito
   Future<bool> isFavorite(dynamic movie) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -264,7 +260,6 @@ class _FavoritePageState extends State<FavoritePage> {
     }
   }
 
-  // Alternar estado de favoritos
   Future<void> toggleFavorite(dynamic movie) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception('Utilizador não autenticado.');
