@@ -22,6 +22,7 @@ class MovieListWidget extends StatefulWidget {
 class _MovieListWidgetState extends State<MovieListWidget> {
   late List<dynamic> popularMovies;
   late List<dynamic> topMovies;
+  final double bannerRatio = 4.0; // Define a proporção do banner
 
   @override
   void initState() {
@@ -30,35 +31,24 @@ class _MovieListWidgetState extends State<MovieListWidget> {
     topMovies = widget.topMovies;
   }
 
-  // Função para verificar se o filme é favorito
   Future<bool> isFavorite(dynamic movie) async {
     final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      return false;
-    }
+    if (user == null) return false;
 
     final doc = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .get();
-
-    if (!doc.exists) {
-      return false;
-    }
+    if (!doc.exists) return false;
 
     final data = doc.data() as Map<String, dynamic>;
     final favorites = List<int>.from(data['favorites'] ?? []);
     return favorites.contains(movie['id']);
   }
 
-  // Alternar estado de favoritos
   Future<void> toggleFavorite(dynamic movie) async {
     final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      throw Exception('Utilizador não autenticado.');
-    }
+    if (user == null) return;
 
     final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
 
@@ -76,21 +66,13 @@ class _MovieListWidgetState extends State<MovieListWidget> {
         final data = snapshot.data() as Map<String, dynamic>;
         final favorites = List<int>.from(data['favorites'] ?? []);
 
-        if (favorites.contains(movie['id'])) {
-          favorites.remove(movie['id']); // Remove do favorito
-        } else {
-          favorites.add(movie['id']); // Adiciona aos favoritos
-        }
-
+        favorites.contains(movie['id'])
+            ? favorites.remove(movie['id'])
+            : favorites.add(movie['id']);
         transaction.update(docRef, {'favorites': favorites});
       });
 
-      // Após alterar, atualizar o estado da UI
-      setState(() {
-        // Força a atualização da lista de filmes populares e top filmes
-        popularMovies = List.from(popularMovies);
-        topMovies = List.from(topMovies);
-      });
+      setState(() {});
     } catch (e) {
       print('Erro ao alternar favoritos: $e');
     }
@@ -98,49 +80,41 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 
   Widget _buildMovieList(
       String title, List<dynamic> movies, BuildContext context) {
-    if (movies.isEmpty) {
+    if (movies.isEmpty)
       return const Center(child: Text('Nenhum filme disponível.'));
-    }
 
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Align(
-            alignment:
-                Alignment.centerLeft, // centerLeft para alinhar a esquerda
-            child: Text(
-              title,
-              style: AppTextStyles.bigText.copyWith(
-                color: AppColors.primeiroPlano,
-              ),
-            ),
+            alignment: Alignment.centerLeft,
+            child: Text(title,
+                style: AppTextStyles.bigText
+                    .copyWith(color: AppColors.primeiroPlano)),
           ),
         ),
         SizedBox(
-          height: 228, // altura da lista
+          height: 228,
           child: ListView.builder(
-            scrollDirection: Axis.horizontal, // horizontal para a lista
+            scrollDirection: Axis.horizontal,
             itemCount: movies.length,
             itemBuilder: (context, index) {
               final movie = movies[index];
 
               return Container(
-                width: 130, // largura de cada filme
+                width: 130,
                 margin: const EdgeInsets.symmetric(horizontal: 6),
                 child: Stack(
-                  alignment: const Alignment(1.0, 0.60), // posição do ícon
+                  alignment: const Alignment(1.0, 0.60),
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        // Navega para a página de detalhes do filme
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MovieDetailPage(movie: movie),
-                          ),
-                        );
-                      },
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                MovieDetailPage(movie: movie)),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -158,28 +132,23 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                             ),
                           ),
                           const SizedBox(height: 11.0),
+                          Text(movie['title'] ?? 'Título não disponível',
+                              style: AppTextStyles.mediumText
+                                  .copyWith(color: AppColors.primeiroPlano),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
                           Text(
-                            movie['title'] ?? 'Título não disponível',
-                            style: AppTextStyles.mediumText.copyWith(
-                              color: AppColors.primeiroPlano,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
-                            style: AppTextStyles.smallText.copyWith(
-                              color: AppColors.roxo,
-                            ),
-                          ),
+                              '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
+                              style: AppTextStyles.smallText
+                                  .copyWith(color: AppColors.roxo)),
                         ],
                       ),
                     ),
-                    // Ícone de favoritos
                     FutureBuilder<bool>(
                       future: isFavorite(movie),
                       builder: (context, snapshot) {
                         final isFav = snapshot.data ?? false;
+                        final user = FirebaseAuth.instance.currentUser;
 
                         return Container(
                           decoration: BoxDecoration(
@@ -188,13 +157,17 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                           ),
                           child: IconButton(
                             icon: Icon(
-                              isFav ? Icons.favorite : Icons.favorite_border,
+                              snapshot.connectionState ==
+                                      ConnectionState.waiting
+                                  ? Icons.favorite_border
+                                  : (isFav
+                                      ? Icons.favorite
+                                      : Icons.favorite_border),
                               color: isFav ? AppColors.roxo : AppColors.cinza,
                             ),
-                            onPressed: () async {
-                              // Alterna o estado do favorito
-                              await toggleFavorite(movie);
-                            },
+                            onPressed: user != null
+                                ? () => toggleFavorite(movie)
+                                : null,
                           ),
                         );
                       },
@@ -216,31 +189,27 @@ class _MovieListWidgetState extends State<MovieListWidget> {
         children: [
           _buildMovieList('Mais Populares', popularMovies, context),
           const SizedBox(height: 15.0),
-          const Divider(
-            height: 15,
-            color: AppColors.roxo,
-            thickness: 0.1,
-          ),
+          const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
           const SizedBox(height: 15.0),
-
-          // Aqui adicionamos o banner
-          Container(
-            height: 100, // Ajuste a altura do banner conforme necessário
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: const DecorationImage(
-                image: NetworkImage(
-                    'assets/imgs/banner_homepage.png'), // Coloque a URL da imagem do banner
-                fit: BoxFit.cover,
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double bannerHeight = constraints.maxWidth / bannerRatio;
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.asset(
+                    'assets/imgs/banner_homepage_v2.png',
+                    width: constraints.maxWidth,
+                    height: bannerHeight,
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(height: 15.0),
-          const Divider(
-            height: 15,
-            color: AppColors.roxo,
-            thickness: 0.1,
-          ),
+          const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
           _buildMovieList('Top Filmes', topMovies, context),
         ],
       ),
