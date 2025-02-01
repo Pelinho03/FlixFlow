@@ -126,7 +126,7 @@ class _FavoritePageState extends State<FavoritePage> {
               crossAxisCount: 2,
               crossAxisSpacing: 16, // Espaçamento horizontal entre os itens
               mainAxisSpacing: 16, // Espaçamento vertical entre os itens
-              childAspectRatio: 0.75, // Proporção entre largura e altura
+              childAspectRatio: 0.60, // Proporção entre largura e altura
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {

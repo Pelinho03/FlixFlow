@@ -18,7 +18,7 @@ class MovieCastWidget extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 150, // Ajuste o tamanho conforme necessário
+          height: 160,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: cast.length,
@@ -35,21 +35,39 @@ class MovieCastWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 16),
                 child: Container(
                   width: 90, // Largura total da caixa
-                  height: 140, // Altura total da caixa
+                  height: 150, // Altura total da caixa
                   child: Column(
                     crossAxisAlignment:
                         CrossAxisAlignment.start, // Alinha os textos à esquerda
                     children: [
                       // Foto do ator com tamanho e bordas arredondadas
+
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          actorPhoto,
-                          width: 90,
-                          height: 90,
-                          fit: BoxFit.cover,
-                        ),
+                        child: actor['profile_path'] != null &&
+                                actor['profile_path'].isNotEmpty
+                            ? Image.network(
+                                'https://image.tmdb.org/t/p/w500${actor['profile_path']}',
+                                width: 90,
+                                height: 90,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/imgs/default_actor_v2.png',
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              )
+                            : Image.asset(
+                                'assets/imgs/default_actor_v2.png',
+                                width: 90,
+                                height: 90,
+                                fit: BoxFit.cover,
+                              ),
                       ),
+
                       const SizedBox(
                           height: 8), // Espaço entre a imagem e os textos
                       // Nome da personagem
