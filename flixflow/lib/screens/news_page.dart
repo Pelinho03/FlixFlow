@@ -151,11 +151,29 @@ class _NewsPageState extends State<NewsPage> {
                                               launchUrl(
                                                   Uri.parse(article['url']));
                                             },
-                                            style: TextButton.styleFrom(
-                                              foregroundColor: AppColors.verde,
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  WidgetStateProperty.all(
+                                                      AppColors
+                                                          .verde), // Cor de fundo
+                                              shape: WidgetStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          6), // Raio da borda
+                                                ),
+                                              ),
                                             ),
-                                            child: const Text(
-                                                'Ler a notícia completa'),
+                                            child: Text(
+                                              'Ver notícia completa',
+                                              style: AppTextStyles
+                                                  .mediumBoldText
+                                                  .copyWith(
+                                                color: AppColors
+                                                    .caixas_login_registo,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                     ],
