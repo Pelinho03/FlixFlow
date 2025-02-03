@@ -28,7 +28,20 @@ class _NewsPageState extends State<NewsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notícias"),
+        titleTextStyle: AppTextStyles.mediumAppBar.copyWith(
+          color: AppColors.primeiroPlano,
+        ),
+        titleSpacing: 0.0,
         centerTitle: true,
+        toolbarHeight: 60.2,
+        toolbarOpacity: 0.8,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(10),
+            bottomLeft: Radius.circular(10),
+          ),
+        ),
+        elevation: 0.0,
         backgroundColor: AppColors.caixas,
       ),
       body: FutureBuilder<List<dynamic>>(
@@ -80,11 +93,15 @@ class _NewsPageState extends State<NewsPage> {
                                         article['title'] ?? 'Sem título',
                                         style: AppTextStyles.mediumBoldText
                                             .copyWith(
-                                          color: AppColors.roxo,
+                                          color: AppColors.primeiroPlano,
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
-                                      const SizedBox(height: 12.0),
+                                      const Divider(
+                                        height: 30,
+                                        color: AppColors.roxo,
+                                        thickness: 0.1,
+                                      ),
                                       if (article['urlToImage'] != null)
                                         ClipRRect(
                                           borderRadius:
