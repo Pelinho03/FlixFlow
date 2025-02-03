@@ -4,6 +4,7 @@ import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/navigation_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});
@@ -69,19 +70,109 @@ class _NewsPageState extends State<NewsPage> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12.0),
                   onTap: () {
-                    // Abre a notícia no navegador
                     showDialog(
                       context: context,
-                      builder: (_) => AlertDialog(
-                        title: Text(article['title']),
-                        content: Text(article['description'] ??
-                            'Sem descrição disponível'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Fechar'),
+                      builder: (_) => Dialog(
+                        // Substitui AlertDialog por Dialog para melhor controle de layout
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(16.0),
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.of(context).size.height *
+                                0.8, // Limite para scroll
                           ),
-                        ],
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                article['title'] ?? 'Sem título',
+                                style: AppTextStyles.mediumText.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 12.0),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  // Permite rolagem caso o conteúdo seja grande
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (article['urlToImage'] != null)
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          child: Image.network(
+                                            article['urlToImage'],
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              // Se houver erro ao carregar a imagem, exibe a imagem personalizada
+                                              return Image.asset(
+                                                'assets/imgs/default_actor_v2.png', // Caminho para a imagem personalizada
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      // if (article['urlToImage'] == null)
+                                      //   Container(
+                                      //     width: 100,
+                                      //     height: 100,
+                                      //     decoration: BoxDecoration(
+                                      //       color: AppColors.caixas,
+                                      //       borderRadius:
+                                      //           BorderRadius.circular(8.0),
+                                      //     ),
+                                      //     child: Image.asset(
+                                      //       'assets/imgs/default_actor_v2.png', // Caminho para a imagem personalizada
+                                      //       width: 100,
+                                      //       height: 100,
+                                      //       fit: BoxFit.cover,
+                                      //     ),
+                                      //   ),
+                                      const SizedBox(height: 12.0),
+                                      Text(
+                                        article['description'] ??
+                                            'Sem descrição disponível',
+                                        style: AppTextStyles.smallText,
+                                      ),
+                                      const SizedBox(height: 12.0),
+                                      if (article['content'] != null)
+                                        Text(
+                                          article['content'] ??
+                                              'Conteúdo não disponível',
+                                          style: AppTextStyles.smallText,
+                                        ),
+                                      const SizedBox(height: 12.0),
+                                      if (article['url'] != null)
+                                        TextButton(
+                                          onPressed: () {
+                                            launchUrl(
+                                                Uri.parse(article['url']));
+                                          },
+                                          child: const Text(
+                                              'Ler a notícia completa'),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Fechar'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -98,23 +189,32 @@ class _NewsPageState extends State<NewsPage> {
                               width: 100,
                               height: 100,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                // Se houver erro ao carregar a imagem, exibe a imagem personalizada
+                                return Image.asset(
+                                  'assets/imgs/default_actor_v2.png', // Caminho para a imagem personalizada
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                );
+                              },
                             ),
                           ),
-                        if (article['urlToImage'] == null)
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: AppColors.caixas,
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Image.asset(
-                              'assets/imgs/default_actor_v2.png', // Caminho para a imagem personalizada
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                        // if (article['urlToImage'] == null)
+                        //   Container(
+                        //     width: 100,
+                        //     height: 100,
+                        //     decoration: BoxDecoration(
+                        //       color: AppColors.caixas,
+                        //       borderRadius: BorderRadius.circular(8.0),
+                        //     ),
+                        //     child: Image.asset(
+                        //       'assets/imgs/default_actor_v2.png', // Caminho para a imagem personalizada
+                        //       width: 100,
+                        //       height: 100,
+                        //       fit: BoxFit.cover,
+                        //     ),
+                        //   ),
                         const SizedBox(width: 12.0),
                         Expanded(
                           child: Column(

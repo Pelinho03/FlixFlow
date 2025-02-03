@@ -46,6 +46,7 @@ dependencies:
     http: ^0.13.3
     youtube_player_flutter: ^9.1.1
     carousel_slider: ^5.0.0
+    url_launcher: ^6.3.1
 
 dev_dependencies:
     flutter_test:
