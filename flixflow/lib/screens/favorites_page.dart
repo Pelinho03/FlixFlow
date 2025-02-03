@@ -73,10 +73,10 @@ class _FavoritePageState extends State<FavoritePage> {
             'belongs_to_collection': movie['belongs_to_collection'] ?? {},
           });
         } else {
-          print('Filme com ID $id não encontrado.');
+          // print('Filme com ID $id não encontrado.');
         }
       } catch (e) {
-        print('Erro ao buscar filme com ID $id: $e');
+        // print('Erro ao buscar filme com ID $id: $e');
       }
     }
 

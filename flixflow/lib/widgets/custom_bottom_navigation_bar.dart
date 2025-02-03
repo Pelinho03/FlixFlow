@@ -36,6 +36,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
             label: 'Favoritos',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.article), // Ícone para Notícias
+            label: 'Notícias',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.exit_to_app),
             label: 'Sair',
           ),

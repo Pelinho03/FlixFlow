@@ -12,6 +12,9 @@ class NavigationService {
         Navigator.pushNamed(context, '/favorites'); // Vai para a FavoritePage
         break;
       case 2:
+        Navigator.pushNamed(context, '/news'); // Vai para a NewsPage
+        break;
+      case 3:
         // Confirmar se o utilizador realmente quer fazer logout
         final shouldLogout = await AuthService.confirmLogout(context);
         if (shouldLogout) {

@@ -9,6 +9,7 @@ import 'screens/favorites_page.dart';
 import 'screens/login_page.dart';
 import 'screens/register_page.dart';
 import 'screens/movie_details_page.dart';
+import 'screens/news_page.dart'; // Import da nova página de notícias
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +20,9 @@ void main() async {
 
   // Verifica o estado do login antes de iniciar a app
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final bool isLoggedIn =
-      prefs.getBool('isLoggedIn') ?? false; // Verifica se o usuário está logado
+  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-  runApp(MyApp(isLoggedIn: isLoggedIn)); // Passa o estado de login para o MyApp
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
@@ -35,18 +35,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute: isLoggedIn
-          ? '/'
-          : '/login', // Rota inicial baseada no estado de login
+      initialRoute:
+          isLoggedIn ? '/' : '/login', // Rota inicial baseada no login
       routes: {
-        '/': (context) => const HomePage(), // Rota para a Home Page
+        '/': (context) => const HomePage(),
         '/favorites': (context) => const FavoritePage(),
-        '/login': (context) => LoginPage(), // Rota para a Login Page
-        '/register': (context) => RegisterPage(), // Rota para a Register Page
-        '/movieDetails': (context) => const MovieDetailPage(
-            movie: null), // Rota para a página de detalhes do filme
+        '/news': (context) =>
+            const NewsPage(), // Nova rota para a página de notícias
+        '/login': (context) => LoginPage(),
+        '/register': (context) => RegisterPage(),
+        '/movieDetails': (context) => const MovieDetailPage(movie: null),
       },
-      debugShowCheckedModeBanner: false, // Remove a linha de debug
+      debugShowCheckedModeBanner: false,
     );
   }
 }
