@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 
-// Import das páginas necessárias
 import 'screens/home_page.dart';
 import 'screens/favorites_page.dart';
 import 'screens/login_page.dart';
 import 'screens/register_page.dart';
 import 'screens/movie_details_page.dart';
-import 'screens/news_page.dart'; // Import da nova página de notícias
+import 'screens/news_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: 'dados_sensiveis.env'); // Carrega o arquivo .env
   await Firebase.initializeApp(
-    options:
-        DefaultFirebaseOptions.currentPlatform, // Configurado pelo FlutterFire
+    options: DefaultFirebaseOptions.currentPlatform,
   );
 
   // Verifica o estado do login antes de iniciar a app
@@ -28,20 +28,18 @@ void main() async {
 class MyApp extends StatelessWidget {
   final bool isLoggedIn;
 
-  const MyApp({super.key, required this.isLoggedIn});
+  const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute:
-          isLoggedIn ? '/' : '/login', // Rota inicial baseada no login
+      initialRoute: isLoggedIn ? '/' : '/login',
       routes: {
         '/': (context) => const HomePage(),
         '/favorites': (context) => const FavoritePage(),
-        '/news': (context) =>
-            const NewsPage(), // Nova rota para a página de notícias
+        '/news': (context) => const NewsPage(),
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/movieDetails': (context) => const MovieDetailPage(movie: null),

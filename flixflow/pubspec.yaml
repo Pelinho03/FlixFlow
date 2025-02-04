@@ -47,6 +47,7 @@ dependencies:
     youtube_player_flutter: ^9.1.1
     carousel_slider: ^5.0.0
     url_launcher: ^6.3.1
+    flutter_dotenv: ^5.2.1
 
 dev_dependencies:
     flutter_test:
@@ -86,6 +87,7 @@ flutter:
         - assets/imgs/default_actor_v2.png
         - assets/imgs/banner.png
         - assets/imgs/teste.png
+        - dados_sensiveis.env
         # An image asset can refer to one or more resolution-specific "variants", see
         # https://flutter.dev/to/resolution-aware-images
 

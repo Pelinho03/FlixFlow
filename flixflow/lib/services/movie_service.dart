@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MovieService {
-  final String _apiKey = '121f94d9eb19d3c9b11709ea229d3a63'; // Tua chave API
+  final String _apiKey = dotenv.env['MOVIE_API_KEY'] ?? '';
   final String _baseUrl = 'https://api.themoviedb.org/3';
 
   // OS MAIS POPULARES

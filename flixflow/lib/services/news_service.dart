@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NewsService {
-  static const String _apiKey =
-      '02c7a898bb4a40059d902833170da120'; // Substitui pela tua chave
-  static const String _baseUrl = 'https://newsapi.org/v2/everything';
+  final String _apiKey = dotenv.env['NEWS_API_KEY'] ?? '';
+  final String _baseUrl = 'https://newsapi.org/v2/everything';
 
   Future<List<dynamic>> fetchNews() async {
     final url = Uri.parse(
@@ -14,7 +14,7 @@ class NewsService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return data['articles']; // Retorna a lista de notícias
+      return data['articles'];
     } else {
       throw Exception('Falha ao carregar notícias');
     }
