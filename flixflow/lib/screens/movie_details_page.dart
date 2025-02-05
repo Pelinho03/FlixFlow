@@ -9,6 +9,7 @@ import '../widgets/movie_images_widget.dart';
 import '../widgets/movie_rating_widget.dart';
 import '../widgets/movie_genres_widget.dart';
 import '../widgets/movie_details_widget.dart';
+import '../widgets/networks_widget.dart';
 import '../widgets/youtube_player_widget.dart';
 import '../widgets/movie_cast_widget.dart';
 import '../widgets/rating_widget.dart';
@@ -112,7 +113,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       style: AppTextStyles.bigText.copyWith(
                         color: AppColors.roxo,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -300,6 +301,18 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   }
                 },
               ),
+              const SizedBox(height: 10),
+
+              // Networks (plataformas onde o filme está disponível)
+              Text(
+                'Disponível em',
+                style: AppTextStyles.bigText.copyWith(color: AppColors.roxo),
+              ),
+              MovieNetworksWidget(
+                movieId: widget.movie['id'],
+              ),
+
+              const SizedBox(height: 10),
 
               const Divider(
                 height: 20,

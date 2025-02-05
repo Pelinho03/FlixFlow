@@ -180,5 +180,53 @@ class MovieService {
     }
   }
 
+  // Redes de TV (Networks)
+  Future<List<dynamic>> getMovieNetworks(int movieId) async {
+    final url = Uri.parse(
+        'https://api.themoviedb.org/3/movie/$movieId/watch/providers?api_key=$_apiKey');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // Verificar se o país "PT" está presente
+        if (data['results'] != null && data['results']['PT'] != null) {
+          final providers = data['results']['PT'];
+
+          // Combinar todas as formas de disponibilidade (flatrate, rent, buy)
+          List<dynamic> availableProviders = [];
+          if (providers.containsKey('flatrate')) {
+            availableProviders.addAll(providers['flatrate']);
+          }
+          if (providers.containsKey('rent')) {
+            availableProviders.addAll(providers['rent']);
+          }
+          if (providers.containsKey('buy')) {
+            availableProviders.addAll(providers['buy']);
+          }
+
+          // Remover plataformas duplicadas com base no nome do provider ou no ID
+          var uniqueProviders = <String, dynamic>{};
+          for (var provider in availableProviders) {
+            uniqueProviders[provider['provider_id'].toString()] = provider;
+          }
+
+          // Retornar a lista sem duplicados
+          return uniqueProviders.values.toList();
+        } else {
+          return []; // Nenhum serviço disponível
+        }
+      } else {
+        // print("Erro na API: ${response.statusCode} - ${response.body}");
+        throw Exception('Erro ao obter as plataformas de streaming.');
+      }
+    } catch (e) {
+      // print("Erro na requisição: $e");
+      throw Exception('Erro ao conectar à API.');
+    }
+  }
+
   addComment(String movieId, String trim) {}
 }
