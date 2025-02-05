@@ -1,10 +1,45 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MovieService {
   final String _apiKey = dotenv.env['MOVIE_API_KEY'] ?? '';
   final String _baseUrl = 'https://api.themoviedb.org/3';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Obter avaliação do utilizador para um filme específico
+  Future<double?> getMovieRating(String movieId) async {
+    final String? userId = _auth.currentUser?.uid;
+    if (userId == null) return null;
+
+    final docRef = _firestore.collection('users').doc(userId);
+    final docSnapshot = await docRef.get();
+
+    if (docSnapshot.exists) {
+      final data = docSnapshot.data() as Map<String, dynamic>;
+      final ratings = data['ratings'] as Map<String, dynamic>?;
+
+      if (ratings != null && ratings.containsKey(movieId)) {
+        return (ratings[movieId] as num).toDouble();
+      }
+    }
+    return null;
+  }
+
+  // Guardar ou atualizar a avaliação do filme
+  Future<void> rateMovie(String movieId, double rating) async {
+    final String? userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    final docRef = _firestore.collection('users').doc(userId);
+
+    await docRef.set({
+      'ratings': {movieId: rating}
+    }, SetOptions(merge: true));
+  }
 
   // OS MAIS POPULARES
   Future<List<dynamic>> getPopularMovies() async {
@@ -157,7 +192,7 @@ class MovieService {
     return null;
   }
 
-  // MovieService
+  // ELENCOS
   Future<List<dynamic>> getMovieCast(int movieId) async {
     final url = Uri.parse(
         '$_baseUrl/movie/$movieId/credits?api_key=$_apiKey&language=pt-PT');

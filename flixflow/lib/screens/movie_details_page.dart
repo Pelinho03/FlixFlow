@@ -11,6 +11,7 @@ import '../widgets/movie_genres_widget.dart';
 import '../widgets/movie_details_widget.dart';
 import '../widgets/youtube_player_widget.dart';
 import '../widgets/movie_cast_widget.dart';
+import '../widgets/rating_widget.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;
@@ -109,6 +110,11 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+
+              const SizedBox(height: 5),
+
+// 🔹 Novo: RatingWidget para a votação do utilizador
+              RatingWidget(movieId: widget.movie['id'].toString()),
 
               const SizedBox(height: 5),
 
