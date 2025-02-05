@@ -52,11 +52,15 @@ class UserService {
     final doc = await docRef.get();
 
     if (doc.exists) {
-      final comments = doc.data()?['comments']?[movieId] as List<dynamic>?;
+      final comments = List<Map<String, dynamic>>.from(
+          (doc.data()?['comments']?[movieId] as List<dynamic>?) ?? []);
 
-      if (comments != null && index < comments.length) {
-        comments[index]['text'] = newComment;
-        comments[index]['timestamp'] = FieldValue.serverTimestamp();
+      if (index < comments.length) {
+        comments[index] = {
+          'text': newComment,
+          'timestamp':
+              Timestamp.now(), // Usa Timestamp.now() em vez de FieldValue
+        };
 
         await docRef.update({
           'comments.$movieId': comments,

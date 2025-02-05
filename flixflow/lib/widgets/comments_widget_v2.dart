@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import '../services/user_service.dart';
 import 'package:flixflow/styles/app_colors.dart';
@@ -37,20 +38,19 @@ class _CommentWidgetState extends State<CommentWidget> {
     if (_controller.text.trim().isEmpty) return;
 
     if (_isEditing) {
-      // Editar comentário existente
       await _userService.editComment(
           widget.movieId, _editingIndex, _controller.text.trim());
+
       setState(() {
         _isEditing = false;
         _editingIndex = -1;
       });
     } else {
-      // Adicionar novo comentário
       await _userService.addComment(widget.movieId, _controller.text.trim());
     }
 
     _controller.clear();
-    _loadComments();
+    await _loadComments(); // Atualiza a lista de comentários
   }
 
   Future<void> _deleteComment(int index) async {
@@ -71,38 +71,45 @@ class _CommentWidgetState extends State<CommentWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Comentários:",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
         const SizedBox(height: 8),
         TextField(
           controller: _controller,
           decoration: InputDecoration(
             hintText: _isEditing ? "Editar comentário..." : "Escreve aqui...",
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             hintStyle: AppTextStyles.mediumText
                 .copyWith(color: AppColors.primeiroPlano),
           ),
-          maxLines: 3,
+          maxLines: 2,
         ),
         const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: _submitComment,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.roxo, // Cor do botão
-            foregroundColor: AppColors.primeiroPlano, // Cor do texto no botão
-          ),
-          child: Text(
-            _isEditing ? "Editar Comentário" : "Adicionar Comentário",
-            style: AppTextStyles.mediumText.copyWith(
-              color: AppColors.primeiroPlano,
+        Center(
+          child: ElevatedButton(
+            onPressed: _submitComment,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.roxo, // Cor do botão
+              foregroundColor: AppColors.primeiroPlano, // Cor do texto no botão
+            ),
+            child: Text(
+              _isEditing ? "Editar Comentário" : "Adicionar Comentário",
+              style: AppTextStyles.mediumText.copyWith(
+                color: AppColors.primeiroPlano,
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
+        const Divider(
+          height: 20,
+          color: AppColors.roxo,
+          thickness: 0.1,
+        ),
         _comments.isEmpty
-            ? const Text("Ainda não há comentários.")
+            ? Center(
+                child: Text("Ainda não há comentários.",
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.primeiroPlano)),
+              )
             : Column(
                 children: _comments.asMap().entries.map((entry) {
                   final index = entry.key;
@@ -117,10 +124,9 @@ class _CommentWidgetState extends State<CommentWidget> {
                       ),
                       subtitle: Text(
                         comment['timestamp'] != null
-                            ? (comment['timestamp'] as Timestamp)
-                                .toDate()
-                                .toString() // Converte Timestamp em DateTime
-                            : "Sem data", // Caso não tenha timestamp
+                            ? DateFormat('dd/MM/yyyy HH:mm').format(
+                                (comment['timestamp'] as Timestamp).toDate())
+                            : "Sem data",
                         style: AppTextStyles.smallText
                             .copyWith(color: AppColors.primeiroPlano),
                       ),
