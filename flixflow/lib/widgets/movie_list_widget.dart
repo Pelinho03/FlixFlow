@@ -8,11 +8,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MovieListWidget extends StatefulWidget {
   final List<dynamic> popularMovies;
   final List<dynamic> topMovies;
+  final List<dynamic> upcomingMovies;
 
   const MovieListWidget({
     super.key,
     required this.popularMovies,
     required this.topMovies,
+    required this.upcomingMovies,
   });
 
   @override
@@ -22,6 +24,7 @@ class MovieListWidget extends StatefulWidget {
 class _MovieListWidgetState extends State<MovieListWidget> {
   late List<dynamic> popularMovies;
   late List<dynamic> topMovies;
+  late List<dynamic> upcomingMovies;
   final double bannerRatio = 4.0; // Define a proporção do banner
 
   @override
@@ -29,6 +32,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
     super.initState();
     popularMovies = widget.popularMovies;
     topMovies = widget.topMovies;
+    upcomingMovies = widget.upcomingMovies;
   }
 
   Future<bool> isFavorite(dynamic movie) async {
@@ -74,7 +78,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 
       setState(() {});
     } catch (e) {
-      // print('Erro ao alternar favoritos: $e');
+      print('Erro ao alternar favoritos: $e');
     }
   }
 
@@ -211,6 +215,9 @@ class _MovieListWidgetState extends State<MovieListWidget> {
           const SizedBox(height: 15.0),
           const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
           _buildMovieList('Top Filmes', topMovies, context),
+          const SizedBox(height: 15.0),
+          const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
+          _buildMovieList('Brevemente', upcomingMovies, context), // Novo
         ],
       ),
     );

@@ -35,6 +35,21 @@ class MovieService {
     }
   }
 
+  // FILMES EM BREVEMENTE
+  Future<List<dynamic>> getUpcomingMovies() async {
+    final url =
+        Uri.parse('$_baseUrl/movie/upcoming?api_key=$_apiKey&language=pt-PT');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['results'] ?? [];
+    } else {
+      throw Exception(
+          'Erro ao carregar filmes brevemente: ${response.statusCode}');
+    }
+  }
+
   // Pesquisa de Filmes
   Future<List<dynamic>> searchMovies(String query) async {
     final url = Uri.parse(

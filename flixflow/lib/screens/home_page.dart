@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Future<List<dynamic>> _popularMovies;
   late Future<List<dynamic>> _topMovies;
+  late Future<List<dynamic>> _upcomingMovies;
   Future<List<dynamic>>? _searchMovies;
   Future<Map<int, String>>? _genresFuture;
   List<dynamic>? _filteredMovies; // Lista de filmes filtrados
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _popularMovies = MovieService().getPopularMovies();
     _topMovies = MovieService().getTopMovies();
-    _genresFuture = MovieService().fetchGenres();
+    _upcomingMovies = MovieService().getUpcomingMovies(); // Adicionar isto
   }
 
   void _onSearchChanged(String query) {
@@ -129,7 +130,11 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildDefaultLists() {
     return FutureBuilder<List<List<dynamic>>>(
-      future: Future.wait([_popularMovies, _topMovies]),
+      future: Future.wait([
+        _popularMovies,
+        _topMovies,
+        _upcomingMovies
+      ]), // Adicionar _upcomingMovies
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -139,10 +144,12 @@ class _HomePageState extends State<HomePage> {
 
         final popularMovies = snapshot.data![0];
         final topMovies = snapshot.data![1];
+        final upcomingMovies = snapshot.data![2]; // Novo
 
         return MovieListWidget(
           popularMovies: popularMovies,
           topMovies: topMovies,
+          upcomingMovies: upcomingMovies, // Passar para o widget
         );
       },
     );
