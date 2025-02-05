@@ -155,7 +155,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         ),
         _comments.isEmpty
             ? Center(
-                child: Text("Sê o primeiro a comentar.",
+                child: Text("Sê o primeiro a comentar...",
                     style: AppTextStyles.mediumText
                         .copyWith(color: AppColors.primeiroPlano)),
               )
@@ -177,7 +177,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                 (comment['timestamp'] as Timestamp).toDate())
                             : "Sem data",
                         style: AppTextStyles.smallText
-                            .copyWith(color: AppColors.primeiroPlano),
+                            .copyWith(color: AppColors.roxo),
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,

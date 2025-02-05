@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 
+import 'services/auth_service.dart'; // Importa o AuthService
+
 import 'screens/home_page.dart';
 import 'screens/favorites_page.dart';
 import 'screens/login_page.dart';
@@ -20,7 +22,17 @@ Future<void> main() async {
 
   // Verifica o estado do login antes de iniciar a app
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+  // Verifica se a sessão ainda é válida
+  if (isLoggedIn) {
+    bool sessionValid = await AuthService.isSessionValid();
+    if (!sessionValid) {
+      await AuthService
+          .logoutWithoutContext(); // Se a sessão expirou, faz logout sem contexto
+      isLoggedIn = false; // Atualiza o estado do login para false
+    }
+  }
 
   runApp(MyApp(isLoggedIn: isLoggedIn));
 }
