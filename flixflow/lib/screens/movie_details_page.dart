@@ -348,9 +348,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
 
               const SizedBox(height: 20),
-              CommentWidget(movieId: widget.movie['id'].toString()),
-
-              const SizedBox(height: 50),
 
               // Comentários
               Center(
@@ -360,7 +357,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     borderRadius: BorderRadius.circular(10),
                     color: AppColors.caixas,
                   ),
-                  height: 400,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -370,13 +366,70 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                             .copyWith(color: AppColors.roxo),
                       ),
                       const SizedBox(height: 10),
-                      const Expanded(
-                        child: Comentarios(),
+                      CommentWidget(
+                        movieId: widget.movie['id'].toString(),
                       ),
                     ],
                   ),
                 ),
               ),
+
+              // // Comentários
+              // Center(
+              //   child: Container(
+              //     padding: const EdgeInsets.all(10.0),
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(10),
+              //       color: AppColors.caixas,
+              //     ),
+              //     height: 600, // Mantém a altura para limitar o espaço
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           'Comentários',
+              //           style: AppTextStyles.bigText
+              //               .copyWith(color: AppColors.roxo),
+              //         ),
+              //         const SizedBox(height: 10),
+              //         Expanded(
+              //           child: SingleChildScrollView(
+              //             // Permite o scroll dos comentários
+              //             child: CommentWidget(
+              //               movieId: widget.movie['id'].toString(),
+              //             ),
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+
+              // Comentários
+              // Center(
+              //   child: Container(
+              //     padding: const EdgeInsets.all(10.0),
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(10),
+              //       color: AppColors.caixas,
+              //     ),
+              //     height: 400,
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           'Comentários',
+              //           style: AppTextStyles.bigText
+              //               .copyWith(color: AppColors.roxo),
+              //         ),
+              //         const SizedBox(height: 10),
+              //         const Expanded(
+              //           child: Comentarios(),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               const SizedBox(height: 20),
             ],
           ),

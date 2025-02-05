@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../services/user_service.dart';
+import 'package:flixflow/styles/app_colors.dart';
+import 'package:flixflow/styles/app_text.dart';
 
 class CommentWidget extends StatefulWidget {
   final String movieId;
@@ -78,14 +81,24 @@ class _CommentWidgetState extends State<CommentWidget> {
           decoration: InputDecoration(
             hintText: _isEditing ? "Editar comentário..." : "Escreve aqui...",
             border: OutlineInputBorder(),
+            hintStyle: AppTextStyles.mediumText
+                .copyWith(color: AppColors.primeiroPlano),
           ),
           maxLines: 3,
         ),
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: _submitComment,
-          child:
-              Text(_isEditing ? "Editar Comentário" : "Adicionar Comentário"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.roxo, // Cor do botão
+            foregroundColor: AppColors.primeiroPlano, // Cor do texto no botão
+          ),
+          child: Text(
+            _isEditing ? "Editar Comentário" : "Adicionar Comentário",
+            style: AppTextStyles.mediumText.copyWith(
+              color: AppColors.primeiroPlano,
+            ),
+          ),
         ),
         const SizedBox(height: 20),
         _comments.isEmpty
@@ -97,17 +110,30 @@ class _CommentWidgetState extends State<CommentWidget> {
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 5),
                     child: ListTile(
-                      title: Text(comment['text']),
-                      subtitle: Text(comment['timestamp']?.toString() ?? ""),
+                      title: Text(
+                        comment['text'],
+                        style: AppTextStyles.mediumText
+                            .copyWith(color: AppColors.primeiroPlano),
+                      ),
+                      subtitle: Text(
+                        comment['timestamp'] != null
+                            ? (comment['timestamp'] as Timestamp)
+                                .toDate()
+                                .toString() // Converte Timestamp em DateTime
+                            : "Sem data", // Caso não tenha timestamp
+                        style: AppTextStyles.smallText
+                            .copyWith(color: AppColors.primeiroPlano),
+                      ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            icon: const Icon(Icons.edit, color: AppColors.roxo),
                             onPressed: () => _editComment(index),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
+                            icon:
+                                const Icon(Icons.delete, color: AppColors.roxo),
                             onPressed: () => _deleteComment(index),
                           ),
                         ],
