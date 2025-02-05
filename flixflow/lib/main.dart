@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 
-import 'services/auth_service.dart'; // Importa o AuthService
+import 'services/auth_service.dart';
 
 import 'screens/home_page.dart';
 import 'screens/favorites_page.dart';
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute: isLoggedIn ? '/' : '/login',
+      initialRoute: isLoggedIn ? '/' : '/', //'/login'
       routes: {
         '/': (context) => const HomePage(),
         '/favorites': (context) => const FavoritePage(),

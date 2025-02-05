@@ -217,7 +217,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
           _buildMovieList('Top Filmes', topMovies, context),
           const SizedBox(height: 15.0),
           const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
-          _buildMovieList('Brevemente', upcomingMovies, context), // Novo
+          _buildMovieList('Brevemente', upcomingMovies, context),
         ],
       ),
     );

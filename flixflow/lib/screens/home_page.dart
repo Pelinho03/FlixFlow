@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _popularMovies = MovieService().getPopularMovies();
     _topMovies = MovieService().getTopMovies();
-    _upcomingMovies = MovieService().getUpcomingMovies(); // Adicionar isto
+    _upcomingMovies = MovieService().getUpcomingMovies();
   }
 
   void _onSearchChanged(String query) {
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         _filteredMovies = filtered;
-        _selectedGenreId = genreId; // Atualiza o género selecionado
+        _selectedGenreId = genreId;
       });
     } catch (e) {
       // print('Erro ao filtrar filmes: $e');
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
       future: Future.wait([
         _popularMovies,
         _topMovies,
-        _upcomingMovies
+        _upcomingMovies,
       ]), // Adicionar _upcomingMovies
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -144,12 +144,12 @@ class _HomePageState extends State<HomePage> {
 
         final popularMovies = snapshot.data![0];
         final topMovies = snapshot.data![1];
-        final upcomingMovies = snapshot.data![2]; // Novo
+        final upcomingMovies = snapshot.data![2];
 
         return MovieListWidget(
           popularMovies: popularMovies,
           topMovies: topMovies,
-          upcomingMovies: upcomingMovies, // Passar para o widget
+          upcomingMovies: upcomingMovies,
         );
       },
     );

@@ -35,7 +35,7 @@ class MovieService {
     }
   }
 
-  // FILMES EM BREVEMENTE
+  // Filmes em Brevemente
   Future<List<dynamic>> getUpcomingMovies() async {
     final url =
         Uri.parse('$_baseUrl/movie/upcoming?api_key=$_apiKey&language=pt-PT');
