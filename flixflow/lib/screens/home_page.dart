@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     _popularMovies = MovieService().getPopularMovies();
     _topMovies = MovieService().getTopMovies();
     _upcomingMovies = MovieService().getUpcomingMovies();
+    _genresFuture = MovieService().fetchGenres();
   }
 
   void _onSearchChanged(String query) {
@@ -66,7 +67,7 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         _filteredMovies = filtered;
-        _selectedGenreId = genreId;
+        _selectedGenreId = genreId; // Atualiza o género selecionado
       });
     } catch (e) {
       // print('Erro ao filtrar filmes: $e');

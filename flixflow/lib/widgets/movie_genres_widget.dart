@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../styles/app_colors.dart';
+import '../styles/app_text.dart';
 
 class MovieGenresWidget extends StatelessWidget {
   final List<String> genres;
@@ -10,11 +12,7 @@ class MovieGenresWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      genres.join(', '),
-      style: TextStyle(
-        color: Colors.grey[600],
-      ),
-    );
+    return Text(genres.join(', '),
+        style: AppTextStyles.mediumText.copyWith(color: AppColors.cinza2));
   }
 }

@@ -38,6 +38,10 @@ class _MovieNetworksWidgetState extends State<MovieNetworksWidget> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                'Disponível em',
+                style: AppTextStyles.bigText.copyWith(color: AppColors.roxo),
+              ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 10,
@@ -66,7 +70,11 @@ class _MovieNetworksWidgetState extends State<MovieNetworksWidget> {
             ],
           );
         } else {
-          return Center(child: const Text('Nenhuma plataforma disponível.'));
+          const SizedBox(height: 20);
+          return Center(
+              child: Text('Plataforma disponível brevemente.',
+                  style: AppTextStyles.mediumText
+                      .copyWith(color: AppColors.cinza2)));
         }
       },
     );

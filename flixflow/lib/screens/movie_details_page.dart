@@ -301,13 +301,14 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   }
                 },
               ),
-              const SizedBox(height: 10),
+
+              const Divider(
+                height: 30,
+                color: AppColors.roxo,
+                thickness: 0.1,
+              ),
 
               // Networks (plataformas onde o filme está disponível)
-              Text(
-                'Disponível em',
-                style: AppTextStyles.bigText.copyWith(color: AppColors.roxo),
-              ),
               MovieNetworksWidget(
                 movieId: widget.movie['id'],
               ),
