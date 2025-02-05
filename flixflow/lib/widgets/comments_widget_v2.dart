@@ -66,6 +66,55 @@ class _CommentWidgetState extends State<CommentWidget> {
     });
   }
 
+  void _confirmDelete(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              "Confirmação de remoção",
+              style: AppTextStyles.bigText.copyWith(color: AppColors.vermelho),
+            ),
+          ),
+          content: Text(
+            "Tens a certeza que queres apagar?",
+            style: AppTextStyles.mediumText
+                .copyWith(color: AppColors.primeiroPlano),
+            textAlign: TextAlign
+                .center, // Opcional para garantir o alinhamento centralizado
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    "Cancelar",
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.roxo),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    await _deleteComment(index);
+                  },
+                  child: Text(
+                    "Apagar",
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.roxo),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -140,7 +189,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                           IconButton(
                             icon:
                                 const Icon(Icons.delete, color: AppColors.roxo),
-                            onPressed: () => _deleteComment(index),
+                            onPressed: () =>
+                                _confirmDelete(index), // Agora chama o popup
                           ),
                         ],
                       ),

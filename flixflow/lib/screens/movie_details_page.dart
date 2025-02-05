@@ -350,6 +350,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               const SizedBox(height: 20),
 
               // Comentários
+              Text(
+                'Comentários',
+                style: AppTextStyles.bigText.copyWith(color: AppColors.roxo),
+              ),
               Center(
                 child: Container(
                   padding: const EdgeInsets.all(10.0),
@@ -360,11 +364,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Comentários',
-                        style: AppTextStyles.bigText
-                            .copyWith(color: AppColors.roxo),
-                      ),
                       const SizedBox(height: 10),
                       CommentWidget(
                         movieId: widget.movie['id'].toString(),
