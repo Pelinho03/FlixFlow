@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/movie_service.dart';
+import '../services/user_service.dart';
 
 class RatingWidget extends StatefulWidget {
   final String movieId;
@@ -12,7 +12,7 @@ class RatingWidget extends StatefulWidget {
 
 class _RatingWidgetState extends State<RatingWidget> {
   double _currentRating = 0.0;
-  final MovieService _movieService = MovieService();
+  final UserService _movieService = UserService();
 
   @override
   void initState() {

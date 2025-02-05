@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/navigation_service.dart';
+import '../widgets/comments_widget_v2.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/movie_service.dart';
 import '../styles/app_colors.dart';
@@ -113,7 +114,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
               const SizedBox(height: 5),
 
-// 🔹 Novo: RatingWidget para a votação do utilizador
+              // Sistema de classificação por estrelas pessoal
               RatingWidget(movieId: widget.movie['id'].toString()),
 
               const SizedBox(height: 5),
@@ -345,6 +346,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   }
                 },
               ),
+
+              const SizedBox(height: 20),
+              CommentWidget(movieId: widget.movie['id'].toString()),
 
               const SizedBox(height: 50),
 

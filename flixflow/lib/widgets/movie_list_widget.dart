@@ -74,7 +74,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 
       setState(() {});
     } catch (e) {
-      print('Erro ao alternar favoritos: $e');
+      // print('Erro ao alternar favoritos: $e');
     }
   }
 

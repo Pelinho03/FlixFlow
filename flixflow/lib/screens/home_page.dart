@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         _selectedGenreId = genreId; // Atualiza o género selecionado
       });
     } catch (e) {
-      print('Erro ao filtrar filmes: $e');
+      // print('Erro ao filtrar filmes: $e');
     }
   }
 

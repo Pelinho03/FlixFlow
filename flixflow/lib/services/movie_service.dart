@@ -1,47 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class MovieService {
   final String _apiKey = dotenv.env['MOVIE_API_KEY'] ?? '';
   final String _baseUrl = 'https://api.themoviedb.org/3';
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Obter avaliação do utilizador para um filme específico
-  Future<double?> getMovieRating(String movieId) async {
-    final String? userId = _auth.currentUser?.uid;
-    if (userId == null) return null;
-
-    final docRef = _firestore.collection('users').doc(userId);
-    final docSnapshot = await docRef.get();
-
-    if (docSnapshot.exists) {
-      final data = docSnapshot.data() as Map<String, dynamic>;
-      final ratings = data['ratings'] as Map<String, dynamic>?;
-
-      if (ratings != null && ratings.containsKey(movieId)) {
-        return (ratings[movieId] as num).toDouble();
-      }
-    }
-    return null;
-  }
-
-  // Guardar ou atualizar a avaliação do filme
-  Future<void> rateMovie(String movieId, double rating) async {
-    final String? userId = _auth.currentUser?.uid;
-    if (userId == null) return;
-
-    final docRef = _firestore.collection('users').doc(userId);
-
-    await docRef.set({
-      'ratings': {movieId: rating}
-    }, SetOptions(merge: true));
-  }
-
-  // OS MAIS POPULARES
+  // Filmes Populares
   Future<List<dynamic>> getPopularMovies() async {
     final url =
         Uri.parse('$_baseUrl/movie/popular?api_key=$_apiKey&language=pt-PT');
@@ -56,7 +21,7 @@ class MovieService {
     }
   }
 
-  // TOP FILMES
+  // Top Filmes
   Future<List<dynamic>> getTopMovies() async {
     final url =
         Uri.parse('$_baseUrl/movie/top_rated?api_key=$_apiKey&language=pt-PT');
@@ -70,7 +35,7 @@ class MovieService {
     }
   }
 
-  // PESQUISA DE FILMES
+  // Pesquisa de Filmes
   Future<List<dynamic>> searchMovies(String query) async {
     final url = Uri.parse(
         '$_baseUrl/search/movie?api_key=$_apiKey&query=$query&language=pt-PT');
@@ -84,7 +49,7 @@ class MovieService {
     }
   }
 
-  // DETALHES DO FILME PELO ID
+  // Detalhes do Filme
   Future<dynamic> getMovieById(int id) async {
     final url =
         Uri.parse('$_baseUrl/movie/$id?api_key=$_apiKey&language=pt-PT');
@@ -94,8 +59,7 @@ class MovieService {
       final movieData = jsonDecode(response.body);
       return {
         ...movieData,
-        'production_companies': movieData['production_companies'] ??
-            [], // Evita erro se não houver produtoras
+        'production_companies': movieData['production_companies'] ?? []
       };
     } else {
       throw Exception(
@@ -103,7 +67,7 @@ class MovieService {
     }
   }
 
-  // IMAGENS PARA OS DETALHES DO FILME
+  // Imagens do Filme
   Future<List<dynamic>> fetchMovieImages(int movieId) async {
     final url = Uri.parse('$_baseUrl/movie/$movieId/images?api_key=$_apiKey');
     final response = await http.get(url);
@@ -117,7 +81,7 @@ class MovieService {
     }
   }
 
-  // GÉNEROS DE FILMES
+  // Géneros dos Filmes
   Future<Map<int, String>> fetchGenres() async {
     final url =
         Uri.parse('$_baseUrl/genre/movie/list?api_key=$_apiKey&language=pt-PT');
@@ -125,7 +89,6 @@ class MovieService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-      print('Géneros recebidos: ${data['genres']}');
       final genres = data['genres'] as List<dynamic>;
       return {
         for (var genre in genres) genre['id'] as int: genre['name'] as String
@@ -135,7 +98,7 @@ class MovieService {
     }
   }
 
-  // DETALHES (diretor, compositor, música)
+  // Créditos do Filme (Diretor, Compositor)
   Future<Map<String, String>> getMovieCredits(int movieId) async {
     final url = Uri.parse(
         '$_baseUrl/movie/$movieId/credits?api_key=$_apiKey&language=pt-PT');
@@ -143,17 +106,13 @@ class MovieService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-
-      // Lista de pessoas da equipa de produção
       final crew = data['crew'] as List<dynamic>;
 
-      // Encontrar o diretor
       final director = crew.firstWhere(
         (person) => person['job'] == 'Director',
         orElse: () => {'name': 'Não disponível'},
       )['name'];
 
-      // Encontrar o compositor (trilha sonora)
       final composer = crew.firstWhere(
         (person) => person['job'] == 'Original Music Composer',
         orElse: () => {'name': 'Não disponível'},
@@ -169,10 +128,10 @@ class MovieService {
     }
   }
 
-  //TRAILER
+  // Trailer do Filme
   Future<String?> fetchMovieTrailer(int movieId) async {
     final url =
-        'https://api.themoviedb.org/3/movie/$movieId/videos?api_key=$_apiKey&language=pt-PT';
+        '$_baseUrl/movie/$movieId/videos?api_key=$_apiKey&language=pt-PT';
 
     final response = await http.get(Uri.parse(url));
 
@@ -192,7 +151,7 @@ class MovieService {
     return null;
   }
 
-  // ELENCOS
+  // Elenco do Filme
   Future<List<dynamic>> getMovieCast(int movieId) async {
     final url = Uri.parse(
         '$_baseUrl/movie/$movieId/credits?api_key=$_apiKey&language=pt-PT');
@@ -205,4 +164,6 @@ class MovieService {
       throw Exception('Erro ao carregar elenco: ${response.statusCode}');
     }
   }
+
+  addComment(String movieId, String trim) {}
 }
