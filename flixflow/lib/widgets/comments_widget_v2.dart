@@ -129,9 +129,9 @@ class _CommentWidgetState extends State<CommentWidget> {
             hintStyle: AppTextStyles.mediumText
                 .copyWith(color: AppColors.primeiroPlano),
           ),
-          maxLines: 2,
+          maxLines: 1,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
         Center(
           child: ElevatedButton(
             onPressed: _submitComment,
@@ -155,7 +155,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         ),
         _comments.isEmpty
             ? Center(
-                child: Text("Ainda não há comentários.",
+                child: Text("Sê o primeiro a comentar.",
                     style: AppTextStyles.mediumText
                         .copyWith(color: AppColors.primeiroPlano)),
               )

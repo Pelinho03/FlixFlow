@@ -5,7 +5,6 @@ import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/movie_service.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
-import '../widgets/comments_widget.dart';
 import '../widgets/movie_images_widget.dart';
 import '../widgets/movie_rating_widget.dart';
 import '../widgets/movie_genres_widget.dart';
@@ -102,40 +101,55 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
 
               const SizedBox(height: 11.0),
 
-              // Título do Filme
-              Text(
-                widget.movie['title'] ?? 'Título não disponível',
-                style: AppTextStyles.bigText.copyWith(
-                  color: AppColors.roxo,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              Row(
+                // mainAxisAlignment: MainAxisAlignment
+                //     .spaceBetween, // Mantém o título e as estrelas separados
+                children: [
+                  // Título do Filme
+                  Expanded(
+                    child: Text(
+                      widget.movie['title'] ?? 'Título não disponível',
+                      style: AppTextStyles.bigText.copyWith(
+                        color: AppColors.roxo,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+
+                  FutureBuilder<dynamic>(
+                    future: _movieDetails,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox.shrink();
+                      } else if (snapshot.hasError) {
+                        return const SizedBox.shrink();
+                      } else if (snapshot.hasData) {
+                        final rating = snapshot.data!['vote_average'] ?? 0.0;
+                        return MovieRatingWidget(rating: rating);
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+                  // Sistema de classificação por estrelas (dinâmico)
+                ],
               ),
 
-              const SizedBox(height: 5),
+              const Divider(
+                height: 20,
+                color: AppColors.roxo,
+                thickness: 0.1,
+              ),
 
               // Sistema de classificação por estrelas pessoal
               RatingWidget(movieId: widget.movie['id'].toString()),
 
-              const SizedBox(height: 5),
-
-              // Sistema de classificação por estrelas (dinâmico)
-              FutureBuilder<dynamic>(
-                future: _movieDetails,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const SizedBox.shrink();
-                  } else if (snapshot.hasError) {
-                    return const SizedBox.shrink();
-                  } else if (snapshot.hasData) {
-                    final rating = snapshot.data!['vote_average'] ?? 0.0;
-                    return MovieRatingWidget(rating: rating);
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
+              const Divider(
+                height: 20,
+                color: AppColors.roxo,
+                thickness: 0.1,
               ),
-              const SizedBox(height: 5),
 
               // Géneros do Filme
               FutureBuilder<List<String>>(
@@ -373,62 +387,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 ),
               ),
 
-              // // Comentários
-              // Center(
-              //   child: Container(
-              //     padding: const EdgeInsets.all(10.0),
-              //     decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(10),
-              //       color: AppColors.caixas,
-              //     ),
-              //     height: 600, // Mantém a altura para limitar o espaço
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Text(
-              //           'Comentários',
-              //           style: AppTextStyles.bigText
-              //               .copyWith(color: AppColors.roxo),
-              //         ),
-              //         const SizedBox(height: 10),
-              //         Expanded(
-              //           child: SingleChildScrollView(
-              //             // Permite o scroll dos comentários
-              //             child: CommentWidget(
-              //               movieId: widget.movie['id'].toString(),
-              //             ),
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-
-              // Comentários
-              // Center(
-              //   child: Container(
-              //     padding: const EdgeInsets.all(10.0),
-              //     decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(10),
-              //       color: AppColors.caixas,
-              //     ),
-              //     height: 400,
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Text(
-              //           'Comentários',
-              //           style: AppTextStyles.bigText
-              //               .copyWith(color: AppColors.roxo),
-              //         ),
-              //         const SizedBox(height: 10),
-              //         const Expanded(
-              //           child: Comentarios(),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
               const SizedBox(height: 20),
             ],
           ),

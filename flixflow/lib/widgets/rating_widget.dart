@@ -1,3 +1,5 @@
+import 'package:flixflow/styles/app_colors.dart';
+import 'package:flixflow/styles/app_text.dart';
 import 'package:flutter/material.dart';
 import '../services/user_service.dart';
 
@@ -38,17 +40,29 @@ class _RatingWidgetState extends State<RatingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(5, (index) {
-        return IconButton(
-          icon: Icon(
-            index < _currentRating ? Icons.star : Icons.star_border,
-            color: Colors.amber,
+      children: [
+        Text(
+          "Avalia-me",
+          style: AppTextStyles.mediumBoldText.copyWith(
+            color: AppColors.roxo,
           ),
-          onPressed: () => _rateMovie(index + 1.0),
-        );
-      }),
+        ),
+        const SizedBox(height: 3),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (index) {
+            return IconButton(
+              icon: Icon(
+                index < _currentRating ? Icons.star : Icons.star_border,
+                color: AppColors.laranja,
+              ),
+              onPressed: () => _rateMovie(index + 1.0),
+            );
+          }),
+        ),
+      ],
     );
   }
 }
