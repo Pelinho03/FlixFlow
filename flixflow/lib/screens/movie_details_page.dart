@@ -36,17 +36,20 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   void initState() {
     super.initState();
     _movieImages = _movieService.fetchMovieImages(widget.movie['id']);
-    _movieGenres = _getMovieGenres(widget.movie['genre_ids']);
+    _movieGenres =
+        _getMovieGenres(widget.movie['genre_ids'] ?? []); // <-- Corrigido aqui
     _movieCredits = _movieService.getMovieCredits(widget.movie['id']);
     _movieDetails = _movieService.getMovieById(widget.movie['id']);
     _movieTrailer = _movieService.fetchMovieTrailer(widget.movie['id']);
     _movieCast = _movieService.getMovieCast(widget.movie['id']);
   }
 
-  Future<List<String>> _getMovieGenres(List<dynamic> genreIds) async {
+  Future<List<String>> _getMovieGenres(List<dynamic>? genreIds) async {
     try {
       final genresMap = await _movieService.fetchGenres();
-      return genreIds.map((id) => genresMap[id] ?? 'Desconhecido').toList();
+      return (genreIds ?? [])
+          .map((id) => genresMap[id] ?? 'Desconhecido')
+          .toList();
     } catch (error) {
       return [];
     }

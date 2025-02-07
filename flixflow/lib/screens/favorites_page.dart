@@ -24,6 +24,56 @@ class _FavoritePageState extends State<FavoritePage> {
     _favoriteMovies = _getFavoriteMovies();
   }
 
+  Future<bool> isFavorite(dynamic movie) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return false;
+
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!doc.exists || doc.data() == null) return false;
+
+    final data = doc.data() as Map<String, dynamic>;
+    final favoriteIds = (data['favorites'] as List<dynamic>? ?? [])
+        .map((e) => e as int)
+        .toList();
+
+    return favoriteIds.contains(movie['id']);
+  }
+
+  Future<void> toggleFavorite(dynamic movie) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userRef =
+        FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final doc = await userRef.get();
+
+    if (!doc.exists || doc.data() == null) {
+      await userRef
+          .set({'favorites': []}); // Garante que há um campo 'favorites'
+    }
+
+    final data = doc.data() as Map<String, dynamic>;
+    final favoriteIds = (data['favorites'] as List<dynamic>? ?? [])
+        .map((e) => e as int)
+        .toList();
+
+    if (favoriteIds.contains(movie['id'])) {
+      favoriteIds.remove(movie['id']);
+    } else {
+      favoriteIds.add(movie['id']);
+    }
+
+    await userRef.update({'favorites': favoriteIds});
+
+    setState(() {
+      _favoriteMovies = _getFavoriteMovies(); // Atualiza a lista na UI
+    });
+  }
+
   Future<List<dynamic>> _getFavoriteMovies() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -60,20 +110,7 @@ class _FavoritePageState extends State<FavoritePage> {
         final movie = await MovieService().getMovieById(id);
 
         if (movie != null) {
-          movies.add({
-            ...movie,
-            'genres': (movie['genres'] as List<dynamic>?) ?? [],
-            'production_companies':
-                (movie['production_companies'] as List<dynamic>?) ?? [],
-            'spoken_languages':
-                (movie['spoken_languages'] as List<dynamic>?) ?? [],
-            'backdrop_path': movie['backdrop_path'] ?? '',
-            'poster_path': movie['poster_path'] ?? '',
-            'overview': movie['overview'] ?? 'Sem descrição disponível.',
-            'belongs_to_collection': movie['belongs_to_collection'] ?? {},
-          });
-        } else {
-          // print('Filme com ID $id não encontrado.');
+          movies.add(movie);
         }
       } catch (e) {
         // print('Erro ao buscar filme com ID $id: $e');
@@ -91,10 +128,8 @@ class _FavoritePageState extends State<FavoritePage> {
         titleTextStyle: AppTextStyles.mediumAppBar.copyWith(
           color: AppColors.primeiroPlano,
         ),
-        titleSpacing: 0.0,
         centerTitle: true,
         toolbarHeight: 60.2,
-        toolbarOpacity: 0.8,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomRight: Radius.circular(10),
@@ -124,14 +159,24 @@ class _FavoritePageState extends State<FavoritePage> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 16, // Espaçamento horizontal entre os itens
-              mainAxisSpacing: 16, // Espaçamento vertical entre os itens
-              childAspectRatio: 0.60, // Proporção entre largura e altura
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.60,
             ),
             itemCount: favoriteMovies.length,
             itemBuilder: (context, index) {
               final movie = favoriteMovies[index];
-              return _buildFavoriteTile(movie);
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MovieDetailPage(movie: movie),
+                    ),
+                  );
+                },
+                child: _buildFavoriteTile(movie),
+              );
             },
           );
         },
@@ -148,67 +193,47 @@ class _FavoritePageState extends State<FavoritePage> {
   Widget _buildFavoriteTile(dynamic movie) {
     return Column(
       children: [
-        GestureDetector(
-          onTap: () {
-            print('Filme selecionado para detalhes: $movie');
-
-            if (movie != null && movie['title'] != null) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MovieDetailPage(movie: movie),
-                ),
-              );
-            } else {
-              print('Erro: dados do filme estão incompletos!');
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Erro ao carregar detalhes do filme.')),
-              );
-            }
-          },
-          child: Container(
-            margin: const EdgeInsets.all(8), // Margem ao redor de cada item
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: movie['poster_path'] != null
-                      ? Image.network(
-                          'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                          fit: BoxFit.cover,
-                          width: 148,
-                          height: 228,
-                        )
-                      : const Icon(Icons.movie, size: 80),
-                ),
-                Positioned(
-                  bottom: 4,
-                  right: 4,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primeiroPlano,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: FutureBuilder<bool>(
-                      future: isFavorite(movie),
-                      builder: (context, snapshot) {
-                        final isFav = snapshot.data ?? false;
-                        return IconButton(
-                          icon: Icon(
-                            isFav ? Icons.favorite : Icons.favorite_border,
-                            color: isFav ? AppColors.roxo : AppColors.cinza,
-                          ),
-                          onPressed: () async {
-                            await toggleFavorite(movie);
-                          },
-                        );
-                      },
-                    ),
+        Container(
+          margin: const EdgeInsets.all(8),
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: movie['poster_path'] != null
+                    ? Image.network(
+                        'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                        fit: BoxFit.cover,
+                        width: 148,
+                        height: 228,
+                      )
+                    : const Icon(Icons.movie, size: 80),
+              ),
+              Positioned(
+                bottom: 4,
+                right: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primeiroPlano,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: FutureBuilder<bool>(
+                    future: isFavorite(movie),
+                    builder: (context, snapshot) {
+                      final isFav = snapshot.data ?? false;
+                      return IconButton(
+                        icon: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_border,
+                          color: isFav ? AppColors.roxo : AppColors.cinza,
+                        ),
+                        onPressed: () async {
+                          await toggleFavorite(movie);
+                        },
+                      );
+                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 8),
@@ -236,65 +261,5 @@ class _FavoritePageState extends State<FavoritePage> {
         ),
       ],
     );
-  }
-
-  Future<bool> isFavorite(dynamic movie) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-
-      if (user == null) return false;
-
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-
-      if (!doc.exists) return false;
-
-      final data = doc.data() as Map<String, dynamic>;
-      final favorites = List<int>.from(data['favorites'] ?? []);
-
-      return favorites.contains(movie['id']);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<void> toggleFavorite(dynamic movie) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception('Utilizador não autenticado.');
-
-    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
-
-    try {
-      await FirebaseFirestore.instance.runTransaction((transaction) async {
-        final snapshot = await transaction.get(docRef);
-        if (!snapshot.exists) {
-          transaction.set(docRef, {
-            'favorites': [movie['id']]
-          });
-          return;
-        }
-
-        final data = snapshot.data() as Map<String, dynamic>;
-        final favorites = List<int>.from(data['favorites'] ?? []);
-
-        if (favorites.contains(movie['id'])) {
-          favorites.remove(movie['id']);
-          setState(() {
-            _favoriteMovies = Future.value(
-                (_favoriteMovies as Future<List<dynamic>>).then((movies) {
-              return movies.where((m) => m['id'] != movie['id']).toList();
-            }));
-          });
-        } else {
-          favorites.add(movie['id']);
-        }
-
-        transaction.update(docRef, {'favorites': favorites});
-      });
-    } catch (e) {
-      rethrow;
-    }
   }
 }
