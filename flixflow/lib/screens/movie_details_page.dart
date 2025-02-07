@@ -337,7 +337,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                     return MovieCastWidget(cast: snapshot.data!);
                   } else {
-                    return const Center(child: Text('Sem elenco disponível.'));
+                    return Center(
+                        child: Text('Elenco não disponível.',
+                            style: AppTextStyles.mediumText
+                                .copyWith(color: AppColors.cinza2)));
                   }
                 },
               ),
@@ -354,7 +357,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 future: _movieTrailer,
                 builder: (context, snapshot) {
                   if (snapshot.hasError || snapshot.data == null) {
-                    return const Center(child: Text('Trailer não disponível.'));
+                    return Center(
+                        child: Text('Trailer não disponível.',
+                            style: AppTextStyles.mediumText
+                                .copyWith(color: AppColors.cinza2)));
                   } else {
                     final videoId = snapshot.data!;
                     return Column(

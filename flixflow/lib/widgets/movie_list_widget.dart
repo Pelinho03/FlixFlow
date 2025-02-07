@@ -99,7 +99,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
           ),
         ),
         SizedBox(
-          height: 228,
+          height: 280,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: movies.length,
@@ -108,9 +108,9 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 
               return Container(
                 width: 130,
-                margin: const EdgeInsets.symmetric(horizontal: 6),
+                margin: const EdgeInsets.symmetric(horizontal: 8),
                 child: Stack(
-                  alignment: const Alignment(1.0, 0.60),
+                  alignment: const Alignment(0.90, 0.40),
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.push(
@@ -135,16 +135,33 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                                   : const Icon(Icons.movie, size: 80),
                             ),
                           ),
-                          const SizedBox(height: 11.0),
-                          Text(movie['title'] ?? 'Título não disponível',
-                              style: AppTextStyles.mediumText
-                                  .copyWith(color: AppColors.primeiroPlano),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis),
-                          Text(
-                              '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
-                              style: AppTextStyles.smallText
-                                  .copyWith(color: AppColors.roxo)),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            width: 148,
+                            height:
+                                58, // Altura fixa para alinhar bem os elementos
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    movie['title'] ?? 'Título não disponível',
+                                    style: AppTextStyles.mediumText.copyWith(
+                                      color: AppColors.primeiroPlano,
+                                    ),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Text(
+                                  '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
+                                  style: AppTextStyles.smallText.copyWith(
+                                    color: AppColors.roxo,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

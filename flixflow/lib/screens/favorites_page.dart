@@ -150,7 +150,10 @@ class _FavoritePageState extends State<FavoritePage> {
           } else if (!snapshot.hasData ||
               snapshot.data == null ||
               snapshot.data!.isEmpty) {
-            return const Center(child: Text('Nenhum filme nos favoritos.'));
+            return Center(
+                child: Text('Ainda sem favoritos :(',
+                    style: AppTextStyles.mediumText
+                        .copyWith(color: AppColors.cinza2)));
           }
 
           final favoriteMovies = snapshot.data ?? [];
@@ -244,7 +247,7 @@ class _FavoritePageState extends State<FavoritePage> {
             style: AppTextStyles.mediumText.copyWith(
               color: AppColors.primeiroPlano,
             ),
-            maxLines: 1,
+            maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
         ),
