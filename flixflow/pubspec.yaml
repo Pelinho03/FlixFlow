@@ -36,7 +36,7 @@ dependencies:
     comment_box: ^0.0.18
     #usar as duas seguintes para icon da app e screen splash
     flutter_launcher_icons: ^0.14.3
-    flutter_native_splash: ^2.4.3
+    flutter_native_splash: ^2.4.4
     shared_preferences: ^2.3.3
     intl:
         ^0.20.2
@@ -88,6 +88,11 @@ flutter:
         - assets/imgs/default_actor_v2.png
         - assets/imgs/banner.png
         - assets/imgs/teste.png
+        - assets/imgs/splash_v1.png
+        - assets/imgs/splash_v2.png
+        - assets/imgs/splash_v3.png
+        - assets/imgs/splash_v4.png
+        - assets/imgs/splash_v5.png
         - dados_sensiveis.env
         # An image asset can refer to one or more resolution-specific "variants", see
         # https://flutter.dev/to/resolution-aware-images
@@ -115,15 +120,18 @@ flutter:
         #
         # For details regarding fonts from package dependencies,
         # see https://flutter.dev/to/font-from-package
+#
 
 flutter_native_splash:
-    color: "#0E0D11" # Cor de fundo da splash screen
-    image: assets/imgs/app_icon.png
+    color: "#0f1519" # Cor de fundo da splash screen
+    image: assets/imgs/splash_v5.png
+    fullscreen: true # Ativa a imagem em ecrã completo
     android: true
     ios: true
     web: true
 
     # Configuração específica para Android 12
     android_12:
-        image: assets/imgs/app_icon.png
-        icon_background_color: "#0E0D11"
+        fullscreen: true
+        image: assets/imgs/splash_v5.png # Define a imagem completa para Android 12
+        icon_background_color: "#0f1519"
