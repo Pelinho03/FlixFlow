@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute: isLoggedIn ? '/' : '/', // /login
+      initialRoute: isLoggedIn ? '/' : '/login', // /login
       routes: {
         '/': (context) => const HomePage(),
         '/favorites': (context) => const FavoritePage(),
