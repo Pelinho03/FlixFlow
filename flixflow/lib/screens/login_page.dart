@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Adiciona a firebase
-import 'home_page.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';

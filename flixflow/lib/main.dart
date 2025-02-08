@@ -56,8 +56,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/movieDetails': (context) => const MovieDetailPage(movie: null),
-        '/forgotPassword': (context) =>
-            const ForgotPasswordPage(), // Adiciona esta linha
+        '/forgotPassword': (context) => const ForgotPasswordPage(),
       },
 
       debugShowCheckedModeBanner: false,

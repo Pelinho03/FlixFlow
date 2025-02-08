@@ -117,4 +117,36 @@ class UserService {
       'ratings': {movieId: rating}
     }, SetOptions(merge: true));
   }
+
+  // Salvar o nome de utilizador
+  Future<void> saveUsername(String username) async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final userRef = _firestore.collection('users').doc(user.uid);
+
+    await userRef.set(
+        {
+          'username':
+              username, // Salva o nome de utilizador no campo 'username'
+        },
+        SetOptions(
+            merge:
+                true)); // 'merge' garante que outros dados não sejam substituídos
+  }
+
+  // Obter o nome de utilizador
+  Future<String?> getUsername() async {
+    final user = _auth.currentUser;
+    if (user == null) return null;
+
+    final userRef = _firestore.collection('users').doc(user.uid);
+    final doc = await userRef.get();
+
+    if (doc.exists) {
+      return doc.data()?['username']; // Retorna o nome de utilizador
+    }
+
+    return null;
+  }
 }
