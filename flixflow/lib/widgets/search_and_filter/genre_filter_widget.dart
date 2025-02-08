@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import '../services/movie_service.dart';
-import '../styles/app_colors.dart';
+import '../../styles/app_colors.dart';
 
 class GenreFilterWidget extends StatelessWidget {
   final Future<Map<int, String>>? genresFuture;

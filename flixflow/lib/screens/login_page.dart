@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Adiciona a firebase
-import 'forgot_password_page.dart';
-import 'register_page.dart';
 import 'home_page.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
@@ -32,11 +30,8 @@ class LoginPage extends StatelessWidget {
         SnackBar(content: Text('Bem-vindo, ${userCredential.user!.email}!')),
       );
 
-      // Redirecionar para a home_page após login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      // Redirecionar para a home_page após login (correto)
+      Navigator.pushReplacementNamed(context, '/');
     } on FirebaseAuthException catch (e) {
       print('Erro: $e');
       ScaffoldMessenger.of(context).showSnackBar(

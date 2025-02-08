@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../styles/app_text.dart';
-import '../styles/app_colors.dart';
-import '../screens/movie_details_page.dart';
+import '../../styles/app_text.dart';
+import '../../styles/app_colors.dart';
+import '../../screens/movie_details_page.dart';
 
 class MovieTile extends StatefulWidget {
   final dynamic movie;

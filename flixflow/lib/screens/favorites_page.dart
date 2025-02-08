@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/movie_service.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
+import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/navigation_service.dart';
 import 'movie_details_page.dart';
@@ -123,22 +124,7 @@ class _FavoritePageState extends State<FavoritePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Meus favoritos"),
-        titleTextStyle: AppTextStyles.mediumAppBar.copyWith(
-          color: AppColors.primeiroPlano,
-        ),
-        centerTitle: true,
-        toolbarHeight: 60.2,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(10),
-            bottomLeft: Radius.circular(10),
-          ),
-        ),
-        elevation: 0.0,
-        backgroundColor: AppColors.caixas,
-      ),
+      appBar: const CustomAppBar(title: "Meus Favoritos"),
       body: FutureBuilder<List<dynamic>>(
         future: _favoriteMovies,
         builder: (context, snapshot) {

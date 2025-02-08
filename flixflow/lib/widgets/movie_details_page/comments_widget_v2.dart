@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import '../services/user_service.dart';
+import '../../services/user_service.dart';
 import 'package:flixflow/styles/app_colors.dart';
 import 'package:flixflow/styles/app_text.dart';
 

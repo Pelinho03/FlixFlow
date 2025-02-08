@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/news_service.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
+import '../widgets/custom_app_bar.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/navigation_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,24 +27,7 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Notícias"),
-        titleTextStyle: AppTextStyles.mediumAppBar.copyWith(
-          color: AppColors.primeiroPlano,
-        ),
-        titleSpacing: 0.0,
-        centerTitle: true,
-        toolbarHeight: 60.2,
-        toolbarOpacity: 0.8,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(10),
-            bottomLeft: Radius.circular(10),
-          ),
-        ),
-        elevation: 0.0,
-        backgroundColor: AppColors.caixas,
-      ),
+      appBar: const CustomAppBar(title: "Notícias"),
       body: FutureBuilder<List<dynamic>>(
         future: _newsFuture,
         builder: (context, snapshot) {

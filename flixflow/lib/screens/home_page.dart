@@ -6,9 +6,9 @@ import '../services/navigation_service.dart';
 import '../styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../widgets/search_banner_widget.dart';
-import '../widgets/movie_tile_widget.dart';
-import '../widgets/genre_filter_widget.dart'; // Importa o novo widget
+import '../widgets/search_and_filter/search_banner_widget.dart';
+import '../widgets/search_and_filter/movie_tile_widget.dart';
+import '../widgets/search_and_filter/genre_filter_widget.dart'; // Importa o novo widget
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

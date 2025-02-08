@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../styles/app_colors.dart';
-import '../styles/app_text.dart';
+import '../../styles/app_colors.dart';
+import '../../styles/app_text.dart';
 
 class MovieGenresWidget extends StatelessWidget {
   final List<String> genres;

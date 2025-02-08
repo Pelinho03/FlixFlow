@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import '../services/navigation_service.dart';
-import '../widgets/comments_widget_v2.dart';
+import '../widgets/custom_app_bar.dart';
+import '../widgets/movie_details_page/comments_widget_v2.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../services/movie_service.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
-import '../widgets/movie_images_widget.dart';
-import '../widgets/movie_rating_widget.dart';
-import '../widgets/movie_genres_widget.dart';
-import '../widgets/movie_details_widget.dart';
-import '../widgets/networks_widget.dart';
-import '../widgets/youtube_player_widget.dart';
-import '../widgets/movie_cast_widget.dart';
-import '../widgets/personal_rating_widget.dart';
+import '../widgets/movie_details_page/movie_images_widget.dart';
+import '../widgets/movie_details_page/movie_rating_widget.dart';
+import '../widgets/movie_details_page/movie_genres_widget.dart';
+import '../widgets/movie_details_page/movie_details_widget.dart';
+import '../widgets/movie_details_page/networks_widget.dart';
+import '../widgets/movie_details_page/youtube_player_widget.dart';
+import '../widgets/movie_details_page/movie_cast_widget.dart';
+import '../widgets/movie_details_page/personal_rating_widget.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;
@@ -58,23 +59,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.movie['title'] ?? 'Detalhes do Filme'),
-        titleTextStyle: AppTextStyles.mediumAppBar.copyWith(
-          color: AppColors.primeiroPlano,
-        ),
-        titleSpacing: 0.0,
-        centerTitle: true,
-        toolbarHeight: 60.2,
-        toolbarOpacity: 0.8,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(10),
-            bottomLeft: Radius.circular(10),
-          ),
-        ),
-        elevation: 0.0,
-        backgroundColor: AppColors.caixas,
+      appBar: CustomAppBar(
+        titleWidget: Text(widget.movie['title'] ?? 'Detalhes do Filme'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 10),

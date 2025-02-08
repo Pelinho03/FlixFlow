@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/movie_service.dart';
-import '../styles/app_colors.dart';
-import '../styles/app_text.dart';
+import '../../services/movie_service.dart';
+import '../../styles/app_colors.dart';
+import '../../styles/app_text.dart';
 
 class MovieNetworksWidget extends StatefulWidget {
   final int movieId;
@@ -44,8 +44,8 @@ class _MovieNetworksWidgetState extends State<MovieNetworksWidget> {
               ),
               const SizedBox(height: 8),
               Wrap(
-                spacing: 10,
-                runSpacing: 10,
+                spacing: 5,
+                runSpacing: 5,
                 children: uniqueNetworks.map((network) {
                   return Chip(
                     label: Text(network['provider_name'],
@@ -63,7 +63,7 @@ class _MovieNetworksWidgetState extends State<MovieNetworksWidget> {
               ),
               const SizedBox(height: 10),
               Text(
-                '🔹 Dados fornecidos por JustWatch',
+                '· Dados fornecidos por JustWatch',
                 style:
                     AppTextStyles.smallText.copyWith(color: AppColors.cinza2),
               ),
