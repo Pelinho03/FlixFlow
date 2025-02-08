@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 
+import 'screens/forgot_password_page.dart';
 import 'services/auth_service.dart';
 
 import 'screens/home_page.dart';
@@ -55,7 +56,10 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/movieDetails': (context) => const MovieDetailPage(movie: null),
+        '/forgotPassword': (context) =>
+            const ForgotPasswordPage(), // Adiciona esta linha
       },
+
       debugShowCheckedModeBanner: false,
     );
   }

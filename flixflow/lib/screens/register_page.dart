@@ -173,15 +173,10 @@ class RegisterPage extends StatelessWidget {
                       height: 20), // Espaçamento entre o botão e o texto
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginPage(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/login');
                     },
                     child: Text(
-                      'Clica aqui para voltar ao login',
+                      'Voltar ao login',
                       style: AppTextStyles.ligthTextLoginRegist
                           .copyWith(color: AppColors.primeiroPlano),
                     ),

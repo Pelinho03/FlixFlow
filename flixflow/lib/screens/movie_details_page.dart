@@ -12,7 +12,7 @@ import '../widgets/movie_details_widget.dart';
 import '../widgets/networks_widget.dart';
 import '../widgets/youtube_player_widget.dart';
 import '../widgets/movie_cast_widget.dart';
-import '../widgets/rating_widget.dart';
+import '../widgets/personal_rating_widget.dart';
 
 class MovieDetailPage extends StatefulWidget {
   final dynamic movie;

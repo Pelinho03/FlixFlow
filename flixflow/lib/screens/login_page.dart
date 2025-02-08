@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Adiciona a firebase
+import 'forgot_password_page.dart';
 import 'register_page.dart';
 import 'home_page.dart';
 import '../styles/app_colors.dart';
@@ -150,18 +151,28 @@ class LoginPage extends StatelessWidget {
                   ),
                   const SizedBox(
                       height: 20), // Espaçamento entre o botão e o texto
+                  // Botão "Esqueci-me da palavra-passe"
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        // Navega para o registo
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RegisterPage(),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/forgotPassword');
                     },
                     child: Text(
-                      'Clica aqui para te registares',
+                      'Esqueci-me da palavra-passe',
+                      style: AppTextStyles.ligthTextLoginRegist.copyWith(
+                        color: AppColors.primeiroPlano,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Botão "Clica aqui para te registares"
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/register');
+                    },
+                    child: Text(
+                      'Novo Registo',
                       style: AppTextStyles.ligthTextLoginRegist
                           .copyWith(color: AppColors.primeiroPlano),
                     ),
