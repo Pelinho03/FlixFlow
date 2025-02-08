@@ -6,24 +6,29 @@ class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Adicionar um comentário (sem substituir os existentes)
+  // Adicionar um comentário (sem substituir os existentes)
   Future<void> addComment(String movieId, String comment) async {
     final user = _auth.currentUser;
     if (user == null) return;
 
     final docRef = _firestore.collection('users').doc(user.uid);
 
+    // Buscar o username na coleção 'username' do usuário
+    final userDoc = await docRef.get();
+    final username =
+        userDoc.data()?['username'] ?? 'Usuário desconhecido'; // Valor padrão
+
     // Criar o comentário separadamente
     final newComment = {
+      'username': username, // Adiciona o nome do usuário ao comentário
       'text': comment,
-      'timestamp':
-          Timestamp.now(), // Usa Timestamp.now() em vez de serverTimestamp()
+      'timestamp': Timestamp.now(),
     };
 
     await docRef.set({
       'comments': {
-        movieId: FieldValue.arrayUnion(
-            [newComment]) // Agora passa o objeto criado antes
-      }
+        movieId: FieldValue.arrayUnion([newComment]),
+      },
     }, SetOptions(merge: true));
   }
 
@@ -44,6 +49,7 @@ class UserService {
   }
 
   // Editar um comentário
+  // Editar um comentário
   Future<void> editComment(String movieId, int index, String newComment) async {
     final user = _auth.currentUser;
     if (user == null) return;
@@ -56,11 +62,14 @@ class UserService {
           (doc.data()?['comments']?[movieId] as List<dynamic>?) ?? []);
 
       if (index < comments.length) {
-        comments[index] = {
+        // Manter o 'username' do comentário original (sem alterar)
+        final updatedComment = {
+          'username': comments[index]['username'], // Usa o mesmo username
           'text': newComment,
-          'timestamp':
-              Timestamp.now(), // Usa Timestamp.now() em vez de FieldValue
+          'timestamp': Timestamp.now(),
         };
+
+        comments[index] = updatedComment;
 
         await docRef.update({
           'comments.$movieId': comments,

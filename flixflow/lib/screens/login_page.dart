@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Adiciona a firebase
 import '../styles/app_colors.dart';
@@ -25,8 +26,18 @@ class LoginPage extends StatelessWidget {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
 
+      // Verificar se o utilizador tem um username
+      final user = userCredential.user;
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(user!.uid);
+      final userDoc = await userRef.get();
+      final username = userDoc.data()?['username'] ?? null;
+
+      String displayName =
+          username ?? user.email!; // Se não tiver username, usa o email
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bem-vindo, ${userCredential.user!.email}!')),
+        SnackBar(content: Text('Bem-vindo, $displayName!')),
       );
 
       // Redirecionar para a home_page após login (correto)

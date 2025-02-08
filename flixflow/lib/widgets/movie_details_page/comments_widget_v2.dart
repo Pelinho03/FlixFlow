@@ -171,13 +171,24 @@ class _CommentWidgetState extends State<CommentWidget> {
                         style: AppTextStyles.mediumText
                             .copyWith(color: AppColors.primeiroPlano),
                       ),
-                      subtitle: Text(
-                        comment['timestamp'] != null
-                            ? DateFormat('dd/MM/yyyy HH:mm').format(
-                                (comment['timestamp'] as Timestamp).toDate())
-                            : "Sem data",
-                        style: AppTextStyles.smallText
-                            .copyWith(color: AppColors.roxo),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            comment['username'], // Exibe o nome do usuário
+                            style: AppTextStyles.smallText
+                                .copyWith(color: AppColors.roxo),
+                          ),
+                          Text(
+                            comment['timestamp'] != null
+                                ? DateFormat('dd/MM/yyyy HH:mm').format(
+                                    (comment['timestamp'] as Timestamp)
+                                        .toDate())
+                                : "Sem data",
+                            style: AppTextStyles.smallText
+                                .copyWith(color: AppColors.roxo),
+                          ),
+                        ],
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
