@@ -72,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/imgs/login_bg2.png'),
+                image: AssetImage('assets/imgs/profile_bg.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -90,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       backgroundColor: AppColors.cinza,
                       backgroundImage: photoUrl != null
                           ? NetworkImage(photoUrl!)
-                          : const AssetImage('assets/imgs/default_actor_v2.png')
+                          : const AssetImage('assets/imgs/logo_dark_1_1024.png')
                               as ImageProvider,
                       child: photoUrl == null
                           ? const Icon(Icons.camera_alt,
