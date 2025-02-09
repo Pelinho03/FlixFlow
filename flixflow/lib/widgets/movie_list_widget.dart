@@ -9,12 +9,14 @@ class MovieListWidget extends StatefulWidget {
   final List<dynamic> popularMovies;
   final List<dynamic> topMovies;
   final List<dynamic> upcomingMovies;
+  final List<dynamic> trendingMovies;
 
   const MovieListWidget({
     super.key,
     required this.popularMovies,
     required this.topMovies,
     required this.upcomingMovies,
+    required this.trendingMovies,
   });
 
   @override
@@ -25,6 +27,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
   late List<dynamic> popularMovies;
   late List<dynamic> topMovies;
   late List<dynamic> upcomingMovies;
+  late List<dynamic> trendingMovies;
   final double bannerRatio = 4.0; // Define a proporção do banner
 
   @override
@@ -33,6 +36,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
     popularMovies = widget.popularMovies;
     topMovies = widget.topMovies;
     upcomingMovies = widget.upcomingMovies;
+    trendingMovies = widget.trendingMovies;
   }
 
   Future<bool> isFavorite(dynamic movie) async {
@@ -78,7 +82,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 
       setState(() {});
     } catch (e) {
-      print('Erro ao alternar favoritos: $e');
+      // print('Erro ao alternar favoritos: $e');
     }
   }
 
@@ -208,7 +212,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          _buildMovieList('Mais Populares', popularMovies, context),
+          _buildMovieList('Tendências', trendingMovies, context),
           const SizedBox(height: 15.0),
           const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
           const SizedBox(height: 15.0),
@@ -229,12 +233,16 @@ class _MovieListWidgetState extends State<MovieListWidget> {
               },
             ),
           ),
-          const SizedBox(height: 15.0),
+          // const SizedBox(height: 15.0),
+          const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
+          _buildMovieList('Mais Populares', popularMovies, context),
           const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
           _buildMovieList('Top Filmes', topMovies, context),
           const SizedBox(height: 15.0),
           const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
           _buildMovieList('Brevemente', upcomingMovies, context),
+          const SizedBox(height: 15.0),
+          const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
         ],
       ),
     );

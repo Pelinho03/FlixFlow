@@ -18,7 +18,7 @@ class MovieCastWidget extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 160,
+          height: 180,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: cast.length,
@@ -80,7 +80,7 @@ class MovieCastWidget extends StatelessWidget {
                             color: AppColors.roxo,
                             height: 1.2, // Ajuste do espaçamento entre linhas
                           ),
-                          maxLines: 2,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

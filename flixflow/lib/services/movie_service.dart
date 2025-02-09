@@ -6,6 +6,21 @@ class MovieService {
   final String _apiKey = dotenv.env['MOVIE_API_KEY'] ?? '';
   final String _baseUrl = 'https://api.themoviedb.org/3';
 
+// Filmes em Tendência
+  Future<List<dynamic>> getTrendingMovies() async {
+    final url = Uri.parse(
+        '$_baseUrl/trending/movie/day?api_key=$_apiKey&language=pt-PT');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['results'] ?? [];
+    } else {
+      throw Exception(
+          'Erro ao carregar filmes em tendência: ${response.statusCode}');
+    }
+  }
+
   // Filmes Populares
   Future<List<dynamic>> getPopularMovies() async {
     final url =

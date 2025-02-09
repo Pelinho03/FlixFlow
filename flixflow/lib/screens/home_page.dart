@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   late Future<List<dynamic>> _popularMovies;
   late Future<List<dynamic>> _topMovies;
   late Future<List<dynamic>> _upcomingMovies;
+  late Future<List<dynamic>> _trendingMovies;
   Future<List<dynamic>>? _searchMovies;
   Future<Map<int, String>>? _genresFuture;
   List<dynamic>? _filteredMovies; // Lista de filmes filtrados
@@ -34,6 +35,8 @@ class _HomePageState extends State<HomePage> {
     _popularMovies = MovieService().getPopularMovies();
     _topMovies = MovieService().getTopMovies();
     _upcomingMovies = MovieService().getUpcomingMovies();
+    _trendingMovies =
+        MovieService().getTrendingMovies(); // Listagem de tendências
     _genresFuture = MovieService().fetchGenres();
   }
 
@@ -46,7 +49,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-// Método para filtrar filmes por género
+  // Método para filtrar filmes por género
   void _filterMoviesByGenre(int genreId) async {
     if (_selectedGenreId == genreId) {
       // Se o mesmo género for clicado novamente, limpa o filtro
@@ -91,7 +94,8 @@ class _HomePageState extends State<HomePage> {
               child: _searchQuery.isNotEmpty
                   ? _buildSearchResults()
                   : _filteredMovies != null
-                      ? _buildMovieList(_filteredMovies!)
+                      ? _buildMovieList(
+                          _filteredMovies!) // Exibe filmes filtrados
                       : _buildDefaultLists(),
             ),
             const SizedBox(height: 29),
@@ -131,11 +135,13 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildDefaultLists() {
     return FutureBuilder<List<List<dynamic>>>(
+      // Lista múltipla de filmes
       future: Future.wait([
         _popularMovies,
         _topMovies,
         _upcomingMovies,
-      ]), // Adicionar _upcomingMovies
+        _trendingMovies, // Inclui os filmes de tendências
+      ]),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -146,11 +152,13 @@ class _HomePageState extends State<HomePage> {
         final popularMovies = snapshot.data![0];
         final topMovies = snapshot.data![1];
         final upcomingMovies = snapshot.data![2];
+        final trendingMovies = snapshot.data![3];
 
         return MovieListWidget(
           popularMovies: popularMovies,
           topMovies: topMovies,
           upcomingMovies: upcomingMovies,
+          trendingMovies: trendingMovies, // Passa os filmes de tendência
         );
       },
     );
