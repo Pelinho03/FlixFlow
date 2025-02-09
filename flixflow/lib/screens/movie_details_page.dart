@@ -25,17 +25,20 @@ class MovieDetailPage extends StatefulWidget {
 }
 
 class _MovieDetailPageState extends State<MovieDetailPage> {
-  late Future<List<dynamic>> _movieImages;
-  late Future<List<String>> _movieGenres;
-  late Future<Map<String, String>> _movieCredits;
-  late Future<dynamic> _movieDetails;
-  late Future<String?> _movieTrailer;
-  late Future<List<dynamic>> _movieCast;
-  final MovieService _movieService = MovieService();
+  late Future<List<dynamic>> _movieImages; // Carregar as imagens do filme
+  late Future<List<String>> _movieGenres; // Carregar os géneros do filme
+  late Future<Map<String, String>>
+      _movieCredits; // Carregar os créditos do filme
+  late Future<dynamic> _movieDetails; // Carregar os detalhes do filme
+  late Future<String?> _movieTrailer; // Carregar o trailer do filme
+  late Future<List<dynamic>> _movieCast; // Carregar o elenco do filme
+  final MovieService _movieService =
+      MovieService(); // Serviço para obter dados do filme
 
   @override
   void initState() {
     super.initState();
+    // Inicializa as variáveis com os dados do filme
     _movieImages = _movieService.fetchMovieImages(widget.movie['id']);
     _movieGenres =
         _getMovieGenres(widget.movie['genre_ids'] ?? []); // <-- Corrigido aqui
@@ -45,14 +48,18 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     _movieCast = _movieService.getMovieCast(widget.movie['id']);
   }
 
+  // Função para obter os géneros do filme com base no IDs
   Future<List<String>> _getMovieGenres(List<dynamic>? genreIds) async {
     try {
-      final genresMap = await _movieService.fetchGenres();
+      final genresMap =
+          await _movieService.fetchGenres(); // Buscar todos os géneros
       return (genreIds ?? [])
-          .map((id) => genresMap[id] ?? 'Desconhecido')
+          .map((id) =>
+              genresMap[id] ??
+              'Desconhecido') // Mapear o ID para o nome do género
           .toList();
     } catch (error) {
-      return [];
+      return []; // Retorna lista vazia em caso de erro
     }
   }
 
@@ -60,7 +67,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleWidget: Text(widget.movie['title'] ?? 'Detalhes do Filme'),
+        titleWidget: Text(
+            widget.movie['title'] ?? 'Detalhes do Filme'), // Título do filme
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 26.0, vertical: 10),
@@ -68,7 +76,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Imagens do Filme
+              // Exibindo as imagens do filme
               FutureBuilder<List<dynamic>>(
                 future: _movieImages,
                 builder: (context, snapshot) {
@@ -92,10 +100,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               const SizedBox(height: 11.0),
 
               Row(
-                // mainAxisAlignment: MainAxisAlignment
-                //     .spaceBetween, // Mantém o título e as estrelas separados
                 children: [
-                  // Título do Filme
+                  // Título do filme
                   Expanded(
                     child: Text(
                       widget.movie['title'] ?? 'Título não disponível',
@@ -107,6 +113,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     ),
                   ),
 
+                  // Exibindo a classificação do filme
                   FutureBuilder<dynamic>(
                     future: _movieDetails,
                     builder: (context, snapshot) {
@@ -122,7 +129,6 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       }
                     },
                   ),
-                  // Sistema de classificação por estrelas (dinâmico)
                 ],
               ),
 
@@ -132,7 +138,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 thickness: 0.1,
               ),
 
-              // Sistema de classificação por estrelas pessoal
+              // Sistema de classificação pessoal
               RatingWidget(movieId: widget.movie['id'].toString()),
 
               const Divider(
@@ -141,7 +147,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 thickness: 0.1,
               ),
 
-              // Géneros do Filme
+              // Exibindo os géneros do filme
               FutureBuilder<List<String>>(
                 future: _movieGenres,
                 builder: (context, snapshot) {
@@ -158,11 +164,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
               const SizedBox(height: 8),
 
-              // Ano de Lançamento e Duração
-              // Ano de Lançamento e País de Origem
+              // Exibindo o ano de lançamento e o país de origem
               Row(
                 children: [
-                  // Ano de Lançamento
+                  // Ano de lançamento
                   Text(
                     '${widget.movie['release_date']?.substring(0, 4) ?? 'N/A'}',
                     style: AppTextStyles.mediumText.copyWith(
@@ -171,7 +176,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   ),
                   const SizedBox(width: 8),
 
-                  // País de Origem
+                  // Exibindo o país de origem
                   FutureBuilder<dynamic>(
                     future: _movieDetails,
                     builder: (context, snapshot) {
@@ -208,16 +213,20 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     size: 16,
                     color: AppColors.roxo,
                   ),
+
                   const SizedBox(width: 8),
                   // Duração do Filme
                   FutureBuilder<dynamic>(
                     future: _movieDetails,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Exibe um espaço vazio enquanto os dados são carregados
                         return const SizedBox.shrink();
                       } else if (snapshot.hasError) {
+                        // Caso haja um erro, retorna "N/A"
                         return const Text('N/A');
                       } else if (snapshot.hasData) {
+                        // Se os dados forem recebidos, exibe a duração
                         final runtime = snapshot.data!['runtime'];
                         return Text(
                           runtime != null ? '$runtime min' : 'N/A',
@@ -226,6 +235,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           ),
                         );
                       } else {
+                        // Se não houver dados, retorna "N/A"
                         return const Text('N/A');
                       }
                     },
@@ -253,8 +263,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 future: _movieDetails,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Exibe um indicador de carregamento enquanto os dados são recebidos
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
+                    // Caso ocorra um erro, exibe mensagem de erro
                     return const Text('Erro ao carregar detalhes do filme.');
                   } else if (snapshot.hasData) {
                     final movieDetails = snapshot.data!;
@@ -316,13 +328,17 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                 future: _movieCast,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Exibe um indicador de carregamento enquanto os dados do elenco são recebidos
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
+                    // Se houver erro, exibe uma mensagem de erro
                     return const Center(
                         child: Text('Erro ao carregar elenco.'));
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    // Caso tenha dados, exibe a lista de atores
                     return MovieCastWidget(cast: snapshot.data!);
                   } else {
+                    // Se não houver dados, exibe uma mensagem
                     return Center(
                         child: Text('Elenco não disponível.',
                             style: AppTextStyles.mediumText
@@ -338,11 +354,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
               const SizedBox(height: 20),
 
-              //Trailer
+              // Trailer
               FutureBuilder<String?>(
                 future: _movieTrailer,
                 builder: (context, snapshot) {
                   if (snapshot.hasError || snapshot.data == null) {
+                    // Se não houver trailer, exibe uma mensagem
                     return Center(
                         child: Text('Trailer não disponível.',
                             style: AppTextStyles.mediumText
@@ -388,6 +405,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
+                      // Widget de Comentários para o filme
                       CommentWidget(
                         movieId: widget.movie['id'].toString(),
                       ),
@@ -401,6 +419,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           ),
         ),
       ),
+      // Barra de navegação personalizada na parte inferior
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: 0,
         onItemTapped: (index) async {

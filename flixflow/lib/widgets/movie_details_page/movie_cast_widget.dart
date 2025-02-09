@@ -27,6 +27,7 @@ class MovieCastWidget extends StatelessWidget {
               final actorName = actor['name'] ?? 'Desconhecido';
               final characterName =
                   actor['character'] ?? 'Personagem desconhecida';
+              // ignore: unused_local_variable
               final actorPhoto = actor['profile_path'] != null
                   ? 'https://image.tmdb.org/t/p/w500${actor['profile_path']}'
                   : 'https://via.placeholder.com/150'; // Foto padrão se não houver foto
