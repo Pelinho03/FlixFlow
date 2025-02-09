@@ -88,8 +88,9 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 
   Widget _buildMovieList(
       String title, List<dynamic> movies, BuildContext context) {
-    if (movies.isEmpty)
+    if (movies.isEmpty) {
       return const Center(child: Text('Nenhum filme disponível.'));
+    }
 
     return Column(
       children: [

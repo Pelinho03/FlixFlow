@@ -4,7 +4,7 @@ import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+  const ForgotPasswordPage({super.key});
 
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();

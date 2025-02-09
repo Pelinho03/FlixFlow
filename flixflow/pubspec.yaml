@@ -30,21 +30,20 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
-    firebase_core: ^3.8.1
-    firebase_auth: ^5.3.4
-    cloud_firestore: ^5.5.1
+    firebase_core: ^3.11.0
+    firebase_auth: ^5.4.2
+    cloud_firestore: ^5.6.3
     comment_box: ^0.0.18
-    #usar as duas seguintes para icon da app e screen splash
     flutter_launcher_icons: ^0.14.3
     flutter_native_splash: ^2.4.4
-    shared_preferences: ^2.3.3
+    shared_preferences: ^2.5.1
     intl:
         ^0.20.2
 
         # The following adds the Cupertino Icons font to your application.
         # Use with the CupertinoIcons class for iOS style icons.
     cupertino_icons: ^1.0.8
-    http: ^0.13.3
+    http: ^1.3.0
     youtube_player_flutter: ^9.1.1
     carousel_slider: ^5.0.0
     url_launcher: ^6.3.1
@@ -61,7 +60,7 @@ dev_dependencies:
         # activated in the `analysis_options.yaml` file located at the root of your
         # package. See that file for information about deactivating specific lint
         # rules and activating additional ones.
-    flutter_lints: ^4.0.0
+    flutter_lints: ^5.0.0
     five_pointed_star: ^1.0.3
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -85,7 +84,7 @@ flutter:
         - assets/imgs/default_actor_v2.png
         - assets/imgs/teste.png
         - assets/imgs/splash_v5.png
-        - assets/imgs/profile_bg.png
+        - assets/imgs/profile_bg_v2.png
         - dados_sensiveis.env
         # An image asset can refer to one or more resolution-specific "variants", see
         # https://flutter.dev/to/resolution-aware-images

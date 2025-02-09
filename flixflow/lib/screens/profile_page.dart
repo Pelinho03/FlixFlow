@@ -9,6 +9,8 @@ import 'package:flixflow/widgets/custom_bottom_navigation_bar.dart';
 import '../services/navigation_service.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -72,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/imgs/profile_bg.png'),
+                image: AssetImage('assets/imgs/profile_bg_v2.png'),
                 fit: BoxFit.cover,
               ),
             ),

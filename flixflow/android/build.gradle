@@ -1,15 +1,3 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        // Adicione o plugin de serviços do Google como uma dependência
-        classpath 'com.google.gms:google-services:4.4.2' // Verifique se a versão está atualizada
-        // Outras dependências do classpath se necessário
-    }
-}
-
 allprojects {
     repositories {
         google()

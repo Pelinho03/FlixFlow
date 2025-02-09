@@ -20,8 +20,9 @@ class AuthService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? loginTimestamp = prefs.getInt(_loginTimestampKey);
 
-    if (loginTimestamp == null)
+    if (loginTimestamp == null) {
       return false; // Se não houver timestamp, a sessão expirou.
+    }
 
     int currentTime = DateTime.now().millisecondsSinceEpoch;
     int elapsedTime =

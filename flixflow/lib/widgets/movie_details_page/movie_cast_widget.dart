@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class MovieCastWidget extends StatelessWidget {
   final List<dynamic> cast;
 
-  const MovieCastWidget({Key? key, required this.cast}) : super(key: key);
+  const MovieCastWidget({super.key, required this.cast});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class MovieCastWidget extends StatelessWidget {
 
               return Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: Container(
+                child: SizedBox(
                   width: 90, // Largura total da caixa
                   height: 150, // Altura total da caixa
                   child: Column(
