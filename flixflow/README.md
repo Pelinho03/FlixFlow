@@ -1,79 +1,72 @@
+---
+
 # FlixFlow
 
 ## 📌 Sobre o Projeto
 
-FlixFlow é uma aplicação Flutter para gestão e visualização de filmes, permitindo aos utilizadores marcar favoritos, comentar e avaliar os filmes.
+FlixFlow é uma aplicação Flutter que permite aos utilizadores gerir e visualizar filmes. A app oferece funcionalidades como marcar filmes como favoritos, comentar e avaliar filmes.
 
 ## 🛠️ Configuração do Ambiente
 
-Para executar o projeto, é necessário ter o Flutter instalado. Se ainda não o tens, segue as instruções oficiais:
+Para executar o projeto, precisas de ter o Flutter instalado. Caso ainda não tenhas, segue as instruções oficiais:
 
--   [Instalar Flutter](https://docs.flutter.dev/get-started/install)
+- [Instalar Flutter](https://docs.flutter.dev/get-started/install)
 
-Além disso, deves garantir que tens o **Java JDK** e o **Android SDK** configurados corretamente.
+Além disso, certifica-te de que tens o **Java JDK** e o **Android SDK** configurados corretamente.
 
 ## 📥 Instalação
 
-1️⃣ **Clonar o repositório**
+1️⃣ **Clonar o Repositório**
 
 ```bash
-git clone https://github.com/teu-repositorio/flixflow.git
-cd flixflow
+git clone https://github.com/Pelinho03/FlixFlow.git
+cd FlixFlow
 ```
 
-2️⃣ **Instalar as dependências**
+2️⃣ **Criar o Projeto**
 
-```bash
-flutter pub get
-```
-
-3️⃣ **Gerar as plataformas (caso necessário)**
+Caso ainda não tenhas as páginas e ficheiros gerados, executa o comando abaixo:
 
 ```bash
 flutter create .
 ```
 
+3️⃣ **Instalar as Dependências**
+
+```bash
+flutter pub get
+```
+
+4️⃣ **Gerar Ícones e Splash Screen**
+
+Se precisares de atualizar o ícone ou a splash screen, executa:
+
+```bash
+dart run flutter_launcher_icons
+dart run flutter_native_splash:create
+```
+
 ## ⚠️ Atualização do `minSdkVersion`
 
-Este projeto utiliza Firebase, que requer um **minSdkVersion de 23**. Caso ocorra um erro ao compilar para Android, deves atualizar o ficheiro:
+Este projeto usa Firebase, que requer um **minSdkVersion de 23**. Se encontrares algum erro ao compilar, atualiza o ficheiro `android/app/build.gradle`:
 
-### \*\*Editar \*\***`android/app/build.gradle`**
+1. Abre `android/app/build.gradle`.
+2. Altera o valor de `minSdk` para 23:
 
-1. Abrir `android/app/build.gradle`
-2. Alterar esta linha dentro de `defaultConfig`:
     ```gradle
     minSdk = 23
     ```
-3. Guardar e fechar o ficheiro.
-4. Limpar e atualizar o projeto:
+
+3. Depois, executa:
+
     ```bash
     flutter clean
     flutter pub get
     ```
 
-## 🎨 Gerar Ícones da App
+## 🚀 Como Gerar o APK
 
-Caso alteres o ícone da aplicação, deves gerar os ícones com o seguinte comando:
-
-```bash
-dart run flutter_launcher_icons
-```
-
-O ficheiro de configuração encontra-se em `flutter_launcher_icons.yaml`.
-
-## 🚀 Configurar Splash Screen
-
-Se for necessário configurar ou atualizar a splash screen da aplicação, executa:
-
-```bash
-dart run flutter_native_splash:create
-```
-
-O ficheiro de configuração está em `pubspec.yaml`.
-
-## 🔧 Como Gerar o APK
-
-Após instalar as dependências e corrigir possíveis erros, podes gerar o APK com:
+Para gerar o APK, usa o comando abaixo:
 
 ```bash
 flutter build apk --release
@@ -93,7 +86,7 @@ Para testar a app em modo debug, usa:
 flutter run
 ```
 
-Se quiseres executar em um emulador específico, usa:
+Se quiseres testar em um dispositivo específico:
 
 ```bash
 flutter run -d <ID_do_dispositivo>
@@ -107,4 +100,14 @@ flutter devices
 
 ---
 
-Qualquer dúvida, verifica a documentação oficial do Flutter ou entra em contacto! 🚀
+## 🎨 Mockups
+
+Caso seja necessário confirmar os mockups da app, podes aceder ao design completo no Figma:
+
+[Mockups do Figma - FlixFlow](https://www.figma.com/design/N2neSEkPEFsgqUJbpohqfh/FlixFlow?node-id=20-184&t=rvAMveOhzVEQEP6s-1)
+
+---
+
+Caso tenhas algum erro ou problema, podes sempre consultar o meu repositório para obter os ficheiros necessários: [FlixFlow no GitHub](https://github.com/Pelinho03/FlixFlow.git)
+
+---
