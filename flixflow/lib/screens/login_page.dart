@@ -20,27 +20,29 @@ class LoginPage extends StatelessWidget {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
       print("Login bem-sucedido: ${userCredential.user!.email}");
 
       // Guarda o estado de login no SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
 
-      // Verificar se o utilizador tem um username
+      // Obtém os dados do utilizador do Firestore
       final user = userCredential.user;
       final userRef =
           FirebaseFirestore.instance.collection('users').doc(user!.uid);
       final userDoc = await userRef.get();
-      final username = userDoc.data()?['username'] ?? null;
+      final profile = userDoc.data()?['profile'] ?? {};
 
-      String displayName =
-          username ?? user.email!; // Se não tiver username, usa o email
+      // Verifica se existe um nome definido
+      String displayName = profile['name'] ?? user.email!;
 
+      // Exibe mensagem de boas-vindas
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Bem-vindo, $displayName!')),
       );
 
-      // Redirecionar para a home_page após login (correto)
+      // Redireciona para a HomePage
       Navigator.pushReplacementNamed(context, '/');
     } on FirebaseAuthException catch (e) {
       print('Erro: $e');

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flixflow/screens/profile_page.dart';
 import '../../styles/app_colors.dart';
 import '../../styles/app_text.dart';
-import '../username_dialog.dart';
 
 class SearchBanner extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
@@ -59,10 +59,10 @@ class SearchBanner extends StatelessWidget {
                   top: -10,
                   right: 10,
                   child: IconButton(
-                    icon: Icon(Icons.account_circle,
+                    icon: const Icon(Icons.account_circle,
                         color: AppColors.primeiroPlano, size: 40),
                     onPressed: () {
-                      _showUsernameDialog(context);
+                      _navigateToProfile(context);
                     },
                   ),
                 ),
@@ -74,12 +74,16 @@ class SearchBanner extends StatelessWidget {
     );
   }
 
-  void _showUsernameDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return UsernameDialog();
-      },
-    );
+  //   void _showUsernameDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return UsernameDialog();
+  //     },
+  //   );
+  // }
+
+  void _navigateToProfile(BuildContext context) {
+    Navigator.pushNamed(context, '/profile');
   }
 }

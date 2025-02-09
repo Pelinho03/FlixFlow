@@ -13,6 +13,7 @@ import 'screens/login_page.dart';
 import 'screens/register_page.dart';
 import 'screens/movie_details_page.dart';
 import 'screens/news_page.dart';
+import 'screens/profile_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterPage(),
         '/movieDetails': (context) => const MovieDetailPage(movie: null),
         '/forgotPassword': (context) => const ForgotPasswordPage(),
+        '/profile': (context) => ProfilePage(),
       },
 
       debugShowCheckedModeBanner: false,

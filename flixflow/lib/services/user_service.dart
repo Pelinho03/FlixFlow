@@ -1,26 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class UserService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  // Adicionar um comentário (sem substituir os existentes)
-  // Adicionar um comentário (sem substituir os existentes)
+  // Adicionar um comentário
   Future<void> addComment(String movieId, String comment) async {
     final user = _auth.currentUser;
     if (user == null) return;
 
     final docRef = _firestore.collection('users').doc(user.uid);
-
-    // Buscar o username na coleção 'username' do usuário
     final userDoc = await docRef.get();
-    final username =
-        userDoc.data()?['username'] ?? 'Usuário desconhecido'; // Valor padrão
+    final username = userDoc.data()?['profile']?['name'] ?? user.email;
 
-    // Criar o comentário separadamente
     final newComment = {
-      'username': username, // Adiciona o nome do usuário ao comentário
+      'username': username, // Nome do utilizador
       'text': comment,
       'timestamp': Timestamp.now(),
     };
@@ -32,7 +30,7 @@ class UserService {
     }, SetOptions(merge: true));
   }
 
-  // Obter todos os comentários do utilizador para um filme específico
+  // Obter todos os comentários de um filme
   Future<List<Map<String, dynamic>>> getComments(String movieId) async {
     final user = _auth.currentUser;
     if (user == null) return [];
@@ -49,7 +47,6 @@ class UserService {
   }
 
   // Editar um comentário
-  // Editar um comentário
   Future<void> editComment(String movieId, int index, String newComment) async {
     final user = _auth.currentUser;
     if (user == null) return;
@@ -62,18 +59,15 @@ class UserService {
           (doc.data()?['comments']?[movieId] as List<dynamic>?) ?? []);
 
       if (index < comments.length) {
-        // Manter o 'username' do comentário original (sem alterar)
         final updatedComment = {
-          'username': comments[index]['username'], // Usa o mesmo username
+          'username': comments[index]['username'], // Mantém o mesmo username
           'text': newComment,
           'timestamp': Timestamp.now(),
         };
 
         comments[index] = updatedComment;
 
-        await docRef.update({
-          'comments.$movieId': comments,
-        });
+        await docRef.update({'comments.$movieId': comments});
       }
     }
   }
@@ -87,14 +81,12 @@ class UserService {
     final doc = await docRef.get();
 
     if (doc.exists) {
-      final comments = doc.data()?['comments']?[movieId] as List<dynamic>?;
+      final comments = List<Map<String, dynamic>>.from(
+          (doc.data()?['comments']?[movieId] as List<dynamic>?) ?? []);
 
-      if (comments != null && index < comments.length) {
+      if (index < comments.length) {
         comments.removeAt(index);
-
-        await docRef.update({
-          'comments.$movieId': comments,
-        });
+        await docRef.update({'comments.$movieId': comments});
       }
     }
   }
@@ -127,35 +119,70 @@ class UserService {
     }, SetOptions(merge: true));
   }
 
-  // Salvar o nome de utilizador
-  Future<void> saveUsername(String username) async {
+  // Obter referência ao documento do utilizador
+  DocumentReference<Map<String, dynamic>> _getUserDoc() {
     final user = _auth.currentUser;
-    if (user == null) return;
-
-    final userRef = _firestore.collection('users').doc(user.uid);
-
-    await userRef.set(
-        {
-          'username':
-              username, // Salva o nome de utilizador no campo 'username'
-        },
-        SetOptions(
-            merge:
-                true)); // 'merge' garante que outros dados não sejam substituídos
+    if (user == null) {
+      throw Exception("Utilizador não autenticado.");
+    }
+    return _firestore.collection('users').doc(user.uid);
   }
 
-  // Obter o nome de utilizador
-  Future<String?> getUsername() async {
-    final user = _auth.currentUser;
-    if (user == null) return null;
-
-    final userRef = _firestore.collection('users').doc(user.uid);
-    final doc = await userRef.get();
-
-    if (doc.exists) {
-      return doc.data()?['username']; // Retorna o nome de utilizador
+  // Guardar ou atualizar perfil do utilizador
+  Future<void> saveUserProfile(Map<String, dynamic> profileData) async {
+    try {
+      final userDoc = _getUserDoc();
+      await userDoc.set(
+        {'profile': profileData},
+        SetOptions(merge: true),
+      );
+    } catch (e) {
+      print("Erro ao guardar perfil: $e");
     }
+  }
 
+  // Obter perfil do utilizador
+  Future<Map<String, dynamic>?> getUserProfile() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return null;
+
+      final userDoc = _getUserDoc();
+      final docSnapshot = await userDoc.get();
+
+      if (docSnapshot.exists) {
+        Map<String, dynamic> userData = docSnapshot.data()?['profile'] ?? {};
+        userData['email'] = user.email;
+        return userData;
+      }
+    } catch (e) {
+      print("Erro ao obter perfil: $e");
+    }
     return null;
+  }
+
+  // Guardar imagem de perfil no Firebase Storage e atualizar Firestore
+  Future<String?> uploadProfileImage(File imageFile) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return null;
+
+      final ref = _storage.ref().child('profile_images/${user.uid}.jpg');
+      await ref.putFile(imageFile);
+      final imageUrl = await ref.getDownloadURL();
+
+      // Guardar URL da imagem no Firestore
+      await _getUserDoc().set(
+        {
+          'profile': {'photoUrl': imageUrl}
+        },
+        SetOptions(merge: true),
+      );
+
+      return imageUrl;
+    } catch (e) {
+      print("Erro ao fazer upload da imagem: $e");
+      return null;
+    }
   }
 }
