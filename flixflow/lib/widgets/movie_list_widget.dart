@@ -111,10 +111,10 @@ class _MovieListWidgetState extends State<MovieListWidget> {
               final movie = movies[index];
 
               return Container(
-                width: 130,
+                width: 140,
                 margin: const EdgeInsets.symmetric(horizontal: 8),
                 child: Stack(
-                  alignment: const Alignment(0.90, 0.40),
+                  alignment: const Alignment(0.90, 0.20),
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.push(
@@ -126,28 +126,29 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: movie['poster_path'] != null
-                                  ? Image.network(
-                                      'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                                      fit: BoxFit.cover,
-                                      width: 148,
-                                      height: 228,
-                                    )
-                                  : const Icon(Icons.movie, size: 80),
-                            ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: movie['poster_path'] != null
+                                ? Image.network(
+                                    'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                                    fit: BoxFit.cover,
+                                    width: 148,
+                                    height: 200,
+                                  )
+                                : const Icon(Icons.movie, size: 80),
                           ),
                           const SizedBox(height: 8),
-                          SizedBox(
+                          // O título e o ano
+                          Container(
                             width: 148,
-                            height:
-                                58, // Altura fixa para alinhar bem os elementos
+                            padding: const EdgeInsets.only(top: 8),
                             child: Column(
+                              mainAxisSize: MainAxisSize
+                                  .min, // Garante que o Column ocupe o mínimo de espaço necessário
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
+                                Flexible(
+                                  // Limita a altura ocupada pelo título
                                   child: Text(
                                     movie['title'] ?? 'Título não disponível',
                                     style: AppTextStyles.mediumText.copyWith(
@@ -157,6 +158,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
+                                const SizedBox(height: 4), // Pequena margem
                                 Text(
                                   '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
                                   style: AppTextStyles.smallText.copyWith(
@@ -242,7 +244,6 @@ class _MovieListWidgetState extends State<MovieListWidget> {
           const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
           _buildMovieList('Brevemente', upcomingMovies, context),
           const SizedBox(height: 15.0),
-          const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
         ],
       ),
     );
