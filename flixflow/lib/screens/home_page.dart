@@ -25,27 +25,28 @@ class _HomePageState extends State<HomePage> {
   Future<List<dynamic>>? _searchMovies;
   Future<Map<int, String>>? _genresFuture;
   List<dynamic>? _filteredMovies; // Lista de filmes filtrados
-  String _searchQuery = '';
-  int _selectedIndex = 0;
-  int? _selectedGenreId;
+  String _searchQuery = ''; // Variável para armazenar a consulta de pesquisa
+  int _selectedIndex = 0; // Índice da navegação inferior
+  int? _selectedGenreId; // ID do género selecionado para filtrar filmes
 
   @override
   void initState() {
     super.initState();
+    // Inicializa as listas de filmes com os dados da API
     _popularMovies = MovieService().getPopularMovies();
     _topMovies = MovieService().getTopMovies();
     _upcomingMovies = MovieService().getUpcomingMovies();
-    _trendingMovies =
-        MovieService().getTrendingMovies(); // Listagem de tendências
-    _genresFuture = MovieService().fetchGenres();
+    _trendingMovies = MovieService().getTrendingMovies();
+    _genresFuture = MovieService().fetchGenres(); // Carrega géneros disponíveis
   }
 
+  // Função chamada sempre que o utilizador altera o texto na barra de pesquisa
   void _onSearchChanged(String query) {
     setState(() {
       _searchQuery = query;
-      _searchMovies = query.isNotEmpty
-          ? MovieService().searchMovies(query)
-          : null; // Se vazio, limpa os resultados
+      // Se o campo de pesquisa estiver vazio, limpa os resultados
+      _searchMovies =
+          query.isNotEmpty ? MovieService().searchMovies(query) : null;
     });
   }
 
@@ -57,11 +58,11 @@ class _HomePageState extends State<HomePage> {
         _filteredMovies = null; // Remove o filtro
         _selectedGenreId = null;
       });
-      return; // Sai da função
+      return;
     }
 
     try {
-      // Carrega a lista de filmes populares e filtra pelo género selecionado
+      // Filtra os filmes populares pelo género selecionado
       final movies = await MovieService().getPopularMovies();
       final filtered = movies.where((movie) {
         final genreIds = movie['genre_ids'] as List<dynamic>;
@@ -73,7 +74,7 @@ class _HomePageState extends State<HomePage> {
         _selectedGenreId = genreId; // Atualiza o género selecionado
       });
     } catch (e) {
-      // print('Erro ao filtrar filmes: $e');
+      // Se houver erro, não faz nada
     }
   }
 
@@ -83,7 +84,9 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Widget para o banner de pesquisa
             SearchBanner(onSearchChanged: _onSearchChanged),
+            // Widget para os filtros de género
             GenreFilterWidget(
               genresFuture: _genresFuture,
               selectedGenreId: _selectedGenreId,
@@ -92,29 +95,31 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 26.0),
               child: _searchQuery.isNotEmpty
-                  ? _buildSearchResults()
+                  ? _buildSearchResults() // resultados da pesquisa
                   : _filteredMovies != null
-                      ? _buildMovieList(
-                          _filteredMovies!) // Exibe filmes filtrados
-                      : _buildDefaultLists(),
+                      ? _buildMovieList(_filteredMovies!) // filmes filtrados
+                      : _buildDefaultLists(), // as listas padrão de filmes
             ),
-            const SizedBox(height: 29),
+            const SizedBox(height: 29), // Espaço no final da tela
           ],
         ),
       ),
+      // Barra de navegação inferior
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _selectedIndex,
         onItemTapped: (index) async {
           setState(() {
             _selectedIndex = index;
           });
+          // Navega para a página correspondente
           await NavigationService.handleNavigation(context, index);
         },
       ),
-      backgroundColor: AppColors.fundo,
+      backgroundColor: AppColors.fundo, // Cor de fundo da página
     );
   }
 
+  // Função para exibir os resultados da pesquisa
   Widget _buildSearchResults() {
     return FutureBuilder<List<dynamic>>(
       future: _searchMovies,
@@ -128,19 +133,19 @@ class _HomePageState extends State<HomePage> {
         }
 
         final searchResults = snapshot.data ?? [];
-        return _buildMovieList(searchResults);
+        return _buildMovieList(searchResults); // Exibe os filmes encontrados
       },
     );
   }
 
+  // Função para exibir as listas de filmes padrão
   Widget _buildDefaultLists() {
     return FutureBuilder<List<List<dynamic>>>(
-      // Lista múltipla de filmes
       future: Future.wait([
         _popularMovies,
         _topMovies,
         _upcomingMovies,
-        _trendingMovies, // Inclui os filmes de tendências
+        _trendingMovies,
       ]),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -149,6 +154,7 @@ class _HomePageState extends State<HomePage> {
           return const Center(child: Text('Erro ao carregar filmes.'));
         }
 
+        // Carrega as listas de filmes
         final popularMovies = snapshot.data![0];
         final topMovies = snapshot.data![1];
         final upcomingMovies = snapshot.data![2];
@@ -158,15 +164,16 @@ class _HomePageState extends State<HomePage> {
           popularMovies: popularMovies,
           topMovies: topMovies,
           upcomingMovies: upcomingMovies,
-          trendingMovies: trendingMovies, // Passa os filmes de tendência
+          trendingMovies: trendingMovies,
         );
       },
     );
   }
 
+  // Função para construir uma lista de filmes
   Widget _buildMovieList(List<dynamic> movies) {
     return FutureBuilder<Map<int, String>>(
-      future: _genresFuture, // Busca os géneros
+      future: _genresFuture, // Carrega os géneros dos filmes
       builder: (context, snapshot) {
         final genres = snapshot.data; // Mapa de géneros
 
@@ -188,10 +195,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Verifica se um filme é favorito
   Future<bool> isFavorite(dynamic movie) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return false;
+      if (user == null)
+        return false; // Se o utilizador não estiver logado, não pode ser favorito
 
       final doc = await FirebaseFirestore.instance
           .collection('users')
@@ -202,12 +211,14 @@ class _HomePageState extends State<HomePage> {
 
       final data = doc.data() as Map<String, dynamic>;
       final favorites = List<int>.from(data['favorites'] ?? []);
-      return favorites.contains(movie['id']);
+      return favorites
+          .contains(movie['id']); // Verifica se o filme está nos favoritos
     } catch (e) {
-      return false;
+      return false; // Caso haja erro, retorna false
     }
   }
 
+  // Função para adicionar/remover filmes dos favoritos
   Future<void> toggleFavorite(dynamic movie) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) throw Exception('Utilizador não autenticado.');
@@ -218,7 +229,7 @@ class _HomePageState extends State<HomePage> {
         final snapshot = await transaction.get(docRef);
         if (!snapshot.exists) {
           transaction.set(docRef, {
-            'favorites': [movie['id']]
+            'favorites': [movie['id']] // Adiciona o filme aos favoritos
           });
           return;
         }
@@ -227,15 +238,15 @@ class _HomePageState extends State<HomePage> {
         final favorites = List<int>.from(data['favorites'] ?? []);
 
         if (favorites.contains(movie['id'])) {
-          favorites.remove(movie['id']);
+          favorites.remove(movie['id']); // Remove o filme dos favoritos
         } else {
-          favorites.add(movie['id']);
+          favorites.add(movie['id']); // Adiciona o filme aos favoritos
         }
 
         transaction.update(docRef, {'favorites': favorites});
       });
     } catch (e) {
-      rethrow;
+      rethrow; // Lança o erro novamente
     }
   }
 }

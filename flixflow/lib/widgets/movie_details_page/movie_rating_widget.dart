@@ -10,15 +10,18 @@ class MovieRatingWidget extends StatelessWidget {
     required this.rating,
   });
 
+  // Função para calcular o número de estrelas preenchidas com base na avaliação
   int _getFilledStars(double rating) {
-    return (rating / 2).round();
+    return (rating / 2).round(); // Divide a nota por 2. escala de 0 a 5
   }
 
   @override
   Widget build(BuildContext context) {
+    // Obtém o número de estrelas preenchidas
     final filledStars = _getFilledStars(rating);
     return Row(
       children: [
+        // Gera 5 ícones de estrelas, preenchidas ou vazias
         Row(
           children: List.generate(5, (index) {
             return Icon(
@@ -28,7 +31,8 @@ class MovieRatingWidget extends StatelessWidget {
             );
           }),
         ),
-        const SizedBox(width: 8), // Espaço entre as estrelas e o texto
+        const SizedBox(width: 8),
+        // Exibe a nota formatada
         Text(
           '${(rating / 2).toStringAsFixed(1)}/5',
           style: AppTextStyles.mediumText.copyWith(color: AppColors.laranja),

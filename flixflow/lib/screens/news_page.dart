@@ -21,7 +21,8 @@ class _NewsPageState extends State<NewsPage> {
   @override
   void initState() {
     super.initState();
-    _newsFuture = _newsService.fetchNews();
+    _newsFuture = _newsService
+        .fetchNews(); // Inicia a obtenção das notícias ao abrir a página
   }
 
   @override
@@ -32,11 +33,15 @@ class _NewsPageState extends State<NewsPage> {
         future: _newsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child:
+                    CircularProgressIndicator()); // Mostra um indicador de carregamento
           } else if (snapshot.hasError ||
               !snapshot.hasData ||
               snapshot.data!.isEmpty) {
-            return const Center(child: Text('Nenhuma notícia encontrada.'));
+            return const Center(
+                child: Text(
+                    'Nenhuma notícia encontrada.')); // Mensagem de erro ou dados vazios
           }
 
           final articles = snapshot.data!;
@@ -73,6 +78,7 @@ class _NewsPageState extends State<NewsPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      // Título da notícia
                                       Text(
                                         article['title'] ?? 'Sem título',
                                         style: AppTextStyles.mediumBoldText
@@ -86,6 +92,7 @@ class _NewsPageState extends State<NewsPage> {
                                         color: AppColors.roxo,
                                         thickness: 0.1,
                                       ),
+                                      // Imagem da notícia
                                       if (article['urlToImage'] != null)
                                         ClipRRect(
                                           borderRadius:
@@ -109,6 +116,7 @@ class _NewsPageState extends State<NewsPage> {
                                         color: AppColors.roxo,
                                         thickness: 0.1,
                                       ),
+                                      // Descrição da notícia
                                       Text(
                                         article['description'] ??
                                             'Sem descrição disponível',
@@ -118,6 +126,7 @@ class _NewsPageState extends State<NewsPage> {
                                         ),
                                       ),
                                       const SizedBox(height: 12.0),
+                                      // Conteúdo completo (se disponível)
                                       if (article['content'] != null)
                                         Text(
                                           article['content'] ??
@@ -128,6 +137,7 @@ class _NewsPageState extends State<NewsPage> {
                                           ),
                                         ),
                                       const SizedBox(height: 12.0),
+                                      // Link para a notícia original
                                       if (article['url'] != null)
                                         Center(
                                           child: TextButton(
@@ -138,14 +148,12 @@ class _NewsPageState extends State<NewsPage> {
                                             style: ButtonStyle(
                                               backgroundColor:
                                                   WidgetStateProperty.all(
-                                                      AppColors
-                                                          .verde), // Cor de fundo
+                                                      AppColors.verde),
                                               shape: WidgetStateProperty.all<
                                                   RoundedRectangleBorder>(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          6), // Raio da borda
+                                                      BorderRadius.circular(6),
                                                 ),
                                               ),
                                             ),
@@ -169,6 +177,7 @@ class _NewsPageState extends State<NewsPage> {
                                 color: AppColors.roxo,
                                 thickness: 0.1,
                               ),
+                              // Botão para fechar
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextButton(
@@ -190,6 +199,7 @@ class _NewsPageState extends State<NewsPage> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Imagem da notícia (se disponível)
                         if (article['urlToImage'] != null)
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
@@ -207,6 +217,7 @@ class _NewsPageState extends State<NewsPage> {
                             ),
                           ),
                         const SizedBox(width: 12.0),
+                        // Texto com título e descrição
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

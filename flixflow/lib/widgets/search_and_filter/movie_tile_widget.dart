@@ -4,11 +4,16 @@ import '../../styles/app_colors.dart';
 import '../../screens/movie_details_page.dart';
 
 class MovieTile extends StatefulWidget {
+  // A estrutura que descreve um filme
   final dynamic movie;
+  // Função para verificar se o filme é favorito
   final Future<bool> Function(dynamic movie) isFavorite;
+  // Função para alternar o estado de favorito do filme
   final Future<void> Function(dynamic movie) toggleFavorite;
+  // Um mapa opcional de géneros
   final Map<int, String>? genres;
-  final Function()? onFavoriteChanged; // Callback para atualizar a pesquisa
+  // Função callback para notificar quando o favorito for alterado
+  final Function()? onFavoriteChanged;
 
   const MovieTile({
     super.key,
@@ -16,7 +21,7 @@ class MovieTile extends StatefulWidget {
     required this.isFavorite,
     required this.toggleFavorite,
     this.genres,
-    this.onFavoriteChanged, // Novo parâmetro opcional
+    this.onFavoriteChanged,
   });
 
   @override
@@ -24,6 +29,7 @@ class MovieTile extends StatefulWidget {
 }
 
 class _MovieTileState extends State<MovieTile> {
+  // Notificador para o estado do favorito
   late ValueNotifier<bool> _isFavNotifier;
 
   @override
@@ -31,6 +37,7 @@ class _MovieTileState extends State<MovieTile> {
     super.initState();
     _isFavNotifier = ValueNotifier(false);
 
+    // Verifica se o filme é favorito e atualiza o notificador
     widget.isFavorite(widget.movie).then((isFav) {
       _isFavNotifier.value = isFav;
     });
@@ -44,6 +51,7 @@ class _MovieTileState extends State<MovieTile> {
         alignment: Alignment.center, // Alinhamento centralizado para a Stack
         children: [
           GestureDetector(
+            // Quando o filme é clicado, navega para a página de detalhes
             onTap: () {
               Navigator.push(
                 context,
@@ -55,6 +63,7 @@ class _MovieTileState extends State<MovieTile> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Exibe a imagem do poster do filme ou um ícone caso não haja imagem
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: widget.movie['poster_path'] != null
@@ -71,6 +80,7 @@ class _MovieTileState extends State<MovieTile> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Exibe o título do filme
                       Text(
                         widget.movie['title'] ?? 'Título não disponível',
                         style: AppTextStyles.mediumText.copyWith(
@@ -80,6 +90,7 @@ class _MovieTileState extends State<MovieTile> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4.0),
+                      // Exibe o ano de lançamento do filme (extrai do release_date)
                       Text(
                         '${widget.movie['release_date']?.substring(0, 4) ?? 'N/A'}',
                         style: AppTextStyles.smallText.copyWith(
@@ -87,6 +98,7 @@ class _MovieTileState extends State<MovieTile> {
                         ),
                       ),
                       const SizedBox(height: 8.0),
+                      // Exibe a sinopse do filme, truncada em 6 linhas
                       Text(
                         widget.movie['overview'] ?? 'Sinopse não disponível',
                         style: AppTextStyles.smallText.copyWith(
@@ -101,26 +113,31 @@ class _MovieTileState extends State<MovieTile> {
               ],
             ),
           ),
+          // Botão de favorito, posicionado no canto inferior direito
           Positioned(
-            bottom: 4, // Ajuste a distância do fundo
-            right: 4, // Ajuste a distância da direita
+            bottom: 4, // Distância do fundo
+            right: 4, // Distância da direita
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.primeiroPlano,
                 borderRadius: BorderRadius.circular(50),
               ),
               child: ValueListenableBuilder<bool>(
+                // Observa o estado do favorito
                 valueListenable: _isFavNotifier,
                 builder: (context, isFav, _) {
                   return IconButton(
+                    // Exibe ícone de coração preenchido ou vazio dependendo do estado
                     icon: Icon(
                       isFav ? Icons.favorite : Icons.favorite_border,
                       color: isFav ? AppColors.roxo : AppColors.cinza,
                     ),
                     onPressed: () async {
+                      // Alterna o estado de favorito
                       await widget.toggleFavorite(widget.movie);
                       _isFavNotifier.value = !_isFavNotifier.value;
-                      widget.onFavoriteChanged?.call(); // Notifica a pesquisa
+                      // Chama o callback para notificar a mudança de favorito
+                      widget.onFavoriteChanged?.call();
                     },
                   );
                 },

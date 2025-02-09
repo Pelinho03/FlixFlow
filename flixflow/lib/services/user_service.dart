@@ -8,7 +8,7 @@ class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  // Adicionar um comentário
+  // Adiciona um comentário ao filme no perfil do utilizador
   Future<void> addComment(String movieId, String comment) async {
     final user = _auth.currentUser;
     if (user == null) return;
@@ -18,11 +18,12 @@ class UserService {
     final username = userDoc.data()?['profile']?['name'] ?? user.email;
 
     final newComment = {
-      'username': username, // Nome do utilizador
+      'username': username, // Nome do utilizador associado ao comentário
       'text': comment,
       'timestamp': Timestamp.now(),
     };
 
+    // Guarda o comentário na coleção do utilizador
     await docRef.set({
       'comments': {
         movieId: FieldValue.arrayUnion([newComment]),
@@ -30,7 +31,7 @@ class UserService {
     }, SetOptions(merge: true));
   }
 
-  // Obter todos os comentários de um filme
+  // Obtém todos os comentários do utilizador para um filme específico
   Future<List<Map<String, dynamic>>> getComments(String movieId) async {
     final user = _auth.currentUser;
     if (user == null) return [];
@@ -46,7 +47,7 @@ class UserService {
     return [];
   }
 
-  // Editar um comentário
+  // Edita um comentário existente
   Future<void> editComment(String movieId, int index, String newComment) async {
     final user = _auth.currentUser;
     if (user == null) return;
@@ -60,7 +61,7 @@ class UserService {
 
       if (index < comments.length) {
         final updatedComment = {
-          'username': comments[index]['username'], // Mantém o mesmo username
+          'username': comments[index]['username'], // Mantém o mesmo nome
           'text': newComment,
           'timestamp': Timestamp.now(),
         };
@@ -72,7 +73,7 @@ class UserService {
     }
   }
 
-  // Apagar um comentário
+  // Remove um comentário do filme
   Future<void> deleteComment(String movieId, int index) async {
     final user = _auth.currentUser;
     if (user == null) return;
@@ -91,7 +92,7 @@ class UserService {
     }
   }
 
-  // Obter Avaliação do Filme
+  // Obtém a avaliação do filme dada pelo utilizador
   Future<double?> getMovieRating(String movieId) async {
     final userId = _auth.currentUser?.uid;
     if (userId == null) return null;
@@ -109,7 +110,7 @@ class UserService {
     return null;
   }
 
-  // Avaliar um Filme
+  // Guarda a avaliação do utilizador para um filme
   Future<void> rateMovie(String movieId, double rating) async {
     final userId = _auth.currentUser?.uid;
     if (userId == null) return;
@@ -119,7 +120,7 @@ class UserService {
     }, SetOptions(merge: true));
   }
 
-  // Obter referência ao documento do utilizador
+  // Obtém a referência ao documento do utilizador no Firestore
   DocumentReference<Map<String, dynamic>> _getUserDoc() {
     final user = _auth.currentUser;
     if (user == null) {
@@ -128,7 +129,7 @@ class UserService {
     return _firestore.collection('users').doc(user.uid);
   }
 
-  // Guardar ou atualizar perfil do utilizador
+  // Guarda ou atualiza as informações do perfil do utilizador
   Future<void> saveUserProfile(Map<String, dynamic> profileData) async {
     try {
       final userDoc = _getUserDoc();
@@ -137,11 +138,11 @@ class UserService {
         SetOptions(merge: true),
       );
     } catch (e) {
-      print("Erro ao guardar perfil: $e");
+      // print("Erro ao guardar perfil: $e");
     }
   }
 
-  // Obter perfil do utilizador
+  // Obtém os dados do perfil do utilizador autenticado
   Future<Map<String, dynamic>?> getUserProfile() async {
     try {
       final user = _auth.currentUser;
@@ -156,12 +157,12 @@ class UserService {
         return userData;
       }
     } catch (e) {
-      print("Erro ao obter perfil: $e");
+      // print("Erro ao obter perfil: $e");
     }
     return null;
   }
 
-  // Guardar imagem de perfil no Firebase Storage e atualizar Firestore
+  // Faz upload da imagem de perfil do utilizador para o Firebase Storage
   Future<String?> uploadProfileImage(File imageFile) async {
     try {
       final user = _auth.currentUser;
@@ -171,7 +172,7 @@ class UserService {
       await ref.putFile(imageFile);
       final imageUrl = await ref.getDownloadURL();
 
-      // Guardar URL da imagem no Firestore
+      // Atualiza a imagem no Firestore
       await _getUserDoc().set(
         {
           'profile': {'photoUrl': imageUrl}
@@ -181,7 +182,7 @@ class UserService {
 
       return imageUrl;
     } catch (e) {
-      print("Erro ao fazer upload da imagem: $e");
+      // print("Erro ao fazer upload da imagem: $e");
       return null;
     }
   }

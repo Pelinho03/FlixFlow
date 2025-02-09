@@ -13,26 +13,34 @@ class MovieNetworksWidget extends StatefulWidget {
 }
 
 class _MovieNetworksWidgetState extends State<MovieNetworksWidget> {
+  // Future que armazena os dados das plataformas de streaming para o filme
   late Future<List<dynamic>> _movieNetworks;
+  // Serviço para obter as plataformas de streaming
   final MovieService _movieService = MovieService();
 
   @override
   void initState() {
     super.initState();
+    // Inicializa a future com a chamada ao serviço para obter as plataformas
     _movieNetworks = _movieService.getMovieNetworks(widget.movieId);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-      future: _movieNetworks,
+      future: _movieNetworks, // Passa a future para o FutureBuilder
       builder: (context, snapshot) {
+        // Caso a requisição ainda esteja a carregar
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
+        }
+        // Caso haja um erro na requisição
+        else if (snapshot.hasError) {
           return const Text('Erro ao carregar as plataformas.');
-        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-          // Remover plataformas duplicadas
+        }
+        // Se a requisição foi bem-sucedida e há dados
+        else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          // Remove plataformas duplicadas
           var uniqueNetworks = snapshot.data!.toSet().toList();
 
           return Column(
@@ -46,10 +54,12 @@ class _MovieNetworksWidgetState extends State<MovieNetworksWidget> {
               Wrap(
                 spacing: 5,
                 runSpacing: 5,
+                // Exibe as plataformas de streaming
                 children: uniqueNetworks.map((network) {
                   return Chip(
                     label: Text(network['provider_name'],
                         style: AppTextStyles.regularText),
+                    // Exibe o logo da plataforma
                     avatar: network['logo_path'] != null
                         ? CircleAvatar(
                             backgroundImage: NetworkImage(
@@ -70,6 +80,7 @@ class _MovieNetworksWidgetState extends State<MovieNetworksWidget> {
             ],
           );
         } else {
+          // Caso não existam plataformas para o filme
           const SizedBox(height: 20);
           return Center(
               child: Text('Plataforma disponível brevemente.',

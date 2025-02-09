@@ -20,36 +20,40 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController emailController = TextEditingController();
   final UserService userService = UserService();
   bool isLoading = true;
-  String? photoUrl;
+  String? photoUrl; // URL da foto de perfil do utilizador
 
   @override
   void initState() {
     super.initState();
-    _loadUserProfile();
+    _loadUserProfile(); // Carrega os dados do perfil ao iniciar a página
   }
 
+  // Obtém os dados do utilizador a partir do Firestore
   Future<void> _loadUserProfile() async {
     final userData = await userService.getUserProfile();
     if (userData != null) {
       nameController.text = userData['name'] ?? '';
       emailController.text = userData['email'] ?? '';
-      photoUrl = userData['photoUrl']; // Carregar foto de perfil
+      photoUrl = userData['photoUrl']; // Carrega a foto de perfil, se existir
     }
     setState(() {
       isLoading = false;
     });
   }
 
+  // Guarda as alterações do perfil no Firestore
   Future<void> _saveUserProfile() async {
     await userService.saveUserProfile({
       'name': nameController.text,
       'email': emailController.text,
       'photoUrl': photoUrl,
-      'updatedAt': DateTime.now().toIso8601String(),
+      'updatedAt':
+          DateTime.now().toIso8601String(), // Regista a data de atualização
     });
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(); // Fecha a página após salvar
   }
 
+  // Permite ao utilizador escolher uma imagem da galeria e fazer upload
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -58,7 +62,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final imageUrl = await userService.uploadProfileImage(imageFile);
       if (imageUrl != null) {
         setState(() {
-          photoUrl = imageUrl;
+          photoUrl = imageUrl; // Atualiza a imagem de perfil
         });
       }
     }
@@ -70,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: const CustomAppBar(title: "Perfil"),
       body: Stack(
         children: [
-          // Imagem de fundo igual à da LoginPage
+          // Imagem de fundo do perfil
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -85,22 +89,25 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Avatar do utilizador
                   GestureDetector(
                     onTap: _pickImage,
                     child: CircleAvatar(
                       radius: 50,
                       backgroundColor: AppColors.cinza,
                       backgroundImage: photoUrl != null
-                          ? NetworkImage(photoUrl!)
+                          ? NetworkImage(
+                              photoUrl!) // Foto de perfil do Firestore
                           : const AssetImage('assets/imgs/logo_dark_1_1024.png')
-                              as ImageProvider,
-                      child: photoUrl == null
-                          ? const Icon(Icons.camera_alt,
-                              color: Colors.white, size: 30)
-                          : null,
+                              as ImageProvider, // Imagem padrão
+                      // child: photoUrl == null
+                      //     ? const Icon(Icons.camera_alt,
+                      //         color: Colors.white, size: 30)
+                      //     : null,
                     ),
                   ),
                   const SizedBox(height: 20),
+                  // Título
                   Text(
                     'O teu perfil',
                     style: AppTextStyles.bigTextLoginRegist.copyWith(
@@ -108,6 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  // alterar o nome do utilizador
                   SizedBox(
                     width: double.infinity,
                     child: TextFormField(
@@ -128,6 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  // Campo para visualizar o email (não editável)
                   SizedBox(
                     width: double.infinity,
                     child: TextFormField(
@@ -145,10 +154,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      enabled: false,
+                      enabled: false, // O email não pode ser alterado
                     ),
                   ),
                   const SizedBox(height: 20),
+                  // Botão para guardar as alterações do perfil
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -176,6 +186,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
+      // Barra de navegação inferior
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: 0,
         onItemTapped: (index) async {

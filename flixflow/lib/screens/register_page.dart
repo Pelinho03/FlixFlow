@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Adicionar Firebase
-import 'login_page.dart'; // Importar a página de Login
+import 'package:firebase_auth/firebase_auth.dart';
+import 'login_page.dart';
 import '../styles/app_colors.dart';
 import '../styles/app_text.dart';
 
 class RegisterPage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _emailController =
-      TextEditingController(); // Modificar para email
+      TextEditingController(); // Controlador para o campo de email
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-      TextEditingController();
+      TextEditingController(); // Controlador para a confirmação de password
 
   RegisterPage({super.key});
 
-  // Função de registo
+  // Função de registo no Firebase
   void _register(BuildContext context) async {
+    // Verificar se as passwords coincidem
     if (_passwordController.text.trim() ==
         _confirmPasswordController.text.trim()) {
       try {
+        // Criar o utilizador no Firebase com o email e password fornecidos
         final UserCredential userCredential =
             await _auth.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
         print("Registo bem-sucedido: ${userCredential.user!.email}");
+        // Mostrar uma mensagem de sucesso após o registo
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text('Registo bem-sucedido, por favor faça login.')),
@@ -35,12 +38,14 @@ class RegisterPage extends StatelessWidget {
           MaterialPageRoute(builder: (context) => LoginPage()),
         );
       } on FirebaseAuthException catch (e) {
+        // Caso ocorra um erro, mostra a mensagem de erro
         print('Erro: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro: ${e.message}')),
         );
       }
     } else {
+      // Caso as passwords não coincidam, mostra uma mensagem de erro
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('As passwords não coincidem.')),
       );
@@ -56,8 +61,7 @@ class RegisterPage extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'assets/imgs/login_bg2.png'), // Caminho da sua imagem
+                image: AssetImage('assets/imgs/login_bg2.png'),
                 fit: BoxFit.cover, // Ajusta a imagem para cobrir toda a área
               ),
             ),
@@ -68,7 +72,7 @@ class RegisterPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Adicionando o logo acima de tudo
+                  // Exibe o logo na parte superior da tela
                   Container(
                     margin: const EdgeInsets.only(bottom: 50),
                     child: Image.asset(
@@ -85,6 +89,7 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  // Campo de input para o email
                   SizedBox(
                     width: double.infinity,
                     child: TextFormField(
@@ -104,6 +109,7 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  // Campo de input para a password
                   SizedBox(
                     width: double.infinity,
                     child: TextFormField(
@@ -120,11 +126,11 @@ class RegisterPage extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      obscureText:
-                          true, // Mantenha isto para ocultar a password
+                      obscureText: true, // Oculta a password
                     ),
                   ),
                   const SizedBox(height: 16),
+                  // Campo de input para confirmar a password
                   SizedBox(
                     width: double.infinity,
                     child: TextFormField(
@@ -141,11 +147,11 @@ class RegisterPage extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      obscureText:
-                          true, // Mantenha isto para ocultar a password
+                      obscureText: true, // Oculta a password
                     ),
                   ),
                   const SizedBox(height: 20),
+                  // Botão de registo
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -157,8 +163,7 @@ class RegisterPage extends StatelessWidget {
                             AppColors.roxo), // Cor de fundo
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                6), // Ajuste o valor conforme necessário
+                            borderRadius: BorderRadius.circular(6),
                           ),
                         ),
                       ),
@@ -169,8 +174,8 @@ class RegisterPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                      height: 20), // Espaçamento entre o botão e o texto
+                  const SizedBox(height: 20), // Espaço entre o botão e o texto
+                  // Link para voltar à página de login
                   TextButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/login');

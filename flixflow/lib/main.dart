@@ -31,7 +31,7 @@ Future<void> main() async {
     bool sessionValid = await AuthService.isSessionValid();
     if (!sessionValid) {
       await AuthService
-          .logoutWithoutContext(); // Se a sessão expirou, faz logout sem contexto
+          .logoutWithoutContext(); // Se a sessão expirou, faz logout
       isLoggedIn = false; // Atualiza o estado do login para false
     }
   }
@@ -49,8 +49,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlixFlow',
       theme: ThemeData.dark(),
-      initialRoute: isLoggedIn ? '/' : '/login', // /login
+      initialRoute: isLoggedIn ? '/' : '/login',
       routes: {
+        //rotas para navegar entre as paginas da aplicação
         '/': (context) => const HomePage(),
         '/favorites': (context) => const FavoritePage(),
         '/news': (context) => const NewsPage(),
@@ -60,7 +61,6 @@ class MyApp extends StatelessWidget {
         '/forgotPassword': (context) => const ForgotPasswordPage(),
         '/profile': (context) => ProfilePage(),
       },
-
       debugShowCheckedModeBanner: false,
     );
   }

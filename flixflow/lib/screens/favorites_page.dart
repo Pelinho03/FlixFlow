@@ -71,7 +71,7 @@ class _FavoritePageState extends State<FavoritePage> {
     await userRef.update({'favorites': favoriteIds});
 
     setState(() {
-      _favoriteMovies = _getFavoriteMovies(); // Atualiza a lista na UI
+      _favoriteMovies = _getFavoriteMovies();
     });
   }
 

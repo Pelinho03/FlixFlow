@@ -5,12 +5,15 @@ import '../screens/movie_details_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// O MovieListWidget é um widget que exibe uma lista de filmes divididos por categorias.
 class MovieListWidget extends StatefulWidget {
+  // Listas de filmes em diferentes categorias.
   final List<dynamic> popularMovies;
   final List<dynamic> topMovies;
   final List<dynamic> upcomingMovies;
   final List<dynamic> trendingMovies;
 
+  // Construtor para passar as listas de filmes para o widget.
   const MovieListWidget({
     super.key,
     required this.popularMovies,
@@ -24,15 +27,19 @@ class MovieListWidget extends StatefulWidget {
 }
 
 class _MovieListWidgetState extends State<MovieListWidget> {
+  // Listas de filmes que serão usadas no estado.
   late List<dynamic> popularMovies;
   late List<dynamic> topMovies;
   late List<dynamic> upcomingMovies;
   late List<dynamic> trendingMovies;
-  final double bannerRatio = 4.0; // Define a proporção do banner
+
+  // Proporção usada para calcular a altura do banner.
+  final double bannerRatio = 4.0;
 
   @override
   void initState() {
     super.initState();
+    // Inicializando as listas com os dados passados pelo widget.
     popularMovies = widget.popularMovies;
     topMovies = widget.topMovies;
     upcomingMovies = widget.upcomingMovies;
@@ -41,8 +48,10 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 
   Future<bool> isFavorite(dynamic movie) async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return false;
+    if (user == null)
+      return false; // Se o utilizador não estiver autenticado, retorna false.
 
+    // Verifica no Firestore os dados do utilizador e se o filme está nos favoritos.
     final doc = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
@@ -54,13 +63,16 @@ class _MovieListWidgetState extends State<MovieListWidget> {
     return favorites.contains(movie['id']);
   }
 
+  // Alterna o status de favorito de um filme.
   Future<void> toggleFavorite(dynamic movie) async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+    if (user == null)
+      return; // Se não houver utilizador autenticado, não faz nada.
 
     final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
 
     try {
+      // Inicia uma transação no Firestore para garantir consistência nos dados.
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         final snapshot = await transaction.get(docRef);
 
@@ -74,18 +86,20 @@ class _MovieListWidgetState extends State<MovieListWidget> {
         final data = snapshot.data() as Map<String, dynamic>;
         final favorites = List<int>.from(data['favorites'] ?? []);
 
+        // Se o filme já for favorito, remove da lista, senão adiciona.
         favorites.contains(movie['id'])
             ? favorites.remove(movie['id'])
             : favorites.add(movie['id']);
         transaction.update(docRef, {'favorites': favorites});
       });
 
-      setState(() {});
+      setState(() {}); // Atualiza o estado após a alteração.
     } catch (e) {
       // print('Erro ao alternar favoritos: $e');
     }
   }
 
+  // Função para construir a lista de filmes para cada categoria.
   Widget _buildMovieList(
       String title, List<dynamic> movies, BuildContext context) {
     if (movies.isEmpty) {
@@ -106,18 +120,20 @@ class _MovieListWidgetState extends State<MovieListWidget> {
         SizedBox(
           height: 280,
           child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: movies.length,
+            scrollDirection: Axis.horizontal, // Exibe os filmes na horizontal.
+            itemCount: movies.length, // Número de filmes a serem exibidos.
             itemBuilder: (context, index) {
-              final movie = movies[index];
+              final movie = movies[index]; // Filme atual da lista.
 
               return Container(
-                width: 140,
+                width: 140, // Largura do card do filme.
                 margin: const EdgeInsets.symmetric(horizontal: 8),
                 child: Stack(
-                  alignment: const Alignment(0.90, 0.20),
+                  alignment: const Alignment(
+                      0.90, 0.20), // Alinhamento do botão de favorito.
                   children: [
                     GestureDetector(
+                      // Ao tocar no card, abre os detalhes do filme.
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -136,20 +152,20 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                                     width: 148,
                                     height: 200,
                                   )
-                                : const Icon(Icons.movie, size: 80),
+                                : const Icon(Icons.movie,
+                                    size:
+                                        80), // Se não houver poster, exibe um ícone.
                           ),
                           const SizedBox(height: 8),
-                          // O título e o ano
+                          // Exibe o título e o ano de lançamento do filme.
                           Container(
                             width: 148,
                             padding: const EdgeInsets.only(top: 8),
                             child: Column(
-                              mainAxisSize: MainAxisSize
-                                  .min, // Garante que o Column ocupe o mínimo de espaço necessário
+                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Flexible(
-                                  // Limita a altura ocupada pelo título
                                   child: Text(
                                     movie['title'] ?? 'Título não disponível',
                                     style: AppTextStyles.mediumText.copyWith(
@@ -159,7 +175,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                const SizedBox(height: 4), // Pequena margem
+                                const SizedBox(height: 4),
                                 Text(
                                   '${movie['release_date']?.substring(0, 4) ?? 'N/A'}',
                                   style: AppTextStyles.smallText.copyWith(
@@ -173,7 +189,8 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                       ),
                     ),
                     FutureBuilder<bool>(
-                      future: isFavorite(movie),
+                      future: isFavorite(
+                          movie), // Verifica se o filme está nos favoritos.
                       builder: (context, snapshot) {
                         final isFav = snapshot.data ?? false;
                         final user = FirebaseAuth.instance.currentUser;
@@ -194,7 +211,8 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                               color: isFav ? AppColors.roxo : AppColors.cinza,
                             ),
                             onPressed: user != null
-                                ? () => toggleFavorite(movie)
+                                ? () => toggleFavorite(
+                                    movie) // Alterna o favorito se o utilizador estiver autenticado.
                                 : null,
                           ),
                         );
@@ -223,11 +241,12 @@ class _MovieListWidgetState extends State<MovieListWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: LayoutBuilder(
               builder: (context, constraints) {
+                // Calcula a altura do banner com base na largura do ecra.
                 double bannerHeight = constraints.maxWidth / bannerRatio;
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Image.asset(
-                    'assets/imgs/banner_homepage_v2.png',
+                    'assets/imgs/banner_homepage_v2.png', // Imagem do banner.
                     width: constraints.maxWidth,
                     height: bannerHeight,
                     fit: BoxFit.cover,
@@ -236,7 +255,6 @@ class _MovieListWidgetState extends State<MovieListWidget> {
               },
             ),
           ),
-          // const SizedBox(height: 15.0),
           const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
           _buildMovieList('Mais Populares', popularMovies, context),
           const Divider(height: 15, color: AppColors.roxo, thickness: 0.1),
