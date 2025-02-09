@@ -74,15 +74,6 @@ class SearchBanner extends StatelessWidget {
     );
   }
 
-  //   void _showUsernameDialog(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return UsernameDialog();
-  //     },
-  //   );
-  // }
-
   void _navigateToProfile(BuildContext context) {
     Navigator.pushNamed(context, '/profile');
   }

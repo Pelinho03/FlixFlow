@@ -76,24 +76,14 @@ flutter:
 
         # To add assets to your application, add an assets section, like this:
     assets:
-        - assets/imgs/banner_modify.png
         - assets/imgs/login_logo.png
         - assets/imgs/login_bg2.png
         - assets/imgs/app_icon_v2.png
-        - assets/imgs/app_icon_v3.png
-        - assets/imgs/user_icon.png
+        - assets/imgs/app_icon_v4.png
         - assets/imgs/logo_dark_1_1024.png
-        - assets/imgs/app_icon.png
-        - assets/imgs/banner_homepage.png
         - assets/imgs/banner_homepage_v2.png
-        - assets/imgs/default_actor.png
         - assets/imgs/default_actor_v2.png
-        - assets/imgs/banner.png
         - assets/imgs/teste.png
-        - assets/imgs/splash_v1.png
-        - assets/imgs/splash_v2.png
-        - assets/imgs/splash_v3.png
-        - assets/imgs/splash_v4.png
         - assets/imgs/splash_v5.png
         - assets/imgs/profile_bg.png
         - dados_sensiveis.env
